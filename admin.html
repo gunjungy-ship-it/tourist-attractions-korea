@@ -9,25 +9,17 @@
     <style>
         :root{
             --bg:#f0efec;--card:#fff;--text:#1a1a2e;--text2:#6b7280;--text3:#9ca3af;
-            --border:#e5e3dd;--accent:#e74c3c;--accent2:#f97316;
-            --shadow:0 2px 12px rgba(0,0,0,0.05);--shadow-hover:0 6px 24px rgba(0,0,0,0.08);
+            --border:#e5e3dd;--accent:#e74c3c;
             --radius:14px;--radius-sm:8px;
         }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:'Noto Sans KR',-apple-system,sans-serif;
-            background:var(--bg);color:var(--text);
-            display:flex;min-height:100vh;
-        }
+        body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
 
-        /* 사이드바 */
         #sidebar{
             width:240px;background:var(--card);
             border-right:1px solid var(--border);
-            padding:24px 16px;
-            position:fixed;top:0;left:0;bottom:0;
-            display:flex;flex-direction:column;
-            z-index:100;
+            padding:24px 16px;position:fixed;top:0;left:0;bottom:0;
+            display:flex;flex-direction:column;z-index:100;
         }
         #sidebar .logo{font-size:18px;font-weight:900;margin-bottom:28px;padding:0 8px;letter-spacing:-0.5px}
         #sidebar .logo span{color:var(--accent)}
@@ -39,165 +31,59 @@
         }
         #sidebar nav a:hover{background:var(--bg);color:var(--text)}
         #sidebar nav a.active{background:var(--accent);color:#fff}
-        #sidebar .footer{
-            margin-top:auto;padding:12px 8px 0;
-            border-top:1px solid var(--border);
-            font-size:12px;color:var(--text3);
-        }
+        #sidebar .footer{margin-top:auto;padding:12px 8px 0;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
         #sidebar .footer a{color:var(--accent);text-decoration:none}
 
-        /* 메인 */
-        #main{
-            margin-left:240px;
-            flex:1;padding:28px 32px;
-            max-width:calc(100vw - 240px);
-        }
+        #main{margin-left:240px;flex:1;padding:28px 32px;max-width:calc(100vw - 240px)}
         #main h2{font-size:22px;font-weight:700;margin-bottom:4px}
         #main .sub{font-size:14px;color:var(--text2);margin-bottom:24px}
 
-        /* 통계 카드 */
-        .stats{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-            gap:14px;margin-bottom:28px;
-        }
-        .stat-card{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:var(--radius);
-            padding:18px 20px;
-            box-shadow:var(--shadow);
-        }
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px}
+        .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
         .stat-card .num{font-size:28px;font-weight:900;margin-bottom:2px}
-        .stat-card .label{font-size:13px;color:var(--text2);font-weight:400}
-        .stat-card .num.historical{color:#e74c3c}
-        .stat-card .num.nature{color:#2ecc71}
-        .stat-card .num.culture{color:#9b59b6}
-        .stat-card .num.food{color:#f59e0b}
-        .stat-card .num.etc{color:#3498db}
+        .stat-card .label{font-size:13px;color:var(--text2)}
+        .num.h{color:#e74c3c}.num.n{color:#2ecc71}.num.c{color:#9b59b6}.num.f{color:#f59e0b}.num.e{color:#3498db}
 
-        /* 차트 영역 */
-        .charts{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:16px;margin-bottom:28px;
-        }
-        .chart-box{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:var(--radius);
-            padding:18px 20px;
-            box-shadow:var(--shadow);
-        }
+        .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+        .chart-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
         .chart-box h4{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text2)}
         .chart-box canvas{max-height:220px}
 
-        /* 테이블 */
-        .table-wrap{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:var(--radius);
-            box-shadow:var(--shadow);
-            overflow:hidden;
-        }
-        .table-head{
-            display:flex;justify-content:space-between;align-items:center;
-            padding:16px 20px;border-bottom:1px solid var(--border);
-        }
+        .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+        .table-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border)}
         .table-head h4{font-size:15px;font-weight:600}
-        .table-head .add-btn{
-            padding:7px 18px;border:none;border-radius:var(--radius-sm);
-            background:var(--accent);color:#fff;font-size:12px;font-weight:600;
-            cursor:pointer;font-family:inherit;transition:background 0.2s;
-        }
+        .table-head .add-btn{padding:7px 18px;border:none;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
         .table-head .add-btn:hover{background:#c0392b}
-
         .table-scroll{overflow-x:auto}
         table{width:100%;border-collapse:collapse;font-size:13px}
-        th{
-            text-align:left;padding:10px 16px;
-            font-weight:600;color:var(--text2);font-size:12px;
-            border-bottom:1px solid var(--border);
-            white-space:nowrap;
-        }
+        th{text-align:left;padding:10px 16px;font-weight:600;color:var(--text2);font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap}
         td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
         tr:last-child td{border-bottom:none}
         tr:hover td{background:#fafaf9}
-        td .badge{
-            display:inline-block;padding:2px 8px;border-radius:999px;
-            font-size:10px;font-weight:600;color:#fff;
-        }
-        td .act-btn{
-            padding:4px 12px;border:none;border-radius:6px;
-            font-size:11px;font-weight:500;cursor:pointer;
-            font-family:inherit;transition:all 0.2s;
-            margin-right:4px;
-        }
-        td .edit-btn{background:#f0efec;color:var(--text)}
-        td .edit-btn:hover{background:#e5e3dd}
-        td .del-btn{background:#fef2f2;color:#e74c3c}
-        td .del-btn:hover{background:#fee2e2}
-        .name-cell{font-weight:600}
+        td .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600;color:#fff}
+        td .act-btn{padding:4px 10px;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;margin-right:3px}
+        td .eb{background:#f0efec;color:var(--text)}td .eb:hover{background:#e5e3dd}
+        td .db{background:#fef2f2;color:#e74c3c}td .db:hover{background:#fee2e2}
+        .nc{font-weight:600}
 
-        /* 모달 */
-        #modal{
-            display:none;
-            position:fixed;inset:0;
-            z-index:1000;
-            background:rgba(0,0,0,0.3);
-            backdrop-filter:blur(4px);
-            -webkit-backdrop-filter:blur(4px);
-            align-items:center;justify-content:center;
-        }
+        #modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);align-items:center;justify-content:center}
         #modal.show{display:flex}
-        #modal .modal-box{
-            background:var(--card);
-            border-radius:var(--radius);
-            box-shadow:0 20px 60px rgba(0,0,0,0.15);
-            width:92%;max-width:520px;
-            max-height:90vh;
-            overflow-y:auto;
-            padding:28px 24px 24px;
-        }
-        #modal .modal-box h3{font-size:18px;font-weight:700;margin-bottom:16px}
-        .form-group{margin-bottom:14px}
-        .form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
-        .form-group input,.form-group select,.form-group textarea{
-            width:100%;padding:9px 12px;
-            border:1px solid var(--border);border-radius:var(--radius-sm);
-            font-size:13px;font-family:inherit;color:var(--text);
-            background:var(--bg);outline:none;transition:border-color 0.2s;
-        }
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
-            border-color:var(--accent);
-        }
-        .form-group textarea{resize:vertical;min-height:60px}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-        .modal-actions button{
-            padding:9px 22px;border:none;border-radius:var(--radius-sm);
-            font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;
-        }
-        .modal-actions .cancel{background:var(--bg);color:var(--text2)}
-        .modal-actions .cancel:hover{background:#e5e3dd}
-        .modal-actions .save{background:var(--accent);color:#fff}
-        .modal-actions .save:hover{background:#c0392b}
+        #modal .mb{background:var(--card);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);width:92%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px 24px 24px}
+        #modal .mb h3{font-size:18px;font-weight:700;margin-bottom:16px}
+        .fg{margin-bottom:14px}
+        .fg label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
+        .fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);outline:none}
+        .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+        .fg textarea{resize:vertical;min-height:60px}
+        .fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .ma{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+        .ma button{padding:9px 22px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+        .ma .cl{background:var(--bg);color:var(--text2)}.ma .cl:hover{background:#e5e3dd}
+        .ma .sv{background:var(--accent);color:#fff}.ma .sv:hover{background:#c0392b}
 
-        /* 알림 토스트 */
-        #toast{
-            position:fixed;top:20px;right:20px;
-            z-index:9999;
-            background:#1a1a2e;color:#fff;
-            padding:12px 20px;border-radius:var(--radius-sm);
-            font-size:13px;font-weight:500;
-            box-shadow:0 8px 32px rgba(0,0,0,0.2);
-            transform:translateX(120%);
-            transition:transform 0.3s ease;
-            max-width:360px;
-        }
+        #toast{position:fixed;top:20px;right:20px;z-index:9999;background:#1a1a2e;color:#fff;padding:12px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.2);transform:translateX(120%);transition:transform 0.3s;max-width:360px}
         #toast.show{transform:translateX(0)}
 
-        /* 반응형 */
         @media(max-width:768px){
             #sidebar{width:100%;position:relative;padding:16px 12px;border-right:none;border-bottom:1px solid var(--border)}
             #sidebar .logo{font-size:16px;margin-bottom:16px}
@@ -206,105 +92,75 @@
             #main{margin-left:0;padding:16px 14px;max-width:100%}
             .charts{grid-template-columns:1fr}
             .stats{grid-template-columns:repeat(2,1fr)}
-            #modal .modal-box{padding:20px 16px}
-            .form-row{grid-template-columns:1fr}
+            #modal .mb{padding:20px 16px}
+            .fr{grid-template-columns:1fr}
         }
-        @media(max-width:480px){
-            .stats{grid-template-columns:1fr}
-            th,td{padding:8px 10px;font-size:12px}
-        }
+        @media(max-width:480px){.stats{grid-template-columns:1fr}th,td{padding:8px 10px;font-size:12px}}
     </style>
 </head>
 <body>
-    <!-- 사이드바 -->
     <div id="sidebar">
-        <div class="logo">🇰🇷 K<span>-travel</span></div>
-        <nav>
-            <a class="active" onclick="showTab('dashboard')">📊 대시보드</a>
-            <a onclick="showTab('manage')">📝 명소 관리</a>
-            <a href="/" target="_blank">🗺️ 지도 보기</a>
+        <div class="logo">\uD83C\uDDF0\uD83C\uDDF7 K<span>-travel</span></div>
+        <nav id="side-nav">
+            <a class="active" data-tab="dashboard">\uD83D\uDCCA 대시보드</a>
+            <a data-tab="manage">\uD83D\uDCDD 명소 관리</a>
+            <a onclick="window.open('/','_blank')">\uD83D\uDDFA\uFE0F 지도 보기</a>
         </nav>
-        <div class="footer">
-            관리자 대시보드 v1.0<br>
-            <a href="/" target="_blank">tourist-attractions-korea</a>
-        </div>
+        <div class="footer">관리자 대시보드 v1.0<br><a href="/" target="_blank">tourist-attractions-korea</a></div>
     </div>
 
-    <!-- 메인 -->
     <div id="main">
         <div id="dashboard-tab">
-            <h2>📊 대시보드</h2>
+            <h2>\uD83D\uDCCA 대시보드</h2>
             <div class="sub">관광명소 데이터 현황 및 통계</div>
-
             <div class="stats">
-                <div class="stat-card"><div class="num" id="stat-total">0</div><div class="label">총 명소</div></div>
-                <div class="stat-card"><div class="num historical" id="stat-historical">0</div><div class="label">역사/궁궐</div></div>
-                <div class="stat-card"><div class="num nature" id="stat-nature">0</div><div class="label">자연/관광</div></div>
-                <div class="stat-card"><div class="num culture" id="stat-culture">0</div><div class="label">문화/전통</div></div>
-                <div class="stat-card"><div class="num food" id="stat-food">0</div><div class="label">맛집/시장</div></div>
-                <div class="stat-card"><div class="num etc" id="stat-etc">0</div><div class="label">기타</div></div>
+                <div class="stat-card"><div class="num" id="st-total">0</div><div class="label">총 명소</div></div>
+                <div class="stat-card"><div class="num h" id="st-hist">0</div><div class="label">역사/궁궐</div></div>
+                <div class="stat-card"><div class="num n" id="st-nat">0</div><div class="label">자연/관광</div></div>
+                <div class="stat-card"><div class="num c" id="st-cul">0</div><div class="label">문화/전통</div></div>
+                <div class="stat-card"><div class="num f" id="st-food">0</div><div class="label">맛집/시장</div></div>
+                <div class="stat-card"><div class="num e" id="st-etc">0</div><div class="label">기타</div></div>
             </div>
-
             <div class="charts">
-                <div class="chart-box">
-                    <h4>카테고리별 분포</h4>
-                    <canvas id="chart-category"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h4>지역별 분포</h4>
-                    <canvas id="chart-region"></canvas>
-                </div>
+                <div class="chart-box"><h4>카테고리별 분포</h4><canvas id="chart-cat"></canvas></div>
+                <div class="chart-box"><h4>지역별 분포</h4><canvas id="chart-reg"></canvas></div>
             </div>
-
             <div class="chart-box" style="margin-bottom:28px">
-                <h4>최근 업데이트 로그</h4>
-                <div id="activity-log" style="font-size:13px;color:var(--text2);line-height:2">
-                    데이터를 불러오는 중...
-                </div>
+                <h4>\uD83D\uDCCB 최근 활동</h4>
+                <div id="activity-log" style="font-size:13px;color:var(--text2);line-height:2">로딩 중...</div>
             </div>
         </div>
 
         <div id="manage-tab" style="display:none">
-            <h2>📝 명소 관리</h2>
+            <h2>\uD83D\uDCDD 명소 관리</h2>
             <div class="sub">관광명소 데이터를 추가/수정/삭제할 수 있습니다</div>
-
             <div class="table-wrap">
                 <div class="table-head">
-                    <h4>명소 목록 (<span id="list-count">0</span>)</h4>
+                    <h4>명소 목록 (<span id="list-cnt">0</span>)</h4>
                     <button class="add-btn" onclick="openModal()">+ 새 명소</button>
                 </div>
                 <div class="table-scroll">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>명소명</th>
-                                <th>지역</th>
-                                <th>카테고리</th>
-                                <th>위도</th>
-                                <th>경도</th>
-                                <th style="width:100px">관리</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body"></tbody>
+                        <thead><tr><th>명소명</th><th>지역</th><th>카테고리</th><th>위도</th><th>경도</th><th style="width:90px">관리</th></tr></thead>
+                        <tbody id="tb"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 모달 -->
     <div id="modal">
-        <div class="modal-box">
+        <div class="mb">
             <h3 id="modal-title">새 명소 추가</h3>
-            <div class="form-row">
-                <div class="form-group"><label>명소명</label><input id="f-name" placeholder="예: 경복궁"></div>
-                <div class="form-group"><label>지역</label><input id="f-region" placeholder="예: 서울"></div>
+            <div class="fr">
+                <div class="fg"><label>명소명</label><input id="f-name" placeholder="예: 경복궁"></div>
+                <div class="fg"><label>지역</label><input id="f-region" placeholder="예: 서울"></div>
             </div>
-            <div class="form-row">
-                <div class="form-group"><label>위도</label><input id="f-lat" type="number" step="0.0001" placeholder="37.5796"></div>
-                <div class="form-group"><label>경도</label><input id="f-lng" type="number" step="0.0001" placeholder="126.9770"></div>
+            <div class="fr">
+                <div class="fg"><label>위도</label><input id="f-lat" type="number" step="0.0001" placeholder="37.5796"></div>
+                <div class="fg"><label>경도</label><input id="f-lng" type="number" step="0.0001" placeholder="126.9770"></div>
             </div>
-            <div class="form-group">
+            <div class="fg">
                 <label>카테고리</label>
                 <select id="f-cat">
                     <option>궁궐/역사</option><option>랜드마크</option><option>문화/전통</option>
@@ -317,38 +173,36 @@
                     <option>역사/문화</option><option>자연/호수</option><option>자연/동굴</option>
                 </select>
             </div>
-            <div class="form-group"><label>설명</label><textarea id="f-desc" placeholder="명소에 대한 설명을 입력하세요"></textarea></div>
-            <div class="form-group"><label>여행 팁</label><textarea id="f-tip" placeholder="방문객을 위한 팁을 입력하세요"></textarea></div>
-            <div class="modal-actions">
-                <button class="cancel" onclick="closeModal()">취소</button>
-                <button class="save" id="modal-save-btn" onclick="saveAttraction()">저장</button>
+            <div class="fg"><label>설명</label><textarea id="f-desc" placeholder="명소 설명"></textarea></div>
+            <div class="fg"><label>여행 팁</label><textarea id="f-tip" placeholder="방문 팁"></textarea></div>
+            <div class="ma">
+                <button class="cl" onclick="closeModal()">취소</button>
+                <button class="sv" onclick="saveAttraction()">저장</button>
             </div>
         </div>
     </div>
 
-    <!-- 토스트 -->
     <div id="toast"></div>    <script>
-        // 기본 데이터
         const defaultData = [
             {name:"경복궁",region:"서울",lat:37.5796,lng:126.9770,cat:"궁궐/역사",desc:"조선 왕조의 법궁, 1395년 창건",tip:"한복 입고 방문 시 무료 입장!"},
             {name:"남산서울타워",region:"서울",lat:37.5512,lng:126.9882,cat:"랜드마크",desc:"서울의 상징 N서울타워, 해발 236m",tip:"일몰 시간에 맞춰 방문하세요!"},
-            {name:"북촌한옥마을",region:"서울",lat:37.5826,lng:126.9850,cat:"문화/전통",desc:"전통 한옥이 보존된 서울 도심 역사 마을",tip:"북촌 8경 코스를 따라 걸어보세요."},
-            {name:"명동",region:"서울",lat:37.5609,lng:126.9853,cat:"쇼핑/거리",desc:"서울 최대 쇼핑과 먹거리 천국",tip:"저녁 시간이 더 활기참!"},
+            {name:"북촌한옥마을",region:"서울",lat:37.5826,lng:126.9850,cat:"문화/전통",desc:"전통 한옥이 보존된 서울 도심 역사 마을",tip:"북촌 8경 코스 추천"},
+            {name:"명동",region:"서울",lat:37.5609,lng:126.9853,cat:"쇼핑/거리",desc:"서울 최대 쇼핑과 먹거리 천국",tip:"저녁이 더 활기참!"},
             {name:"인사동",region:"서울",lat:37.5736,lng:126.9855,cat:"문화/전통",desc:"전통 문화와 현대 예술이 공존하는 거리",tip:"쌈지길에서 공예품 구경!"},
-            {name:"홍대",region:"서울",lat:37.5563,lng:126.9236,cat:"문화/거리",desc:"젊음의 거리, 길거리 공연 메카",tip:"주말 버스킹 공연 필수!"},
-            {name:"강남",region:"서울",lat:37.4981,lng:127.0276,cat:"쇼핑/업무",desc:"한국 경제 중심지, K-pop 본고장",tip:"코엑스 별마당 도서관 인생샷!"},
-            {name:"여의도",region:"서울",lat:37.5219,lng:126.9244,cat:"랜드마크",desc:"63빌딩과 한강, 봄 벚꽃 명소",tip:"4월 윤중로 벚꽃길이 유명"},
+            {name:"홍대",region:"서울",lat:37.5563,lng:126.9236,cat:"문화/거리",desc:"젊음의 거리, 길거리 공연 메카",tip:"주말 버스킹 공연 필수"},
+            {name:"강남",region:"서울",lat:37.4981,lng:127.0276,cat:"쇼핑/업무",desc:"한국 경제 중심지, K-pop 본고장",tip:"코엑스 별마당 도서관!"},
+            {name:"여의도",region:"서울",lat:37.5219,lng:126.9244,cat:"랜드마크",desc:"63빌딩과 한강, 봄 벚꽃 명소",tip:"4월 윤중로 벚꽃길 유명"},
             {name:"제주도",region:"제주",lat:33.3803,lng:126.5350,cat:"자연/섬",desc:"한국 최대 섬, 세계적 휴양지",tip:"렌터카 여행 필수!"},
             {name:"한라산",region:"제주",lat:33.3625,lng:126.5334,cat:"자연/산",desc:"해발 1,950m 웅장한 사화산, UNESCO",tip:"성판악 코스가 가장 인기"},
             {name:"성산일출봉",region:"제주",lat:33.4581,lng:126.9425,cat:"자연/명소",desc:"UNESCO 자연유산, 일출 장관",tip:"해돋이 명소!"},
-            {name:"해운대",region:"부산",lat:35.1587,lng:129.1603,cat:"해변/휴양",desc:"부산 대표 해수욕장, 1.5km 백사장",tip:"겨울에 해운대 빛 축제!"},
+            {name:"해운대",region:"부산",lat:35.1587,lng:129.1603,cat:"해변/휴양",desc:"부산 대표 해수욕장, 1.5km 백사장",tip:"겨울에 빛 축제!"},
             {name:"감천문화마을",region:"부산",lat:35.0978,lng:129.0107,cat:"문화/마을",desc:"알록달록 벽화 가득한 문화 마을",tip:"스탬프 투어 도전!"},
             {name:"광안리해수욕장",region:"부산",lat:35.1538,lng:129.1183,cat:"해변/휴양",desc:"광안대교 야경 아름다운 해변",tip:"카페거리에서 야경을!"},
             {name:"자갈치시장",region:"부산",lat:35.0978,lng:129.0292,cat:"맛집/시장",desc:"한국 최대 수산시장, 활어회 본고장",tip:"2층 회를 1층에 가져가면 저렴!"},
-            {name:"경주역사지구",region:"경주",lat:35.7890,lng:129.2240,cat:"역사/유적",desc:"신라 천년 고도, 유적의 보고",tip:"자전거 투어가 최고!"},
+            {name:"경주역사지구",region:"경주",lat:35.7890,lng:129.2240,cat:"역사/유적",desc:"신라 천년 고도, 유적의 보고",tip:"자전거 투어 최고!"},
             {name:"불국사",region:"경주",lat:35.7902,lng:129.3321,cat:"사찰/역사",desc:"신라 대표 사찰, UNESCO",tip:"석굴암과 함께 관람!"},
             {name:"석굴암",region:"경주",lat:35.7951,lng:129.3492,cat:"사찰/역사",desc:"통일신라 불교 조각 예술의 정수",tip:"사진 촬영 제한"},
-            {name:"안동하회마을",region:"경북",lat:36.5392,lng:128.5172,cat:"전통/마을",desc:"조선 양반 마을 원형 보존, UNESCO",tip:"낙동강에서 배 타고 조망!"},
+            {name:"안동하회마을",region:"경북",lat:36.5392,lng:128.5172,cat:"전통/마을",desc:"조선 양반 마을 원형 보존, UNESCO",tip:"낙동강 배 타고 조망!"},
             {name:"전주한옥마을",region:"전북",lat:35.8138,lng:127.1485,cat:"전통/마을",desc:"한옥과 한식의 본고장",tip:"한복 대여해서 거닐기!"},
             {name:"대구동성로",region:"대구",lat:35.8692,lng:128.5952,cat:"쇼핑/거리",desc:"대구의 명동, 패션과 먹거리",tip:"서문시장 야시장!"},
             {name:"대전엑스포공원",region:"대전",lat:36.3767,lng:127.3844,cat:"공원/전시",desc:"1993 대전엑스포 개최지",tip:"한빛탑 야경이 아름다움"},
@@ -371,71 +225,83 @@
             {name:"단양고수동굴",region:"충북",lat:36.9578,lng:128.3630,cat:"자연/동굴",desc:"천연동굴 신비 체험",tip:"도담삼봉도 함께!"},
         ];
 
-        // 데이터 관리
         let data = [];
         let editIdx = -1;
         let chartCat = null, chartReg = null;
+
+        const $ = id => document.getElementById(id);
 
         function loadData(){
             const saved = localStorage.getItem("ktour_data");
             if(saved) data = JSON.parse(saved);
             else { data = JSON.parse(JSON.stringify(defaultData)); saveData(); }
             updateAll();
+            initTabs();
         }
+
         function saveData(){ localStorage.setItem("ktour_data", JSON.stringify(data)); }
+
         function toast(msg){
-            const t = document.getElementById("toast");
+            const t = $("toast");
             t.textContent = msg;
             t.classList.add("show");
             setTimeout(()=>t.classList.remove("show"), 2500);
         }
 
-        // 통계 & 차트
         function updateAll(){
             updateStats();
             updateCharts();
             updateTable();
             updateLog();
-            document.getElementById("list-count").textContent = data.length;
+            $("list-cnt").textContent = data.length;
         }
 
         function updateStats(){
-            const c = {total:data.length, historical:0, nature:0, culture:0, food:0, etc:0};
+            const c = {total:data.length, hist:0, nat:0, cul:0, food:0, etc:0};
             data.forEach(a=>{
                 const cat = a.cat || "";
-                if(cat.includes("궁궐")||cat.includes("역사")||cat.includes("사찰")||cat.includes("전통")||cat.includes("기념관")) c.historical++;
-                else if(cat.includes("자연")||cat.includes("해변")||cat.includes("공원")||cat.includes("호수")||cat.includes("동굴")||cat.includes("섬")) c.nature++;
-                else if(cat.includes("문화")||cat.includes("랜드마크")||cat.includes("테마")) c.culture++;
+                if(cat.includes("궁궐")||cat.includes("역사")||cat.includes("사찰")||cat.includes("전통")||cat.includes("기념관")) c.hist++;
+                else if(cat.includes("자연")||cat.includes("해변")||cat.includes("공원")||cat.includes("호수")||cat.includes("동굴")||cat.includes("섬")) c.nat++;
+                else if(cat.includes("문화")||cat.includes("랜드마크")||cat.includes("테마")) c.cul++;
                 else if(cat.includes("맛집")||cat.includes("시장")) c.food++;
                 else c.etc++;
             });
-            document.getElementById("stat-total").textContent = c.total;
-            document.getElementById("stat-historical").textContent = c.historical;
-            document.getElementById("stat-nature").textContent = c.nature;
-            document.getElementById("stat-culture").textContent = c.culture;
-            document.getElementById("stat-food").textContent = c.food;
-            document.getElementById("stat-etc").textContent = c.etc;
+            $("st-total").textContent = c.total;
+            $("st-hist").textContent = c.hist;
+            $("st-nat").textContent = c.nat;
+            $("st-cul").textContent = c.cul;
+            $("st-food").textContent = c.food;
+            $("st-etc").textContent = c.etc;
         }
 
+        const CAT_COLORS = {
+            "궁궐/역사":"#e74c3c","랜드마크":"#f97316","문화/전통":"#2ecc71","쇼핑/거리":"#9b59b6",
+            "문화/거리":"#ec4899","쇼핑/업무":"#1abc9c","자연/섬":"#3498db","자연/산":"#27ae60",
+            "자연/명소":"#1abc9c","해변/휴양":"#00bcd4","문화/마을":"#ff5722","맛집/시장":"#f59e0b",
+            "역사/유적":"#8d6e63","사찰/역사":"#fbbf24","전통/마을":"#4caf50","공원/전시":"#2196f3",
+            "자연/공원":"#009688","문화/전시":"#8b5cf6","테마파크":"#ff4081","역사/평화":"#795548",
+            "역사/기념관":"#607d8b","역사/문화":"#84cc16","자연/호수":"#06b6d4","자연/동굴":"#795548"
+        };
+
         function updateCharts(){
-            // 카테고리
             const catMap = {};
-            data.forEach(a=>{ const k = a.cat||"기타"; catMap[k] = (catMap[k]||0) + 1; });
+            data.forEach(a=>{ const k = a.cat||"기타"; catMap[k] = (catMap[k]||0)+1; });
             const labels = Object.keys(catMap).slice(0,8);
             const vals = labels.map(k=>catMap[k]);
             if(chartCat) chartCat.destroy();
-            chartCat = new Chart(document.getElementById("chart-category"), {
+            const ctx1 = $("chart-cat").getContext("2d");
+            chartCat = new Chart(ctx1, {
                 type:"doughnut",
                 data:{labels, datasets:[{data:vals, backgroundColor:["#e74c3c","#f97316","#2ecc71","#9b59b6","#3498db","#f59e0b","#1abc9c","#8b5cf6"]}]},
                 options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}}}}
             });
-            // 지역
             const regMap = {};
-            data.forEach(a=>{ const k = a.region||"기타"; regMap[k] = (regMap[k]||0) + 1; });
+            data.forEach(a=>{ const k = a.region||"기타"; regMap[k] = (regMap[k]||0)+1; });
             const rLabels = Object.keys(regMap).sort((a,b)=>regMap[b]-regMap[a]).slice(0,8);
             const rVals = rLabels.map(k=>regMap[k]);
             if(chartReg) chartReg.destroy();
-            chartReg = new Chart(document.getElementById("chart-region"), {
+            const ctx2 = $("chart-reg").getContext("2d");
+            chartReg = new Chart(ctx2, {
                 type:"bar",
                 data:{labels:rLabels, datasets:[{label:"명소 수",data:rVals, backgroundColor:"#e74c3c", borderRadius:4}]},
                 options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}}}
@@ -444,8 +310,8 @@
 
         function updateLog(){
             const log = JSON.parse(localStorage.getItem("ktour_log") || "[]");
-            const el = document.getElementById("activity-log");
-            if(!log.length){ el.innerHTML = "<span style=\'color:var(--text3)\'>아직 활동 기록이 없습니다.</span>"; return; }
+            const el = $("activity-log");
+            if(!log.length){ el.innerHTML = "<span style=color:var(--text3)>아직 활동 기록이 없습니다.</span>"; return; }
             el.innerHTML = log.slice().reverse().slice(0,20).map(l=>`<div>${l.time} - ${l.msg}</div>`).join("");
         }
 
@@ -458,97 +324,87 @@
             localStorage.setItem("ktour_log", JSON.stringify(log));
         }
 
-        // 테이블
         function updateTable(){
-            const tb = document.getElementById("table-body");
+            const tb = $("tb");
             tb.innerHTML = data.map((a,i)=>{
-                const color = getCatColor(a.cat);
-                return `<tr><td class="name-cell">${a.name}</td><td>${a.region}</td><td><span class="badge" style="background:${color}">${a.cat||"-"}</span></td><td>${a.lat}</td><td>${a.lng}</td><td><button class="act-btn edit-btn" onclick="editItem(${i})">✏️</button><button class="act-btn del-btn" onclick="deleteItem(${i})">🗑️</button></td></tr>`;
+                const color = CAT_COLORS[a.cat]||"#9ca3af";
+                return `<tr><td class=nc>${a.name}</td><td>${a.region}</td><td><span class=badge style=background:${color}>${a.cat||"-"}</span></td><td>${a.lat}</td><td>${a.lng}</td><td><button class="act-btn eb" onclick="openModal(${i})">\u270F\uFE0F</button><button class="act-btn db" onclick="deleteItem(${i})">\uD83D\uDDD1\uFE0F</button></td></tr>`;
             }).join("");
         }
 
-        function getCatColor(cat){
-            const m={"궁궐/역사":"#e74c3c","랜드마크":"#f97316","문화/전통":"#2ecc71","쇼핑/거리":"#9b59b6","문화/거리":"#ec4899","쇼핑/업무":"#1abc9c","자연/섬":"#3498db","자연/산":"#27ae60","자연/명소":"#1abc9c","해변/휴양":"#00bcd4","문화/마을":"#ff5722","맛집/시장":"#f59e0b","역사/유적":"#8d6e63","사찰/역사":"#fbbf24","전통/마을":"#4caf50","공원/전시":"#2196f3","자연/공원":"#009688","문화/전시":"#8b5cf6","테마파크":"#ff4081","역사/평화":"#795548","역사/기념관":"#607d8b","역사/문화":"#84cc16","자연/호수":"#06b6d4","자연/동굴":"#795548"};
-            return m[cat]||"#9ca3af";
-        }
-
-        // CRUD
         function openModal(idx){
             editIdx = idx !== undefined ? idx : -1;
-            document.getElementById("modal-title").textContent = editIdx>=0 ? "명소 수정" : "새 명소 추가";
-            document.getElementById("modal-save-btn").textContent = editIdx>=0 ? "수정" : "추가";
+            $("modal-title").textContent = editIdx>=0 ? "명소 수정" : "새 명소 추가";
             if(editIdx>=0){
                 const a = data[editIdx];
-                document.getElementById("f-name").value = a.name;
-                document.getElementById("f-region").value = a.region;
-                document.getElementById("f-lat").value = a.lat;
-                document.getElementById("f-lng").value = a.lng;
-                document.getElementById("f-cat").value = a.cat;
-                document.getElementById("f-desc").value = a.desc;
-                document.getElementById("f-tip").value = a.tip||"";
+                $("f-name").value = a.name;
+                $("f-region").value = a.region;
+                $("f-lat").value = a.lat;
+                $("f-lng").value = a.lng;
+                $("f-cat").value = a.cat;
+                $("f-desc").value = a.desc;
+                $("f-tip").value = a.tip||"";
             } else {
-                ["f-name","f-region","f-lat","f-lng","f-desc","f-tip"].forEach(id=>document.getElementById(id).value="");
-                document.getElementById("f-cat").value = "궁궐/역사";
+                ["f-name","f-region","f-lat","f-lng","f-desc","f-tip"].forEach(id=>$(id).value="");
+                $("f-cat").value = "\uAD81\uAD34/\uC5ED\uC0AC";
             }
-            document.getElementById("modal").classList.add("show");
+            $("modal").classList.add("show");
         }
 
-        function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+        function closeModal(){ $("modal").classList.remove("show"); }
 
         function saveAttraction(){
-            const name = document.getElementById("f-name").value.trim();
-            const region = document.getElementById("f-region").value.trim();
-            const lat = parseFloat(document.getElementById("f-lat").value);
-            const lng = parseFloat(document.getElementById("f-lng").value);
-            const cat = document.getElementById("f-cat").value;
-            const desc = document.getElementById("f-desc").value.trim();
-            const tip = document.getElementById("f-tip").value.trim();
+            const name = $("f-name").value.trim();
+            const region = $("f-region").value.trim();
+            const lat = parseFloat($("f-lat").value);
+            const lng = parseFloat($("f-lng").value);
+            const cat = $("f-cat").value;
+            const desc = $("f-desc").value.trim();
+            const tip = $("f-tip").value.trim();
 
             if(!name||!region||isNaN(lat)||isNaN(lng)||!desc){
-                toast("⚠️ 모든 필수 항목을 입력해주세요."); return;
+                toast("\u26A0\uFE0F 필수 항목을 입력해주세요."); return;
             }
-
-            const obj = {name,region,lat,lng,cat,desc,tip};
 
             if(editIdx>=0){
-                data[editIdx] = obj;
-                addLog(`✏️ "${name}" 수정됨`);
-                toast("✅ 수정 완료!");
+                data[editIdx] = {name,region,lat,lng,cat,desc,tip};
+                addLog("\u270F\uFE0F \""+name+"\" \uC218\uC815\uB428");
+                toast("\u2705 \uC218\uC815 \uC644\uB8CC!");
             } else {
-                data.push(obj);
-                addLog(`➕ "${name}" 추가됨`);
-                toast("✅ 추가 완료!");
+                data.push({name,region,lat,lng,cat,desc,tip});
+                addLog("\u2795 \""+name+"\" \uCD94\uAC00\uB428");
+                toast("\u2705 \uCD94\uAC00 \uC644\uB8CC!");
             }
-
             saveData();
             updateAll();
             closeModal();
         }
 
-        function editItem(idx){ openModal(idx); }
-
         function deleteItem(idx){
             const name = data[idx].name;
-            if(!confirm(`"${name}"을(를) 삭제하시겠습니까?`)) return;
+            if(!confirm("\""+name+"\"\uC744(\uB97C) \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE64?")) return;
             data.splice(idx,1);
             saveData();
-            addLog(`🗑️ "${name}" 삭제됨`);
-            toast("🗑️ 삭제 완료!");
+            addLog("\uD83D\uDDD1\uFE0F \""+name+"\" \uC0AD\uC81C\uB428");
+            toast("\uD83D\uDDD1\uFE0F \uC0AD\uC81C \uC644\uB8CC!");
             updateAll();
         }
 
-        // 탭
-        function showTab(tab){
-            document.querySelectorAll("#sidebar nav a").forEach(a=>a.classList.remove("active"));
-            event.target.classList.add("active");
-            document.getElementById("dashboard-tab").style.display = tab==="dashboard" ? "block" : "none";
-            document.getElementById("manage-tab").style.display = tab==="manage" ? "block" : "none";
-            if(tab==="dashboard"){ updateCharts(); updateLog(); }
-            if(tab==="manage") updateTable();
+        function initTabs(){
+            document.querySelectorAll("#side-nav a").forEach(a=>{
+                a.addEventListener("click", function(){
+                    document.querySelectorAll("#side-nav a").forEach(x=>x.classList.remove("active"));
+                    this.classList.add("active");
+                    const tab = this.dataset.tab;
+                    $("dashboard-tab").style.display = tab==="dashboard" ? "block" : "none";
+                    $("manage-tab").style.display = tab==="manage" ? "block" : "none";
+                    if(tab==="dashboard"){ updateCharts(); updateLog(); }
+                    if(tab==="manage") updateTable();
+                });
+            });
         }
 
-        // 모달 외부 클릭 닫기
-        document.getElementById("modal").addEventListener("click", function(e){
+        $("modal").addEventListener("click", function(e){
             if(e.target===this) closeModal();
         });
 
