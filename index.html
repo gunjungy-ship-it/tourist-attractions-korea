@@ -2,185 +2,210 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대한민국 관광명소</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>서울부터 제주까지 - 대한민국 관광명소</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Noto Sans KR',sans-serif; overflow:hidden; background:#fff; height:100vh; }
+        :root {
+            --bg: #f8f7f4;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --text2: #6b7280;
+            --text3: #9ca3af;
+            --border: #e8e6e1;
+            --accent: #e74c3c;
+            --accent2: #f97316;
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-full: 9999px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Noto Sans KR',-apple-system,sans-serif;overflow:hidden;background:var(--bg);height:100vh;}
 
         #map {
             position:fixed; inset:0;
             z-index:1;
-            filter: saturate(1.05) contrast(1.02);
+            filter: saturate(1.08) hue-rotate(-2deg);
         }
-
-        /* 일반적인 지도 느낌의 Leaflet 컨트롤 */
-        .leaflet-control-zoom a {
-            background:#fff !important;
-            color:#333 !important;
-            border:1px solid #ddd !important;
-            width:34px !important; height:34px !important;
-            line-height:34px !important;
-            font-size:16px !important;
-            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        .leaflet-control-zoom a{
+            background:var(--card)!important; color:var(--text)!important;
+            border:1px solid var(--border)!important;
+            width:36px!important;height:36px!important;line-height:36px!important;
+            font-size:18px!important;box-shadow:var(--shadow)!important;
         }
-        .leaflet-control-zoom { border:none !important; }
-        .leaflet-control-attribution { background:rgba(255,255,255,0.85) !important; color:#999 !important; font-size:10px !important; }
-        .leaflet-control-attribution a { color:#999 !important; }
+        .leaflet-control-zoom{border:none!important}
+        .leaflet-control-attribution{background:rgba(255,255,255,0.8)!important;color:var(--text3)!important;font-size:10px!important}
+        .leaflet-control-attribution a{color:var(--text3)!important}
 
-        /* 헤더 */
+        /* 헤더 - 모던 미니멀 */
         #header {
-            position:fixed; top:16px; left:50%; transform:translateX(-50%);
+            position:fixed; top:20px; left:50%; transform:translateX(-50%);
             z-index:1000;
-            background:#fff;
-            border:1px solid #e5e7eb;
-            padding:10px 28px;
-            border-radius:16px;
-            box-shadow:0 4px 24px rgba(0,0,0,0.08);
+            background:rgba(255,255,255,0.85);
+            backdrop-filter:blur(20px) saturate(1.4);
+            -webkit-backdrop-filter:blur(20px) saturate(1.4);
+            border:1px solid rgba(255,255,255,0.5);
+            padding:8px 24px;
+            border-radius:var(--radius-full);
+            box-shadow:0 4px 32px rgba(0,0,0,0.06);
             text-align:center;
             pointer-events:none;
         }
-        #header h1 { font-size:17px; font-weight:900; color:#1f2937; letter-spacing:-0.5px; }
-        #header h1 span { color:#e74c3c; }
-        #header small { display:block; font-size:10px; font-weight:400; color:#9ca3af; margin-top:1px; letter-spacing:1px; }
+        #header h1{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
+        #header h1 span{font-weight:300;color:var(--text3)}
 
-        /* 검색창 */
+        /* 검색창 - 모던 */
         #search-wrap {
             position:fixed; top:78px; left:50%; transform:translateX(-50%);
             z-index:1000;
-            width:92%; max-width:480px;
-            background:#fff;
-            border:1px solid #e5e7eb;
-            border-radius:14px;
-            box-shadow:0 4px 20px rgba(0,0,0,0.06);
-            display:flex;
-            align-items:center;
-            padding:4px 4px 4px 16px;
-            transition:border-color 0.3s, box-shadow 0.3s;
+            width:92%; max-width:460px;
+            background:rgba(255,255,255,0.88);
+            backdrop-filter:blur(20px) saturate(1.4);
+            -webkit-backdrop-filter:blur(20px) saturate(1.4);
+            border:1px solid rgba(255,255,255,0.5);
+            border-radius:var(--radius-full);
+            box-shadow:0 4px 32px rgba(0,0,0,0.05);
+            display:flex; align-items:center;
+            padding:3px 3px 3px 18px;
+            transition:box-shadow 0.3s,border-color 0.3s;
         }
         #search-wrap:focus-within {
-            border-color:#e74c3c;
-            box-shadow:0 4px 20px rgba(231,76,60,0.15);
+            box-shadow:0 4px 32px rgba(231,76,60,0.12),0 0 0 3px rgba(231,76,60,0.08);
+            border-color:transparent;
         }
-        #search-input {
+        #search-input{
             flex:1; background:none; border:none; outline:none;
-            color:#1f2937; font-size:14px; font-family:inherit;
+            color:var(--text); font-size:14px; font-family:inherit; font-weight:400;
             padding:8px 0;
         }
-        #search-input::placeholder { color:#9ca3af; }
-        #search-btn {
-            padding:8px 20px; border:none; border-radius:10px;
-            background:#e74c3c; color:#fff;
-            font-size:13px; font-weight:600; cursor:pointer;
+        #search-input::placeholder{color:var(--text3);font-weight:300}
+        #search-btn{
+            padding:8px 22px; border:none;
+            border-radius:var(--radius-full);
+            background:var(--text); color:#fff;
+            font-size:13px; font-weight:500; cursor:pointer;
             font-family:inherit; flex-shrink:0;
-            transition:background 0.2s, transform 0.15s;
+            transition:all 0.2s; letter-spacing:0.5px;
         }
-        #search-btn:hover { background:#c0392b; }
-        #search-btn:active { transform:scale(0.96); }
+        #search-btn:hover{background:var(--accent);transform:translateY(-1px)}
+        #search-btn:active{transform:scale(0.96)}
 
         /* 검색 결과 */
-        #results {
+        #results{
             position:fixed; top:130px; left:50%; transform:translateX(-50%);
             z-index:1000;
-            width:92%; max-width:480px;
-            max-height:calc(100vh - 170px);
-            overflow-y:auto;
-            display:none;
+            width:92%; max-width:460px;
+            max-height:calc(100vh-170px); overflow-y:auto; display:none;
         }
-        #results::-webkit-scrollbar { width:4px; }
-        #results::-webkit-scrollbar-thumb { background:#ddd; border-radius:2px; }
+        #results::-webkit-scrollbar{width:3px}
+        #results::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
-        .result-item {
-            background:#fff;
-            border:1px solid #e5e7eb;
-            padding:13px 16px;
-            margin-bottom:5px;
-            border-radius:12px;
+        .result-item{
+            background:rgba(255,255,255,0.92);
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,0.5);
+            padding:14px 18px; margin-bottom:5px;
+            border-radius:var(--radius);
             cursor:pointer;
-            transition:all 0.2s;
-            box-shadow:0 2px 8px rgba(0,0,0,0.04);
+            transition:all 0.25s;
+            animation:rfade 0.25s ease;
         }
-        .result-item:hover {
-            border-color:#e74c3c;
-            box-shadow:0 4px 16px rgba(231,76,60,0.1);
-            transform:translateX(3px);
+        @keyframes rfade{from{opacity:0;transform:translateY(-6px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .result-item:hover{background:rgba(255,255,255,0.98);transform:translateX(4px);border-color:var(--accent)}
+        .result-item .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+        .result-item h3{font-size:14px;font-weight:600;color:var(--text)}
+        .result-item .badge{
+            font-size:9px;font-weight:500;
+            padding:2px 10px;border-radius:var(--radius-full);
+            color:#fff;flex-shrink:0;letter-spacing:0.3px;
         }
-        .result-item .top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
-        .result-item h3 { font-size:14px; font-weight:700; color:#1f2937; }
-        .result-item .badge {
-            font-size:10px; font-weight:600;
-            padding:2px 10px; border-radius:999px;
-            color:#fff; flex-shrink:0;
-        }
-        .result-item .rgn { font-size:12px; color:#6b7280; margin-top:3px; }
+        .result-item .r{font-size:12px;color:var(--text2);margin-top:4px;font-weight:300}
 
-        /* 팝업 */
-        .custom-popup .leaflet-popup-content-wrapper {
-            background:#fff;
-            border-radius:14px;
-            box-shadow:0 8px 32px rgba(0,0,0,0.12);
-            border:1px solid #e5e7eb;
-            padding:2px;
+        /* 팝업 - 모던 카드 */
+        .custom-popup .leaflet-popup-content-wrapper{
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(24px);
+            -webkit-backdrop-filter:blur(24px);
+            border-radius:var(--radius);
+            box-shadow:0 12px 48px rgba(0,0,0,0.12);
+            border:1px solid rgba(255,255,255,0.3);
+            padding:4px;
         }
-        .custom-popup .leaflet-popup-tip { background:#fff; border:1px solid #e5e7eb; }
-        .custom-popup .leaflet-popup-close-button {
-            color:#9ca3af !important; font-size:16px !important;
-            top:6px !important; right:6px !important;
+        .custom-popup .leaflet-popup-tip{background:rgba(255,255,255,0.95);}
+        .custom-popup .leaflet-popup-close-button{
+            color:var(--text3)!important;font-size:14px!important;
+            top:5px!important;right:5px!important;
+            width:22px!important;height:22px!important;line-height:22px!important;
+            opacity:0.6;transition:opacity 0.2s;
         }
-        .popup-content { padding:8px 4px; min-width:200px; max-width:280px; }
-        .popup-content h3 { font-size:16px; font-weight:700; color:#1f2937; margin-bottom:3px; }
-        .popup-content .tag {
-            display:inline-block; padding:2px 10px; border-radius:999px;
-            font-size:10px; font-weight:600; color:#fff; margin-bottom:5px;
+        .custom-popup .leaflet-popup-close-button:hover{opacity:1}
+        .popup-c{ padding:6px 2px; min-width:200px; max-width:290px; }
+        .popup-c h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;letter-spacing:-0.3px}
+        .popup-c .tag{
+            display:inline-block;padding:2px 10px;border-radius:var(--radius-full);
+            font-size:10px;font-weight:500;color:#fff;margin-bottom:4px;
         }
-        .popup-content .r { font-size:12px; color:#6b7280; margin-bottom:6px; }
-        .popup-content .d { font-size:13px; line-height:1.6; color:#4b5563; margin-bottom:6px; }
-        .popup-content .t {
-            font-size:12px; line-height:1.5; color:#1f2937;
-            padding:8px 10px; background:#fef2f2; border-left:3px solid #e74c3c;
-            border-radius:0 8px 8px 0; margin-bottom:4px;
+        .popup-c .r{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:300}
+        .popup-c .d{font-size:12.5px;line-height:1.7;color:var(--text);margin-bottom:6px;font-weight:400}
+        .popup-c .t{
+            font-size:12px;line-height:1.5;color:var(--text2);
+            padding:8px 12px;background:#fafaf9;
+            border-left:3px solid var(--accent);
+            border-radius:0 8px 8px 0;margin-bottom:3px;
         }
-        .popup-content .t b { color:#e74c3c; }
-        .popup-content .c { font-size:10px; color:#9ca3af; }
+        .popup-c .t b{color:var(--accent);font-weight:600}
+        .popup-c .c{font-size:10px;color:var(--text3)}
 
+        /* 하단 카운터 - 미니멀 */
         #counter {
-            position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+            position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
             z-index:1000;
-            background:#fff;
-            border:1px solid #e5e7eb;
+            background:rgba(255,255,255,0.85);
+            backdrop-filter:blur(16px) saturate(1.4);
+            -webkit-backdrop-filter:blur(16px) saturate(1.4);
+            border:1px solid rgba(255,255,255,0.3);
             padding:6px 20px;
-            border-radius:999px;
-            font-size:12px;
-            color:#6b7280;
-            box-shadow:0 2px 12px rgba(0,0,0,0.06);
+            border-radius:var(--radius-full);
+            font-size:12px; font-weight:400; color:var(--text2);
+            box-shadow:0 4px 24px rgba(0,0,0,0.04);
             pointer-events:none;
         }
-        #counter span { color:#e74c3c; font-weight:700; }
+        #counter span{font-weight:700;color:var(--text)}
 
-        @media (max-width:600px) {
-            #header { padding:8px 16px; top:10px; }
-            #header h1 { font-size:15px; }
-            #search-wrap { top:66px; padding:3px 3px 3px 12px; }
-            #search-input { font-size:13px; }
-            #search-btn { padding:7px 14px; font-size:12px; }
-            #results { top:114px; }
-            .result-item { padding:11px 14px; }
+        @media(max-width:600px){
+            #header{top:12px;padding:6px 16px}
+            #header h1{font-size:13px}
+            #search-wrap{top:66px;padding:3px 3px 3px 14px}
+            #search-input{font-size:13px}
+            #search-btn{padding:7px 18px;font-size:12px}
+            #results{top:114px}
+            .result-item{padding:12px 14px}
+            .popup-c{min-width:180px;max-width:240px}
+        }
+        @media(min-width:1024px){
+            #header{top:24px;padding:10px 28px}
+            #header h1{font-size:16px}
+            #search-wrap{top:84px;max-width:500px}
+            #search-input{font-size:15px;padding:10px 0}
+            #results{top:140px;max-width:500px}
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="header"><h1>🇰🇷 한국 관광명소 <span>40선</span></h1><small>지도를 클릭하면 상세 정보를 볼 수 있습니다</small></div>
+    <div id="header"><h1>🇰🇷 대한민국 <span>|</span> 관광명소 40선</h1></div>
     <div id="search-wrap">
-        <span style="font-size:15px;opacity:0.4;margin-right:8px;flex-shrink:0;">🔍</span>
-        <input type="text" id="search-input" autocomplete="off" placeholder="명소나 지역을 검색하세요...">
-        <button id="search-btn">검색</button>
+        <span style="font-size:14px;opacity:0.3;margin-right:8px;flex-shrink:0;">🔍</span>
+        <input type="text" id="search-input" autocomplete="off" placeholder="어디로 떠날까요?">
+        <button id="search-btn">Search</button>
     </div>
     <div id="results"></div>
-    <div id="counter"><span id="cn">40</span>곳의 대한민국 관광명소</div>    <script>
+    <div id="counter"><span id="cn">40</span> places</div>    <script>
         const attractions = [
             {name:'경복궁',region:'서울',lat:37.5796,lng:126.9770,cat:'궁궐/역사',desc:'조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 웅장한 서울 대표 유적지.',tip:'한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요.'},
             {name:'남산서울타워',region:'서울',lat:37.5512,lng:126.9882,cat:'랜드마크',desc:'서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 데이트 명소.',tip:'일몰 시간에 맞춰 가면 낮과 밤을 모두 즐길 수 있어요. 케이블카 추천!'},
@@ -223,25 +248,13 @@
             {name:'단양고수동굴',region:'충북',lat:36.9578,lng:128.3630,cat:'자연/동굴',desc:'천연동굴의 신비를 체험하는 충북 대표 명소.',tip:'도담삼봉과 만천하 스카이워크도 함께 즐기세요!'},
         ];
 
-        // ===== Leaflet 지도 (일반 스타일) =====
-        const map = L.map('map', {
-            center: [36.0, 127.8],
-            zoom: 7,
-            minZoom: 6,
-            maxZoom: 14,
-            zoomControl: false
-        });
+        // 지도
+        const map = L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
+        L.control.zoom({position:'bottomright'}).addTo(map);
 
-        // 일반적인 지도 타일 (밝은 스타일)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap',
-            maxZoom: 19
-        }).addTo(map);
-
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-        // ===== 마커 (핀 모양 아이콘) =====
-        const catColors = {
+        // 카테고리 색상
+        const cc={
             '궁궐/역사':'#e74c3c','랜드마크':'#f97316','문화/전통':'#2ecc71','쇼핑/거리':'#9b59b6',
             '문화/거리':'#ec4899','쇼핑/업무':'#1abc9c','자연/섬':'#3498db','자연/산':'#27ae60',
             '자연/명소':'#1abc9c','해변/휴양':'#00bcd4','문화/마을':'#ff5722','맛집/시장':'#f59e0b',
@@ -250,91 +263,62 @@
             '역사/기념관':'#607d8b','역사/문화':'#84cc16','자연/호수':'#06b6d4','자연/동굴':'#795548',
         };
 
-        const markers = [];
+        const markers=[];
 
-        attractions.forEach(a => {
-            const color = catColors[a.cat] || '#8b5cf6';
-
-            // Leaflet 기본 컬러 마커 사용 (더 지도처럼 보임)
-            const icon = L.divIcon({
-                html: `
-                <div style="position:relative;width:28px;height:40px;">
-                    <svg width="28" height="40" viewBox="0 0 28 40">
-                        <path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="${color}" stroke="#fff" stroke-width="1.5"/>
+        // SVG 핀 마커 생성 (모던 스타일)
+        function makeIcon(color,size=28){
+            const s=size,h=s*1.4;
+            return L.divIcon({
+                html:`<div style="position:relative;width:${s}px;height:${h}px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2));transition:filter 0.3s">
+                    <svg width="${s}" height="${h}" viewBox="0 0 28 40">
+                        <path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="${color}" stroke="#fff" stroke-width="1.8"/>
                         <circle cx="14" cy="13" r="6" fill="#fff"/>
                     </svg>
                 </div>`,
-                iconSize: [28, 40],
-                iconAnchor: [14, 40],
-                popupAnchor: [0, -42],
-                className: ''
+                iconSize:[s,h],iconAnchor:[s/2,h],popupAnchor:[0,-h-2],className:''
             });
-
-            const marker = L.marker([a.lat, a.lng], { icon }).addTo(map);
-
-            const popupHTML = `
-                <div class="popup-content">
-                    <h3>${a.name}</h3>
-                    <span class="tag" style="background:${color}">${a.cat}</span>
-                    <div class="r">📍 ${a.region}</div>
-                    <div class="d">${a.desc}</div>
-                    <div class="t"><b>💡 TIP</b><br>${a.tip}</div>
-                    <div class="c">📌 ${a.lat.toFixed(4)}, ${a.lng.toFixed(4)}</div>
-                </div>`;
-
-            marker.bindPopup(popupHTML, { className:'custom-popup', maxWidth:320, closeButton:true });
-
-            marker.on('mouseover', function() { this.openPopup(); });
-            marker.on('mouseout', function() { this.closePopup(); });
-
-            markers.push({ marker, data:a });
-        });
-
-        document.getElementById('cn').textContent = attractions.length;
-
-        // ===== 검색 =====
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
-        const resultsDiv = document.getElementById('results');
-
-        function doSearch() {
-            const q = searchInput.value.trim().toLowerCase();
-            if (!q) { resultsDiv.style.display='none'; return; }
-            const filtered = attractions.filter(a =>
-                a.name.toLowerCase().includes(q) || a.region.toLowerCase().includes(q) ||
-                a.cat.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q)
-            );
-            resultsDiv.innerHTML = '';
-            if (filtered.length === 0) {
-                resultsDiv.innerHTML = '<div class="result-item" style="text-align:center;color:#9ca3af;padding:20px;">😅 검색 결과가 없습니다</div>';
-                resultsDiv.style.display='block'; return;
-            }
-            filtered.forEach(a => {
-                const el = document.createElement('div');
-                el.className = 'result-item';
-                const color = catColors[a.cat] || '#8b5cf6';
-                el.innerHTML = `<div class="top"><h3>${a.name}</h3><span class="badge" style="background:${color}">${a.cat}</span></div><div class="rgn">📍 ${a.region}</div>`;
-                el.addEventListener('click', () => {
-                    map.setView([a.lat, a.lng], 12, { animate:true, duration:0.5 });
-                    resultsDiv.style.display='none';
-                    searchInput.value = a.name;
-                    const found = markers.find(m => m.data.name === a.name);
-                    if (found) setTimeout(() => found.marker.openPopup(), 600);
-                });
-                resultsDiv.appendChild(el);
-            });
-            resultsDiv.style.display='block';
         }
 
-        searchBtn.addEventListener('click', doSearch);
-        searchInput.addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
-        let dt;
-        searchInput.addEventListener('input', () => { clearTimeout(dt); dt=setTimeout(doSearch,250); });
-        document.addEventListener('click', e => {
-            if(!resultsDiv.contains(e.target) && !e.target.closest('#search-wrap')) resultsDiv.style.display='none';
+        attractions.forEach(a=>{
+            const c=cc[a.cat]||'#8b5cf6';
+            const icon=makeIcon(c);
+            const m=L.marker([a.lat,a.lng],{icon}).addTo(map);
+            const popup=`<div class="popup-c"><h3>${a.name}</h3><span class="tag" style="background:${c}">${a.cat}</span><div class="r">📍 ${a.region}</div><div class="d">${a.desc}</div><div class="t"><b>💡 TIP</b><br>${a.tip}</div><div class="c">📌 ${a.lat.toFixed(4)}, ${a.lng.toFixed(4)}</div></div>`;
+            m.bindPopup(popup,{className:'custom-popup',maxWidth:340,closeButton:true});
+            m.on('mouseover',function(){this.openPopup()});
+            m.on('mouseout',function(){this.closePopup()});
+            markers.push({marker:m,data:a});
         });
 
-        console.log('✅ 지도 로딩 완료! (' + attractions.length + '개 명소)');
+        document.getElementById('cn').textContent=attractions.length;
+
+        // 검색
+        const si=document.getElementById('search-input'),sb=document.getElementById('search-btn'),rd=document.getElementById('results');
+        function ds(){
+            const q=si.value.trim().toLowerCase();
+            if(!q){rd.style.display='none';return;}
+            const f=attractions.filter(a=>a.name.toLowerCase().includes(q)||a.region.toLowerCase().includes(q)||a.cat.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q));
+            rd.innerHTML='';
+            if(!f.length){rd.innerHTML='<div class="result-item" style="text-align:center;color:var(--text3);padding:20px;">😅 검색 결과가 없습니다</div>';rd.style.display='block';return;}
+            f.forEach(a=>{
+                const el=document.createElement('div');el.className='result-item';
+                const c=cc[a.cat]||'#8b5cf6';
+                el.innerHTML=`<div class="t"><h3>${a.name}</h3><span class="badge" style="background:${c}">${a.cat}</span></div><div class="r">📍 ${a.region}</div>`;
+                el.addEventListener('click',()=>{
+                    map.setView([a.lat,a.lng],12,{animate:true,duration:0.5});
+                    rd.style.display='none';si.value=a.name;
+                    const found=markers.find(m=>m.data.name===a.name);
+                    if(found) setTimeout(()=>found.marker.openPopup(),600);
+                });
+                rd.appendChild(el);
+            });
+            rd.style.display='block';
+        }
+        sb.addEventListener('click',ds);
+        si.addEventListener('keydown',e=>{if(e.key==='Enter')ds()});
+        let dt;
+        si.addEventListener('input',()=>{clearTimeout(dt);dt=setTimeout(ds,250)});
+        document.addEventListener('click',e=>{if(!rd.contains(e.target)&&!e.target.closest('#search-wrap'))rd.style.display='none'});
     </script>
 </body>
 </html>
