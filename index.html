@@ -3,185 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대한민국 관광명소 - 지도</title>
+    <title>대한민국 관광명소 - K-여행 지도</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17,24,39,0.92);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-1: #f97316;
+            --accent-2: #ec4899;
+            --accent-3: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6);
+            --border-color: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+            --shadow: 0 8px 40px rgba(0,0,0,0.5);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-full: 9999px;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Malgun Gothic', 'Noto Sans KR', sans-serif; background: #1a1a2e; color: #fff; }
+        body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); overflow: hidden; height: 100vh; }
 
+        /* ===== 지도 ===== */
         #map {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            position: fixed; inset: 0;
             z-index: 1;
         }
-
-        /* 어두운 지도 스타일을 위한 CSS 오버라이드 */
-        .leaflet-container { background: #0a0a1a; }
-        .leaflet-control-zoom a { background: rgba(20,20,40,0.9) !important; color: #fff !important; border-color: rgba(255,255,255,0.15) !important; }
-        .leaflet-control-zoom { border: none !important; }
-        .leaflet-control-attribution { background: rgba(0,0,0,0.5) !important; color: rgba(255,255,255,0.4) !important; }
-        .leaflet-control-attribution a { color: rgba(255,255,255,0.4) !important; }
-
-        #header {
-            position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.75); color: #fff;
-            padding: 10px 22px; border-radius: 14px; font-size: 17px; font-weight: bold;
-            z-index: 1000; backdrop-filter: blur(12px);
-            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
-            text-align: center; pointer-events: none; white-space: nowrap;
+        /* Leaflet 다크 오버라이드 */
+        .leaflet-container { background: var(--bg-primary) !important; }
+        .leaflet-control-zoom a {
+            background: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+            backdrop-filter: blur(12px);
+            width: 36px !important; height: 36px !important;
+            line-height: 36px !important;
+            font-size: 18px !important;
         }
-        #header small { display: block; font-size: 11px; font-weight: normal; opacity: 0.65; margin-top: 1px; }
+        .leaflet-control-zoom { border: none !important; }
+        .leaflet-control-attribution { background: rgba(0,0,0,0.3) !important; color: var(--text-muted) !important; font-size: 10px !important; }
+        .leaflet-control-attribution a { color: var(--text-muted) !important; }
 
-        #search-container {
-            position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; display: flex; gap: 6px; width: 92%; max-width: 500px;
+        /* ===== 헤더 (그라데이션) ===== */
+        #header {
+            position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--border-color);
+            padding: 10px 28px;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow);
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        #header h1 {
+            font-size: 16px;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        #header small {
+            display: block;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            -webkit-text-fill-color: var(--text-secondary);
+            margin-top: 1px;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 검색창 ===== */
+        #search-wrap {
+            position: fixed; top: 76px; left: 50%; transform: translateX(-50%);
+            z-index: 1000;
+            width: 92%; max-width: 520px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            padding: 4px 4px 4px 18px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #search-wrap:focus-within {
+            border-color: rgba(249,115,22,0.3);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,115,22,0.15);
+        }
+        #search-icon {
+            font-size: 16px;
+            opacity: 0.4;
+            margin-right: 10px;
+            flex-shrink: 0;
         }
         #search-input {
-            flex: 1; padding: 10px 16px; border: none; border-radius: 30px; font-size: 14px;
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(16px);
-            color: #fff; box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-            transition: all 0.3s; outline: none; font-family: inherit;
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            padding: 8px 0;
         }
-        #search-input::placeholder { color: rgba(255,255,255,0.45); }
-        #search-input:focus { background: rgba(255,255,255,0.18); box-shadow: 0 4px 25px rgba(0,0,0,0.45); }
+        #search-input::placeholder { color: var(--text-muted); }
         #search-btn {
-            padding: 10px 18px; border: none; border-radius: 30px;
-            background: linear-gradient(135deg,#e74c3c,#c0392b); color: #fff;
-            font-size: 14px; cursor: pointer; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(231,76,60,0.35); transition: all 0.25s; font-family: inherit; flex-shrink: 0;
+            padding: 8px 20px;
+            border: none;
+            border-radius: var(--radius-full);
+            background: var(--accent-gradient);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
         }
-        #search-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(231,76,60,0.55); }
+        #search-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
+        #search-btn:active { transform: scale(0.96); }
 
+        /* ===== 검색 결과 ===== */
         #results {
-            position: fixed; top: 125px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; width: 92%; max-width: 500px;
-            max-height: calc(100vh - 160px); overflow-y: auto; display: none;
+            position: fixed; top: 130px; left: 50%; transform: translateX(-50%);
+            z-index: 1000;
+            width: 92%; max-width: 520px;
+            max-height: calc(100vh - 170px);
+            overflow-y: auto;
+            display: none;
             -webkit-overflow-scrolling: touch;
         }
-        #results::-webkit-scrollbar { width: 4px; }
-        #results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        #results::-webkit-scrollbar { width: 3px; }
+        #results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
         .result-item {
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(16px); color: #fff;
-            padding: 13px 16px; margin-bottom: 6px; border-radius: 14px;
-            cursor: pointer; transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--border-color);
+            padding: 14px 18px;
+            margin-bottom: 6px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.25s;
+            animation: slideDown 0.25s ease;
         }
-        .result-item:hover { background: rgba(0,0,0,0.85); transform: translateX(4px); border-color: rgba(231,76,60,0.25); }
-        .result-item .top { display: flex; justify-content: space-between; align-items: center; }
-        .result-item h3 { margin: 0; font-size: 15px; }
-        .result-item .cat {
-            font-size: 10px; background: rgba(231,76,60,0.6); padding: 2px 9px;
-            border-radius: 10px; display: inline-block; flex-shrink: 0;
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .result-item .rgn { font-size: 12px; opacity: 0.55; margin-top: 2px; }
-
-        /* Info popup 스타일 - Leaflet 기본 팝업 커스터마이징 */
-        .custom-popup .leaflet-popup-content-wrapper {
-            background: rgba(15,20,35,0.95);
-            backdrop-filter: blur(16px);
+        .result-item:hover {
+            border-color: var(--border-hover);
+            background: rgba(17,24,39,0.96);
+            transform: translateX(4px);
+        }
+        .result-item .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .result-item h3 { font-size: 15px; font-weight: 600; }
+        .result-item .cat-badge {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
             color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 4px;
+        }
+        .result-item .rgn { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .result-item .rgn i { font-style: normal; margin-right: 4px; }
+
+        /* ===== 팝업 (Leaflet 오버라이드) ===== */
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px) saturate(1.5);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            padding: 2px;
+            overflow: hidden;
         }
         .custom-popup .leaflet-popup-tip {
-            background: rgba(15,20,35,0.95);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
         }
         .custom-popup .leaflet-popup-close-button {
-            color: rgba(255,255,255,0.4) !important;
-            font-size: 20px !important;
-            top: 8px !important;
-            right: 8px !important;
+            color: var(--text-muted) !important;
+            font-size: 18px !important;
+            top: 6px !important;
+            right: 6px !important;
+            width: 24px !important;
+            height: 24px !important;
+            line-height: 24px !important;
         }
-        .popup-content {
-            padding: 8px 4px;
-            max-width: 280px;
-        }
+        .popup-content { padding: 10px 6px; min-width: 220px; max-width: 300px; }
         .popup-content h3 {
-            font-size: 17px; margin-bottom: 3px;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
-        .popup-content .cat-badge {
-            display: inline-block; padding: 2px 10px; border-radius: 10px;
-            font-size: 11px; font-weight: bold; margin-bottom: 6px;
+        .popup-content .cat-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #fff;
         }
-        .popup-content .desc {
-            font-size: 13px; line-height: 1.6; color: #ddd; margin-bottom: 4px;
+        .popup-content .rgn-line {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
-        .popup-content .tip {
-            font-size: 12px; color: #bbb; line-height: 1.5;
-            padding: 8px 10px; background: rgba(255,255,255,0.05); border-radius: 10px;
-            margin-top: 6px;
+        .popup-content .desc-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
-        .popup-content .tip b { color: #4f8cf7; }
-        .popup-content .coords {
-            font-size: 11px; opacity: 0.4; margin-top: 6px;
+        .popup-content .tip-box {
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            padding: 10px 12px;
+            background: rgba(249,115,22,0.08);
+            border-left: 3px solid var(--accent-1);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-bottom: 6px;
+        }
+        .popup-content .tip-box b { color: var(--accent-1); }
+        .popup-content .coord-text {
+            font-size: 10px;
+            color: var(--text-muted);
         }
 
+        /* ===== 하단 카운터 ===== */
+        #counter {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px) saturate(1.5);
+            border: 1px solid var(--border-color);
+            padding: 6px 18px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            color: var(--text-muted);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        #counter span { color: var(--text-primary); font-weight: 600; }
+
+        /* ===== 반응형 ===== */
         @media (max-width: 600px) {
-            #header { font-size: 14px; padding: 8px 14px; top: 8px; }
-            #search-container { top: 60px; }
-            #search-btn { padding: 10px 14px; font-size: 13px; }
-            #results { top: 112px; }
-            .popup-content { max-width: 220px; }
+            #header { padding: 8px 18px; top: 10px; }
+            #header h1 { font-size: 14px; }
+            #search-wrap { top: 64px; padding: 3px 3px 3px 14px; }
+            #search-input { font-size: 13px; padding: 6px 0; }
+            #search-btn { padding: 7px 16px; font-size: 12px; }
+            #results { top: 116px; }
+            .result-item { padding: 12px 14px; }
+            .popup-content { min-width: 180px; max-width: 240px; padding: 6px 2px; }
             .popup-content h3 { font-size: 15px; }
+        }
+        @media (min-width: 768px) {
+            #header h1 { font-size: 18px; }
+            #header { padding: 12px 32px; }
+            #search-wrap { top: 82px; padding: 6px 6px 6px 22px; }
+            #search-input { font-size: 15px; padding: 10px 0; }
+            #search-btn { padding: 10px 24px; font-size: 14px; }
+            #results { top: 145px; }
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="header">🇰🇷 대한민국 관광명소 <small>인터랙티브 지도</small></div>
-    <div id="search-container">
-        <input type="text" id="search-input" autocomplete="off" placeholder="명소 이름 또는 지역 검색 (예: 경복궁, 제주도, 부산...)">
-        <button id="search-btn">🔍 검색</button>
+    
+    <div id="header">
+        <h1>🇰🇷 K-여행 지도</h1>
+        <small>대한민국 관광명소 40선</small>
     </div>
-    <div id="results"></div>    <script>
-        // ----- 관광명소 데이터 (40개) -----
+
+    <div id="search-wrap">
+        <span id="search-icon">🔍</span>
+        <input type="text" id="search-input" autocomplete="off" placeholder="명소나 지역을 검색해보세요...">
+        <button id="search-btn">검색</button>
+    </div>
+
+    <div id="results"></div>
+    <div id="counter">🇰🇷 대한민국 <span id="count-num">40</span>개 관광명소</div>    <script>
         const attractions = [
-            {name:'경복궁',region:'서울',lat:37.5796,lng:126.9770,category:'궁궐/역사',desc:'조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 유명합니다.',tip:'한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 방문해보세요.'},
-            {name:'남산서울타워',region:'서울',lat:37.5512,lng:126.9882,category:'랜드마크',desc:'서울의 상징 N서울타워. 야경이 아름다운 데이트 명소입니다.',tip:'일몰 시간에 맞춰 방문하면 낮과 밤의 풍경을 모두 즐길 수 있어요.'},
-            {name:'북촌한옥마을',region:'서울',lat:37.5826,lng:126.9850,category:'문화/전통',desc:'전통 한옥이 보존된 서울 도심의 역사 마을.',tip:'조용한 주택가이니 방문 시 주의! 북촌 8경을 따라 걸어보세요.'},
-            {name:'명동',region:'서울',lat:37.5609,lng:126.9853,category:'쇼핑/거리',desc:'서울 최대 쇼핑과 먹거리 천국. 명동성당도 유명합니다.',tip:'저녁 시간이 더 활기참! 길거리 음식이 인기 만점입니다.'},
-            {name:'인사동',region:'서울',lat:37.5736,lng:126.9855,category:'문화/전통',desc:'전통 문화와 현대 예술이 공존하는 서울의 문화 거리.',tip:'쌈지길에서 다양한 공예품을 구경해보세요.'},
-            {name:'홍대',region:'서울',lat:37.5563,lng:126.9236,category:'문화/거리',desc:'젊음의 거리, 클럽과 카페, 길거리 공연의 메카.',tip:'주말 걷고 싶은 거리에서 버스킹 공연을 꼭 보세요!'},
-            {name:'강남',region:'서울',lat:37.4981,lng:127.0276,category:'쇼핑/업무',desc:'한국 경제 중심지이자 K-pop의 본고장.',tip:'코엑스 별마당 도서관은 인생샷 명소! 저녁에는 강남역 인근 먹거리.'},
-            {name:'여의도',region:'서울',lat:37.5219,lng:126.9244,category:'랜드마크',desc:'63빌딩과 한강이 어우러진 업무 중심지, 봄 벚꽃 명소.',tip:'4월 윤중로 벚꽃길이 유명! 63빌딩 전망대 야경이 아름다움.'},
-            {name:'제주도',region:'제주',lat:33.3803,lng:126.5350,category:'자연/섬',desc:'한국 최대 섬, 세계적 휴양지. 올레길과 화산 지형이 매력.',tip:'렌터카 여행 필수! 우도와 마라도 섬투어도 추천합니다.'},
-            {name:'한라산',region:'제주',lat:33.3625,lng:126.5334,category:'자연/산',desc:'해발 1,950m 웅장한 사화산, UNESCO 세계자연유산.',tip:'성판악 코스가 가장 인기! 정상 백록담은 맑은 날만 볼 수 있어요.'},
-            {name:'성산일출봉',region:'제주',lat:33.4581,lng:126.9425,category:'자연/명소',desc:'UNESCO 세계자연유산, 일출이 장관인 거대 분화구.',tip:'해돋이 명소! 입구에서 우동과 성게비빔밥도 맛보세요.'},
-            {name:'해운대',region:'부산',lat:35.1587,lng:129.1603,category:'해변/휴양',desc:'부산 대표 해수욕장, 길이 1.5km의 아름다운 백사장.',tip:'겨울에는 해운대 빛 축제! 동백섬 산책로도 함께 둘러보세요.'},
-            {name:'감천문화마을',region:'부산',lat:35.0978,lng:129.0107,category:'문화/마을',desc:'알록달록 벽화와 예술 작품으로 가득한 문화 마을.',tip:'마을 지도(2,000원) 사서 스탬프 투어 해보세요!'},
-            {name:'광안리해수욕장',region:'부산',lat:35.1538,lng:129.1183,category:'해변/휴양',desc:'광안대교 야경이 아름다운 부산의 또 다른 해변.',tip:'광안리 카페거리에서 커피 한 잔과 함께 야경을!'},
-            {name:'자갈치시장',region:'부산',lat:35.0978,lng:129.0292,category:'맛집/시장',desc:'한국 최대 수산시장, 활어회의 본고장.',tip:'2층 회를 사서 1층 식당에 가져가면 횟감값+자리값만 내세요!'},
-            {name:'경주역사지구',region:'경주',lat:35.7890,lng:129.2240,category:'역사/유적',desc:'신라 천년의 고도. 대릉원, 안압지, 첨성대 등 유적지.',tip:'자전거 투어가 최고! 황리단길 한옥 카페도 방문해보세요.'},
-            {name:'불국사',region:'경주',lat:35.7902,lng:129.3321,category:'사찰/역사',desc:'신라 대표 사찰, UNESCO 세계문화유산. 석가탑과 다보탑이 유명.',tip:'석굴암과 함께 관람 추천! 아침 일찍 가면 한적해요.'},
-            {name:'석굴암',region:'경주',lat:35.7951,lng:129.3492,category:'사찰/역사',desc:'통일신라 불교 조각 예술의 정수, UNESCO 세계문화유산.',tip:'사진 촬영 제한되니 눈에 담아오세요.'},
-            {name:'안동하회마을',region:'경북',lat:36.5392,lng:128.5172,category:'전통/마을',desc:'조선 양반 마을 원형 보존, UNESCO 세계문화유산.',tip:'낙동강에서 배 타고 마을 전체 조망! 탈박물관도 필수.'},
-            {name:'전주한옥마을',region:'전북',lat:35.8138,lng:127.1485,category:'전통/마을',desc:'한옥과 한식(비빔밥)의 본고장, 전통 문화 체험 명소.',tip:'한복 대여해서 마을 거니는 게 인기! 전동성당도 함께.'},
-            {name:'대구동성로',region:'대구',lat:35.8692,lng:128.5952,category:'쇼핑/거리',desc:'대구의 명동, 패션과 먹거리 중심지.',tip:'서문시장 야시장 구경! 대구 대표 야식 납작만두.'},
-            {name:'대전엑스포공원',region:'대전',lat:36.3767,lng:127.3844,category:'공원/전시',desc:'1993 대전엑스포 개최지, 한빛탑이 상징.',tip:'한빛탑 야경이 아름다움! 대전시립미술관도 방문.'},
-            {name:'울산대왕암공원',region:'울산',lat:35.5022,lng:129.4292,category:'자연/공원',desc:'동해안 절경, 기암괴석 해안공원, 일출 명소.',tip:'해돋이 명소! 대왕암 해상 데크길 산책이 일품입니다.'},
-            {name:'인천차이나타운',region:'인천',lat:37.4778,lng:126.6190,category:'문화/거리',desc:'한국 최초 차이나타운, 짜장면의 발상지.',tip:'짜장면 박물관 방문! 개항장 거리도 함께 둘러보세요.'},
-            {name:'광주국립아시아문화전당',region:'광주',lat:35.1467,lng:126.9184,category:'문화/전시',desc:'아시아 문화 교류 중심지, 현대적 건축물.',tip:'무료 전시 많음! 광주비엔날레 전시관도 인근에 있음.'},
-            {name:'설악산국립공원',region:'강원',lat:38.1195,lng:128.4642,category:'자연/산',desc:'한국의 알프스, 웅장한 암봉과 단풍 명소.',tip:'케이블카 타고 권금성까지! 10월 단풍 시즌이 최고입니다.'},
-            {name:'남해군',region:'경남',lat:34.8140,lng:127.9289,category:'자연/섬',desc:'다도해의 아름다운 풍경, 독일마을과 청정 바다.',tip:'독일마을에서 이국적 풍경! 가천 다랭이마을도 추천.'},
-            {name:'통영케이블카',region:'경남',lat:34.8315,lng:128.4227,category:'자연/명소',desc:'한려해상국립공원을 한눈에 내려다보는 케이블카.',tip:'스카이워크도 체험! 통영 대표 먹거리 충무김밥과 굴.'},
-            {name:'순천만국가정원',region:'전남',lat:34.9258,lng:127.4947,category:'자연/공원',desc:'세계적 생태 관광지, 갈대밭과 S자 수로가 아름다운 곳.',tip:'일몰에 갈대밭 황금빛 순간 최고! 용산전망대까지 꼭.'},
-            {name:'제부도',region:'경기',lat:37.1945,lng:126.6313,category:'자연/섬',desc:'하루 두 번 바닷길이 열리는 신비한 섬.',tip:'물때표 꼭 확인! 해변에서 조개잡이 체험도 가능.'},
-            {name:'용인에버랜드',region:'경기',lat:37.2935,lng:127.2070,category:'테마파크',desc:'한국 최대 테마파크, 사계절 다양한 축제.',tip:'주말에는 꼭 미리 예약! 판다월드 푸바오 인기 만점.'},
-            {name:'포항죽도시장',region:'경북',lat:36.0180,lng:129.3657,category:'맛집/시장',desc:'과메기와 물회의 본고장, 포항 대표 전통시장.',tip:'과메기 정식과 물회가 대표 메뉴!'},
-            {name:'속초관광수산시장',region:'강원',lat:38.2072,lng:128.5921,category:'맛집/시장',desc:'강원도 대표 시장, 오징어순대와 닭강정이 유명.',tip:'닭강정과 오징어순대 필수 코스! 속초해수욕장도 함께.'},
-            {name:'철원 DMZ',region:'강원',lat:38.2220,lng:127.2140,category:'역사/평화',desc:'한반도 분단 현장, 평화와 생태의 상징.',tip:'출입증 필요! 철원 주상절리와 직탕폭포도 구경.'},
-            {name:'천안독립기념관',region:'충남',lat:36.7803,lng:127.2217,category:'역사/기념관',desc:'한국 독립운동의 역사를 기리는 대표 기념관.',tip:'입장료 무료! 천안 삼거리도 함께 방문해보세요.'},
-            {name:'공주무령왕릉',region:'충남',lat:36.4613,lng:127.1178,category:'역사/유적',desc:'백제 시대 왕릉, 금관과 장신구 등 귀중 유물 출토.',tip:'국립공주박물관에서 유물 전시 중! 공산성도 함께.'},
-            {name:'부여백제문화단지',region:'충남',lat:36.2748,lng:126.9127,category:'역사/문화',desc:'백제 역사 문화 재현 대규모 테마파크.',tip:'부소산성과 낙화암도 함께! 백제문화제(9-10월) 최고.'},
-            {name:'충주호',region:'충북',lat:36.9712,lng:128.0019,category:'자연/호수',desc:'청풍호반과 유람선이 아름다운 충북의 호수.',tip:'유람선 타고 충주호 둘러보고 충주 탄금대도 방문!'},
-            {name:'단양고수동굴',region:'충북',lat:36.9578,lng:128.3630,category:'자연/동굴',desc:'천연동굴의 신비를 체험할 수 있는 충북 대표 명소.',tip:'도담삼봉과 만천하 스카이워크도 함께!'},
+            {name:'경복궁',region:'서울',lat:37.5796,lng:126.9770,category:'궁궐/역사',desc:'조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 웅장한 서울 대표 유적지.',tip:'한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요.'},
+            {name:'남산서울타워',region:'서울',lat:37.5512,lng:126.9882,category:'랜드마크',desc:'서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 데이트 명소.',tip:'일몰 시간에 맞춰 가면 낮과 밤을 모두 즐길 수 있어요. 케이블카 추천!'},
+            {name:'북촌한옥마을',region:'서울',lat:37.5826,lng:126.9850,category:'문화/전통',desc:'전통 한옥이 보존된 서울 도심 속 역사 마을. 골목골목 정취가 가득.',tip:'조용한 주택가이니 방문 시 주의! 북촌 8경 코스를 따라 걸어보세요.'},
+            {name:'명동',region:'서울',lat:37.5609,lng:126.9853,category:'쇼핑/거리',desc:'서울 최대 쇼핑과 먹거리 천국. 명동성당도 인근에 위치.',tip:'저녁 시간이 더 활기참! 길거리 음식 중 떡볶이와 통닭꼬치가 인기.'},
+            {name:'인사동',region:'서울',lat:37.5736,lng:126.9855,category:'문화/전통',desc:'전통 문화와 현대 예술이 공존하는 서울의 문화 거리.',tip:'쌈지길에서 다양한 공예품 구경! 전통 찻집에서 여유도 즐기세요.'},
+            {name:'홍대',region:'서울',lat:37.5563,lng:126.9236,category:'문화/거리',desc:'젊음의 거리, 클럽과 카페, 길거리 공연의 메카.',tip:'주말 걷고 싶은 거리 버스킹 공연 필수! 다양한 카페 탐방도 추천.'},
+            {name:'강남',region:'서울',lat:37.4981,lng:127.0276,category:'쇼핑/업무',desc:'한국 경제 중심지. K-pop의 본고장, 코엑스 별마당 도서관 유명.',tip:'코엑스 별마당 도서관 인생샷 명소! 저녁엔 강남역 인근 먹거리.'},
+            {name:'여의도',region:'서울',lat:37.5219,lng:126.9244,category:'랜드마크',desc:'63빌딩과 한강이 어우러진 업무 중심지. 봄 벚꽃 명소.',tip:'4월 윤중로 벚꽃길 최고! 63빌딩 전망대 야경도 놓치지 마세요.'},
+            {name:'제주도',region:'제주',lat:33.3803,lng:126.5350,category:'자연/섬',desc:'한국 최대 섬이자 세계적 휴양지. 올레길과 화산 지형의 천국.',tip:'렌터카 여행 필수! 우도와 마라도 섬투어도 강력 추천합니다.'},
+            {name:'한라산',region:'제주',lat:33.3625,lng:126.5334,category:'자연/산',desc:'해발 1,950m 웅장한 사화산. UNESCO 세계자연유산.',tip:'성판악 코스가 가장 인기! 정상 백록담은 맑은 날에만 볼 수 있어요.'},
+            {name:'성산일출봉',region:'제주',lat:33.4581,lng:126.9425,category:'자연/명소',desc:'UNESCO 세계자연유산. 일출이 장관인 거대한 분화구.',tip:'해돋이 명소! 입구에서 우동과 성게비빔밥도 꼭 맛보세요.'},
+            {name:'해운대',region:'부산',lat:35.1587,lng:129.1603,category:'해변/휴양',desc:'부산 대표 해수욕장. 길이 1.5km 백사장과 현대적 도시의 조화.',tip:'겨울에는 해운대 빛 축제! 동백섬 산책로도 함께 둘러보세요.'},
+            {name:'감천문화마을',region:'부산',lat:35.0978,lng:129.0107,category:'문화/마을',desc:'알록달록 벽화와 예술 작품이 가득한 부산 문화 마을.',tip:'마을 지도(2,000원) 사서 스탬프 투어 도전! 인생샷 명소 많아요.'},
+            {name:'광안리해수욕장',region:'부산',lat:35.1538,lng:129.1183,category:'해변/휴양',desc:'광안대교의 화려한 야경이 아름다운 부산의 해변.',tip:'광안리 카페거리에서 커피 한 잔과 함께 야경을 즐겨보세요.'},
+            {name:'자갈치시장',region:'부산',lat:35.0978,lng:129.0292,category:'맛집/시장',desc:'한국 최대 수산시장. 활어회의 본고장.',tip:'2층에서 회를 사서 1층 식당에 가져가면 횟감값+자리값만 내요!'},
+            {name:'경주역사지구',region:'경주',lat:35.7890,lng:129.2240,category:'역사/유적',desc:'신라 천년의 고도. 대릉원, 안압지, 첨성대 등 유적의 보고.',tip:'자전거 투어가 최고! 황리단길 한옥 카페도 꼭 방문해보세요.'},
+            {name:'불국사',region:'경주',lat:35.7902,lng:129.3321,category:'사찰/역사',desc:'신라 대표 사찰, UNESCO 세계문화유산. 석가탑과 다보탑이 유명.',tip:'석굴암과 함께 관람! 아침 일찍 가면 한적하게 즐길 수 있어요.'},
+            {name:'석굴암',region:'경주',lat:35.7951,lng:129.3492,category:'사찰/역사',desc:'통일신라 불교 조각 예술의 정수. UNESCO 세계문화유산.',tip:'사진 촬영이 제한되니 눈에 담아오세요.'},
+            {name:'안동하회마을',region:'경북',lat:36.5392,lng:128.5172,category:'전통/마을',desc:'조선 양반 마을 원형 보존. UNESCO 세계문화유산.',tip:'낙동강에서 배 타고 마을 전체 조망! 탈박물관도 필수 방문.'},
+            {name:'전주한옥마을',region:'전북',lat:35.8138,lng:127.1485,category:'전통/마을',desc:'한옥과 한식(비빔밥)의 본고장. 전통 문화 체험의 최적지.',tip:'한복 대여해서 마을 거니는 게 인기! 전동성당도 함께 방문.'},
+            {name:'대구동성로',region:'대구',lat:35.8692,lng:128.5952,category:'쇼핑/거리',desc:'대구의 명동. 패션과 먹거리 중심지.',tip:'서문시장 야시장 구경! 납작만두와 치맥이 대구 대표 야식.'},
+            {name:'대전엑스포공원',region:'대전',lat:36.3767,lng:127.3844,category:'공원/전시',desc:'1993 대전엑스포 개최지. 한빛탑이 상징적인 복합 문화 공간.',tip:'한빛탑 야경이 아름다움! 대전시립미술관도 함께 방문하세요.'},
+            {name:'울산대왕암공원',region:'울산',lat:35.5022,lng:129.4292,category:'자연/공원',desc:'동해안 절경. 기암괴석과 소나무가 어우러진 해안공원.',tip:'해돋이 명소! 대왕암 해상 데크길 산책이 정말 일품입니다.'},
+            {name:'인천차이나타운',region:'인천',lat:37.4778,lng:126.6190,category:'문화/거리',desc:'한국 최초의 차이나타운. 짜장면의 발상지.',tip:'짜장면 박물관 방문! 개항장 거리도 함께 둘러보세요.'},
+            {name:'광주국립아시아문화전당',region:'광주',lat:35.1467,lng:126.9184,category:'문화/전시',desc:'아시아 문화 교류 중심. 현대적 건축물이 돋보이는 문화 공간.',tip:'무료 전시 많음! 광주비엔날레 전시관도 인근에 있어요.'},
+            {name:'설악산국립공원',region:'강원',lat:38.1195,lng:128.4642,category:'자연/산',desc:'한국의 알프스. 웅장한 암봉과 단풍이 아름다운 명산.',tip:'케이블카 타고 권금성까지! 10월 단풍 시즌이 절정입니다.'},
+            {name:'남해군',region:'경남',lat:34.8140,lng:127.9289,category:'자연/섬',desc:'다도해의 아름다운 풍경. 독일마을과 청정 바다의 조화.',tip:'독일마을에서 이국적 풍경! 가천 다랭이마을도 함께 추천.'},
+            {name:'통영케이블카',region:'경남',lat:34.8315,lng:128.4227,category:'자연/명소',desc:'한려해상국립공원을 한눈에 내려다보는 스릴 만점 케이블카.',tip:'스카이워크도 체험! 통영 대표 먹거리 충무김밥과 굴 요리.'},
+            {name:'순천만국가정원',region:'전남',lat:34.9258,lng:127.4947,category:'자연/공원',desc:'세계적 생태 관광지. 갈대밭과 S자 수로의 장관.',tip:'일몰 때 갈대밭 황금빛 순간이 최고! 용산전망대까지 꼭.'},
+            {name:'제부도',region:'경기',lat:37.1945,lng:126.6313,category:'자연/섬',desc:'하루 두 번 바닷길이 열리는 신비한 섬.',tip:'물때표 꼭 확인! 해변에서 조개잡이 체험도 할 수 있어요.'},
+            {name:'용인에버랜드',region:'경기',lat:37.2935,lng:127.2070,category:'테마파크',desc:'한국 최대 테마파크. 사계절 다양한 축제와 놀이기구.',tip:'주말에는 꼭 미리 예약! 판다월드 푸바오가 인기 만점입니다.'},
+            {name:'포항죽도시장',region:'경북',lat:36.0180,lng:129.3657,category:'맛집/시장',desc:'과메기와 물회의 본고장. 포항 대표 전통시장.',tip:'과메기 정식과 물회가 시장의 대표 메뉴! 꼭 맛보세요.'},
+            {name:'속초관광수산시장',region:'강원',lat:38.2072,lng:128.5921,category:'맛집/시장',desc:'강원도 대표 시장. 오징어순대와 닭강정이 유명.',tip:'닭강정과 오징어순대 필수 코스! 속초해수욕장도 함께.'},
+            {name:'철원 DMZ',region:'강원',lat:38.2220,lng:127.2140,category:'역사/평화',desc:'한반도 분단의 현장. 평화와 생태의 상징적인 장소.',tip:'출입증 필요! 철원 주상절리와 직탕폭포도 함께 구경.'},
+            {name:'천안독립기념관',region:'충남',lat:36.7803,lng:127.2217,category:'역사/기념관',desc:'한국 독립운동의 역사를 기리는 대표적인 기념관.',tip:'입장료 무료! 천안 삼거리도 함께 방문해보세요.'},
+            {name:'공주무령왕릉',region:'충남',lat:36.4613,lng:127.1178,category:'역사/유적',desc:'백제 시대 왕릉. 금관과 장신구 등 귀중한 유물이 출토된 곳.',tip:'국립공주박물관에서 유물 전시 중! 공산성도 함께 방문.'},
+            {name:'부여백제문화단지',region:'충남',lat:36.2748,lng:126.9127,category:'역사/문화',desc:'백제 역사와 문화를 재현한 대규모 테마파크.',tip:'부소산성과 낙화암도 함께! 백제문화제(9-10월)가 최고.'},
+            {name:'충주호',region:'충북',lat:36.9712,lng:128.0019,category:'자연/호수',desc:'청풍호반과 유람선이 아름다운 충북의 대표 호수.',tip:'유람선 타고 호수 둘러보기! 충주 탄금대도 방문해보세요.'},
+            {name:'단양고수동굴',region:'충북',lat:36.9578,lng:128.3630,category:'자연/동굴',desc:'천연동굴의 신비를 체험하는 충북 대표 명소.',tip:'도담삼봉과 만천하 스카이워크도 함께 즐기세요!'},
         ];
 
-        // ----- Leaflet 지도 초기화 (다크 스타일) -----
+        // ===== Leaflet 지도 =====
         const map = L.map('map', {
             center: [36.0, 127.8],
             zoom: 7,
@@ -190,75 +356,60 @@
             zoomControl: false
         });
 
-        // 다크 스타일 타일
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap &copy; CARTO',
             subdomains: 'abcd',
             maxZoom: 20
         }).addTo(map);
 
-        // 줌 컨트롤 위치 조정
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        // ----- 마커 및 팝업 -----
+        // ===== 마커 =====
         const catColors = {
-            '궁궐/역사':'#e74c3c','랜드마크':'#f39c12','문화/전통':'#2ecc71','쇼핑/거리':'#9b59b6',
-            '문화/거리':'#e91e63','쇼핑/업무':'#1abc9c','자연/섬':'#3498db','자연/산':'#27ae60',
-            '자연/명소':'#1abc9c','해변/휴양':'#00bcd4','문화/마을':'#ff5722','맛집/시장':'#ff9800',
-            '역사/유적':'#8d6e63','사찰/역사':'#ffd54f','전통/마을':'#4caf50','공원/전시':'#2196f3',
-            '자연/공원':'#009688','문화/전시':'#673ab7','테마파크':'#ff4081','역사/평화':'#795548',
-            '역사/기념관':'#607d8b','역사/문화':'#8bc34a','자연/호수':'#03a9f4','자연/동굴':'#795548',
+            '궁궐/역사':'#e74c3c','랜드마크':'#f97316','문화/전통':'#2ecc71','쇼핑/거리':'#9b59b6',
+            '문화/거리':'#ec4899','쇼핑/업무':'#1abc9c','자연/섬':'#3498db','자연/산':'#27ae60',
+            '자연/명소':'#1abc9c','해변/휴양':'#00bcd4','문화/마을':'#ff5722','맛집/시장':'#f59e0b',
+            '역사/유적':'#8d6e63','사찰/역사':'#fbbf24','전통/마을':'#4caf50','공원/전시':'#2196f3',
+            '자연/공원':'#009688','문화/전시':'#8b5cf6','테마파크':'#ff4081','역사/평화':'#795548',
+            '역사/기념관':'#607d8b','역사/문화':'#84cc16','자연/호수':'#06b6d4','자연/동굴':'#795548',
         };
-
+        const cntEl = document.getElementById('count-num');
         const markers = [];
 
-        attractions.forEach(a => {
-            const color = catColors[a.category] || '#ffffff';
-
-            // 커스텀 마커 아이콘 (divIcon)
+        attractions.forEach((a, i) => {
+            const color = catColors[a.category] || '#8b5cf6';
+            const size = 12 + Math.abs(Math.sin(i * 1.7)) * 4;
             const icon = L.divIcon({
                 html: `<div style="
-                    width: 14px; height: 14px;
+                    width: ${size}px; height: ${size}px;
                     background: ${color};
-                    border: 2px solid rgba(255,255,255,0.8);
+                    border: 2px solid rgba(255,255,255,0.9);
                     border-radius: 50%;
-                    box-shadow: 0 0 12px ${color}40, 0 2px 8px rgba(0,0,0,0.5);
-                    transition: all 0.2s;
+                    box-shadow: 0 0 16px ${color}60, 0 2px 8px rgba(0,0,0,0.5);
+                    transition: all 0.3s;
                 "></div>`,
-                iconSize: [14, 14],
-                iconAnchor: [7, 7],
+                iconSize: [size, size],
+                iconAnchor: [size/2, size/2],
                 className: ''
             });
-
             const marker = L.marker([a.lat, a.lng], { icon }).addTo(map);
-
-            // 팝업 내용
-            const popupContent = `
+            const popupHTML = `
                 <div class="popup-content">
                     <h3>${a.name}</h3>
-                    <span class="cat-badge" style="background:${color}">${a.category}</span>
-                    <div style="font-size:12px;opacity:0.6;margin-bottom:6px;">\ud83d\udccd ${a.region}</div>
-                    <div class="desc">${a.desc}</div>
-                    <div class="tip"><b>\ud83d\udca1 여행 팁:</b> ${a.tip}</div>
-                    <div class="coords">\ud83d\udcc8 ${a.lat.toFixed(4)}, ${a.lng.toFixed(4)}</div>
+                    <span class="cat-tag" style="background:${color}">${a.category}</span>
+                    <div class="rgn-line">📍 ${a.region}</div>
+                    <div class="desc-text">${a.desc}</div>
+                    <div class="tip-box"><b>💡 TIP</b><br>${a.tip}</div>
+                    <div class="coord-text">📌 ${a.lat.toFixed(4)}, ${a.lng.toFixed(4)}</div>
                 </div>
             `;
-
-            marker.bindPopup(popupContent, {
-                className: 'custom-popup',
-                maxWidth: 320,
-                closeButton: true
-            });
-
-            // 마커 hover 효과
-            marker.on('mouseover', function() {
-                this.openPopup();
-            });
-
+            marker.bindPopup(popupHTML, { className: 'custom-popup', maxWidth: 340, closeButton: true });
             markers.push({ marker, data: a });
         });
 
-        // ----- 검색 기능 -----
+        cntEl.textContent = attractions.length;
+
+        // ===== 검색 =====
         const searchInput = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
         const resultsDiv = document.getElementById('results');
@@ -272,23 +423,22 @@
             );
             resultsDiv.innerHTML = '';
             if (filtered.length === 0) {
-                resultsDiv.innerHTML = '<div class="result-item" style="text-align:center;opacity:0.6;">\ud83d\ude05 검색 결과가 없습니다.</div>';
+                resultsDiv.innerHTML = '<div class="result-item" style="text-align:center;color:var(--text-muted);padding:20px;">😅 검색 결과가 없습니다</div>';
                 resultsDiv.style.display = 'block'; return;
             }
             filtered.forEach(a => {
-                const item = document.createElement('div');
-                item.className = 'result-item';
-                const color = catColors[a.category] || '#ffffff';
-                item.innerHTML = '<div class="top"><h3>' + a.name + '</h3><span class="cat" style="background:' + color + '">' + a.category + '</span></div><div class="rgn">\ud83d\udccd ' + a.region + '</div>';
-                item.addEventListener('click', () => {
-                    map.setView([a.lat, a.lng], 12, { animate: true });
+                const el = document.createElement('div');
+                el.className = 'result-item';
+                const color = catColors[a.category] || '#8b5cf6';
+                el.innerHTML = `<div class="top"><h3>${a.name}</h3><span class="cat-badge" style="background:${color}">${a.category}</span></div><div class="rgn"><i>📍</i>${a.region}</div>`;
+                el.addEventListener('click', () => {
+                    map.setView([a.lat, a.lng], 12, { animate: true, duration: 0.5 });
                     resultsDiv.style.display = 'none';
                     searchInput.value = a.name;
-                    // 해당 마커 찾아서 팝업 열기
                     const found = markers.find(m => m.data.name === a.name);
-                    if (found) found.marker.openPopup();
+                    if (found) setTimeout(() => found.marker.openPopup(), 600);
                 });
-                resultsDiv.appendChild(item);
+                resultsDiv.appendChild(el);
             });
             resultsDiv.style.display = 'block';
         }
@@ -296,15 +446,14 @@
         searchBtn.addEventListener('click', doSearch);
         searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
         let dt;
-        searchInput.addEventListener('input', () => { clearTimeout(dt); dt = setTimeout(doSearch, 300); });
-
+        searchInput.addEventListener('input', () => { clearTimeout(dt); dt = setTimeout(doSearch, 250); });
         document.addEventListener('click', e => {
-            if (!resultsDiv.contains(e.target) && e.target !== searchInput && e.target !== searchBtn) {
+            if (!resultsDiv.contains(e.target) && !e.target.closest('#search-wrap')) {
                 resultsDiv.style.display = 'none';
             }
         });
 
-        console.log('\u2705 대한민국 관광명소 지도 로딩 완료! (총 ' + attractions.length + '개 명소)');
+        console.log('✅ K-여행 지도 로딩 완료! (총 ' + attractions.length + '개 명소)');
     </script>
 </body>
 </html>
