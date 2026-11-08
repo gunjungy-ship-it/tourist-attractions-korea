@@ -17,6 +17,7 @@
         #sb nav a:hover{background:var(--bg);color:var(--text)}
         #sb nav a.active{background:var(--ac);color:#fff}
         #sb .ft{margin-top:auto;padding:10px 8px 0;border-top:1px solid var(--bd);font-size:11px;color:var(--t3)}
+        #sb .ft a{color:var(--ac);text-decoration:none}
         #main{margin-left:200px;flex:1;padding:24px 28px;max-width:calc(100vw-200px)}
         #main h2{font-size:20px;font-weight:700;margin-bottom:2px}
         #main .sub{font-size:13px;color:var(--t2);margin-bottom:20px}
@@ -59,21 +60,8 @@
         .ma button{padding:8px 20px;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
         .ma .cl{background:var(--bg);color:var(--t2)}.ma .cl:hover{background:#e5e3dd}
         .ma .sv{background:var(--ac);color:#fff}.ma .sv:hover{background:#c0392b}
-
-        /* 카카오맵 탭 */
-        #map-area{display:grid;grid-template-columns:1fr 300px;gap:16px;height:calc(100vh-160px)}
-        #map-container{width:100%;height:100%;border-radius:var(--rd);overflow:hidden;border:1px solid var(--bd)}
-        #map-list{overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:12px}
-        #map-list .mi{padding:8px 10px;border-radius:var(--rs);cursor:pointer;transition:all 0.2s;border:1px solid transparent;margin-bottom:4px}
-        #map-list .mi:hover{background:#f5f4f0;border-color:var(--bd)}
-        #map-list .mi.active{background:#fef2f2;border-color:var(--ac)}
-        #map-list .mi .mn{font-size:13px;font-weight:600}
-        #map-list .mi .mr{font-size:11px;color:var(--t2);margin-top:1px}
-        #map-list .mi .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
-
         #tt{position:fixed;top:20px;right:20px;z-index:9999;background:#1a1a2e;color:#fff;padding:10px 18px;border-radius:var(--rs);font-size:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);transform:translateX(120%);transition:transform 0.3s;max-width:320px}
         #tt.show{transform:translateX(0)}
-
         @media(max-width:768px){
             #sb{width:100%;position:relative;padding:14px 12px;border-right:none;border-bottom:1px solid var(--bd)}
             #sb nav{flex-direction:row;flex-wrap:wrap}
@@ -82,9 +70,6 @@
             .ch{grid-template-columns:1fr}
             .st{grid-template-columns:repeat(2,1fr)}
             #md .mb{padding:18px 14px}.fr{grid-template-columns:1fr}
-            #map-area{grid-template-columns:1fr;height:auto}
-            #map-container{height:400px}
-            #map-list{max-height:300px}
         }
         @media(max-width:480px){.st{grid-template-columns:1fr}th,td{padding:7px 10px}}
     </style>
@@ -93,15 +78,14 @@
     <div id="sb">
         <div class="logo">K-<span>travel</span></div>
         <nav id="sn">
-            <a class="active" data-tab="dash">&#x1F4CA; 대시보드</a>
-            <a data-tab="manage">&#x1F4DD; 명소 관리</a>
-            <a data-tab="map">&#x1F5FA; 카카오맵</a>
+            <a class="active" data-tab="dash">대시보드</a>
+            <a data-tab="manage">명소 관리</a>
+            <a href="/" target="_blank">지도 보기</a>
         </nav>
         <div class="ft">v1.0</div>
     </div>
 
     <div id="main">
-        <!-- 대시보드 탭 -->
         <div id="tab-dash">
             <h2>대시보드</h2>
             <div class="sub">관광명소 데이터 현황 및 통계</div>
@@ -120,7 +104,6 @@
             <div class="cb"><h4>최근 활동</h4><div id="log" style="font-size:12px;color:var(--t2);line-height:2">로딩 중...</div></div>
         </div>
 
-        <!-- 명소 관리 탭 -->
         <div id="tab-manage" style="display:none">
             <h2>명소 관리</h2>
             <div class="sub">관광명소 데이터를 추가/수정/삭제할 수 있습니다</div>
@@ -131,19 +114,8 @@
                 </div>
             </div>
         </div>
-
-        <!-- 카카오맵 탭 -->
-        <div id="tab-map" style="display:none">
-            <h2>카카오맵</h2>
-            <div class="sub">지도에서 명소 위치를 확인하세요</div>
-            <div id="map-area">
-                <div id="map-container"></div>
-                <div id="map-list"></div>
-            </div>
-        </div>
     </div>
 
-    <!-- 모달 -->
     <div id="md">
         <div class="mb">
             <h3 id="mt">새 명소 추가</h3>
@@ -176,11 +148,7 @@
             </div>
         </div>
     </div>
-    <div id="tt"></div>
-
-    <!-- 카카오맵 SDK -->
-    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1c48b199b72202a9501a8555a0176a1a&libraries=services"></script>    <script>
-        // 데이터 (단축 속성명)
+    <div id="tt"></div>    <script>
         var D = [
             {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"궁궐/역사",d:"조선 왕조의 법궁, 1395년 창건",t:"한복 입고 무료 입장!"},
             {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워",t:"일몰 시간에 맞춰 방문!"},
@@ -226,7 +194,6 @@
         var _data = [];
         var _editIdx = -1;
         var _cc = null, _cr = null;
-        var _map = null, _kakaoMarkers = [];
 
         var CL = {
             "궁궐/역사":"#e74c3c","랜드마크":"#f97316","문화/전통":"#2ecc71","쇼핑/거리":"#9b59b6",
@@ -245,7 +212,6 @@
             else { _data = JSON.parse(JSON.stringify(D)); save(); }
             refresh();
 
-            // 탭 이벤트
             document.querySelectorAll("#sn a").forEach(function(a){
                 a.addEventListener("click", function(){
                     document.querySelectorAll("#sn a").forEach(function(x){x.classList.remove("active")});
@@ -253,10 +219,8 @@
                     var tab = this.getAttribute("data-tab");
                     $("tab-dash").style.display = tab === "dash" ? "block" : "none";
                     $("tab-manage").style.display = tab === "manage" ? "block" : "none";
-                    $("tab-map").style.display = tab === "map" ? "block" : "none";
                     if(tab === "dash"){ updateCharts(); updateLog(); }
                     if(tab === "manage") updateTable();
-                    if(tab === "map") initMap();
                 });
             });
 
@@ -354,12 +318,9 @@
             $("msb").textContent = _editIdx >= 0 ? "수정" : "추가";
             if(_editIdx >= 0){
                 var a = _data[_editIdx];
-                $("f1").value = a.n;
-                $("f2").value = a.r;
-                $("f3").value = a.a;
-                $("f4").value = a.o;
-                $("f5").value = a.c;
-                $("f6").value = a.d;
+                $("f1").value = a.n;$("f2").value = a.r;
+                $("f3").value = a.a;$("f4").value = a.o;
+                $("f5").value = a.c;$("f6").value = a.d;
                 $("f7").value = a.t || "";
             } else {
                 $("f1").value = "";$("f2").value = "";$("f3").value = "";$("f4").value = "";
@@ -396,113 +357,6 @@
             if(!confirm("'" + name + "'을(를) 삭제하시겠습니까?")) return;
             _data.splice(idx, 1);
             save(); addLog("삭제: " + name); toast("삭제 완료!"); refresh();
-        }
-
-        // 카카오맵
-        var _mapInitDone = false;
-
-        function initMap(){
-            if(_mapInitDone && _map){ 
-                // 이미 init된 경우 마커만 갱신
-                updateKakaoMarkers();
-                return; 
-            }
-            _mapInitDone = true;
-
-            var container = $("map-container");
-            if(!container) return;
-
-            // 이미 지도가 있으면 재사용
-            if(!_map){
-                _map = new kakao.maps.Map(container, {
-                    center: new kakao.maps.LatLng(36.0, 127.8),
-                    level: 8
-                });
-            }
-
-            updateKakaoMarkers();
-            updateMapList();
-        }
-
-        function updateKakaoMarkers(){
-            // 기존 마커 제거
-            for(var i=0; i<_kakaoMarkers.length; i++){
-                _kakaoMarkers[i].setMap(null);
-            }
-            _kakaoMarkers = [];
-
-            _data.forEach(function(a, idx){
-                var color = CL[a.c] || "#e74c3c";
-                var position = new kakao.maps.LatLng(a.a, a.o);
-                
-                // 커스텀 오버레이 (동그란 마커)
-                var content = "<div style=\"width:12px;height:12px;background:" + color + ";border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);\"></div>";
-                var marker = new kakao.maps.CustomOverlay({
-                    position: position,
-                    content: content,
-                    yAnchor: 0.5,
-                    xAnchor: 0.5
-                });
-                marker.setMap(_map);
-                
-                // 인포윈도우
-                var infoContent = "<div style=\"padding:8px 10px;font-size:12px;font-weight:600;\">" + a.n + "</div>";
-                var infoWin = new kakao.maps.InfoWindow({
-                    content: infoContent
-                });
-                
-                // 마커에 데이터 저장
-                marker._data = a;
-                marker._infoWin = infoWin;
-                marker._idx = idx;
-
-                // 클릭 이벤트
-                kakao.maps.event.addListener(marker, "click", function(){
-                    // 모든 인포윈도우 닫기
-                    for(var j=0; j<_kakaoMarkers.length; j++){
-                        _kakaoMarkers[j]._infoWin.close();
-                    }
-                    this._infoWin.open(_map, this);
-                    // 리스트 하이라이트
-                    document.querySelectorAll("#map-list .mi").forEach(function(el){el.classList.remove("active")});
-                    var target = document.getElementById("mi-" + this._idx);
-                    if(target) target.classList.add("active");
-                });
-
-                _kakaoMarkers.push(marker);
-            });
-        }
-
-        function updateMapList(){
-            var list = $("map-list");
-            var html = "";
-            _data.forEach(function(a, i){
-                var color = CL[a.c] || "#e74c3c";
-                html += "<div class=\"mi\" id=\"mi-" + i + "\" onclick=\"moveToPlace(" + i + ")\"><div class=\"mn\"><span class=\"dot\" style=\"background:" + color + ";\"></span>" + a.n + "</div><div class=\"mr\">" + a.r + " · " + (a.c||"") + "</div></div>";
-            });
-            list.innerHTML = html;
-        }
-
-        function moveToPlace(idx){
-            var a = _data[idx];
-            if(!a || !_map) return;
-            
-            // 이동
-            _map.setCenter(new kakao.maps.LatLng(a.a, a.o));
-            _map.setLevel(5);
-
-            // 해당 마커 찾아서 클릭
-            document.querySelectorAll("#map-list .mi").forEach(function(el){el.classList.remove("active")});
-            var target = document.getElementById("mi-" + idx);
-            if(target) target.classList.add("active");
-
-            // 인포윈도우
-            for(var j=0; j<_kakaoMarkers.length; j++){
-                _kakaoMarkers[j]._infoWin.close();
-            }
-            if(_kakaoMarkers[idx]){
-                _kakaoMarkers[idx]._infoWin.open(_map, _kakaoMarkers[idx]);
-            }
         }
 
         init();
