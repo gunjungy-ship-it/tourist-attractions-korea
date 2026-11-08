@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>대한민국 관광명소 - K-여행 지도</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -248,6 +249,12 @@
         </div>
         <div class="coord-text" id="dt-coords"></div>
     </div>    <script>
+        
+        // PWA: 서비스워커 등록 (앱 설치 가능)
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW error',e)});
+        }
+
         // ===== 관광명소 데이터 (40개) =====
         var D = [
             {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 유명한 서울 대표 유적지입니다.",t:"한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요."},
