@@ -80,7 +80,7 @@
         #detail-panel .t-box b{color:#d4956b;font-weight:600}
         #detail-panel .actions{display:flex;gap:8px;flex-wrap:wrap;position:sticky;bottom:0;background:var(--card);padding-top:12px;z-index:1}
         #detail-panel .actions a,#detail-panel .actions button{flex:1;padding:11px 16px;border-radius:var(--rs);text-decoration:none;font-size:13px;font-weight:600;text-align:center;transition:all 0.2s;border:none;font-family:inherit;cursor:pointer;min-width:120px}
-        #detail-panel .actions .navi{background:var(--gr1);color:#fff}
+        #detail-panel .actions .navi{background:var(--gr1);color:#fff}#detail-panel .actions .navi2{background:#f7e600;color:#333}
         #detail-panel .actions .navi:hover{opacity:0.9;transform:translateY(-1px)}
         #detail-panel .actions .wish{background:rgba(232,180,79,0.08);color:var(--text)}
         #detail-panel .actions .wish:hover{background:rgba(232,180,79,0.15)}
@@ -156,7 +156,8 @@
         <div class="d-text" id="dt-desc"></div>
         <div class="t-box" id="dt-tip"><b>💡 여행 팁</b><br>로딩중입니다.</div>
         <div class="actions">
-            <a class="navi" id="dt-navi" target="_blank">📍 길찾기</a>
+            <a class="navi" id="dt-navi1" target="_blank">📍 네이버 길찾기</a>
+            <a class="navi2" id="dt-navi2" target="_blank">📌 카카오맵 길찾기</a>
             <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 찜하기</button>
         </div>
         <div class="coord-text" id="dt-coords"></div>
@@ -189,7 +190,7 @@ var dt;$("search-input").addEventListener("input",function(){clearTimeout(dt);dt
 $("results").addEventListener("click",function(e){e.stopPropagation()});
 document.addEventListener("click",function(){$("results").style.display="none"});
 document.querySelectorAll(".filter-btn").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active")});this.classList.add("active");catFilter=this.getAttribute("data-cat");markers.forEach(function(m){var a=D[m._idx];if(catFilter==="all")m.setOpacity(1);else m.setOpacity(a.c===catFilter?1:0.25)})})});
-function showDetail(i){_selIdx=i;var a=D[i],c=CC[a.c]||"#e8b44f";$("dt-cat").textContent=a.c;$("dt-cat").style.background=c;$("dt-name").textContent=a.n;$("dt-region").textContent="📍 "+a.r;$("dt-desc").textContent=a.d;$("dt-tip").innerHTML="<b>💡 여행 팁</b><br>"+a.t;$("dt-navi").href="https://map.naver.com/p/directions?c="+a.o+","+a.a+",15,0,0,0,dh&dest="+a.a+","+a.o+"&destName="+encodeURIComponent(a.n);$("dt-coords").textContent="📌 "+a.a+", "+a.o;var isW=_wish.indexOf(i)>=0;$("dt-wish").textContent=isW?"❤️ 찜 완료":"🤍 찜하기";$("detail-overlay").style.display="block";$("detail-panel").classList.add("open")}
+function showDetail(i){_selIdx=i;var a=D[i],c=CC[a.c]||"#e8b44f";$("dt-cat").textContent=a.c;$("dt-cat").style.background=c;$("dt-name").textContent=a.n;$("dt-region").textContent="📍 "+a.r;$("dt-desc").textContent=a.d;$("dt-tip").innerHTML="<b>💡 여행 팁</b><br>"+a.t;$("dt-navi1").href="https://map.naver.com/p/directions/"+a.a+","+a.o+","+encodeURIComponent(a.n)+"?c="+a.o+","+a.a+",15,0,0,0,dh";$("dt-navi2").href="https://map.kakao.com/link/to/"+encodeURIComponent(a.n)+","+a.a+","+a.o;$("dt-coords").textContent="📌 "+a.a+", "+a.o;var isW=_wish.indexOf(i)>=0;$("dt-wish").textContent=isW?"❤️ 찜 완료":"🤍 찜하기";$("detail-overlay").style.display="block";$("detail-panel").classList.add("open")}
 function closeDetail(){$("detail-overlay").style.display="none";$("detail-panel").classList.remove("open")}
 function toggleWish(){if(_selIdx<0)return;var idx=_wish.indexOf(_selIdx);if(idx>=0){_wish.splice(idx,1);$("dt-wish").textContent="🤍 찜하기"}else{_wish.push(_selIdx);$("dt-wish").textContent="❤️ 찜 완료"}localStorage.setItem("ktour_wish",JSON.stringify(_wish))}
 _checkInstall();
