@@ -3,322 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>서울부터 제주까지 - 대한민국 관광명소</title>
+    <title>대한민국 관광명소 - K-여행 지도</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8f7f4;
-            --card: #ffffff;
-            --text: #1a1a2e;
-            --text2: #6b7280;
-            --text3: #9ca3af;
-            --border: #e8e6e1;
-            --accent: #e74c3c;
-            --accent2: #f97316;
-            --shadow: 0 4px 24px rgba(0,0,0,0.06);
-            --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 10px;
-            --radius-full: 9999px;
+            --bg: #f8f7f4; --card: #ffffff; --text: #1a1a2e; --t2: #6b7280; --t3: #9ca3af;
+            --bd: #e8e6e1; --ac: #e74c3c; --ac2: #f97316;
+            --shadow: 0 2px 12px rgba(0,0,0,0.05); --shadow-h: 0 6px 24px rgba(0,0,0,0.1);
+            --rd: 14px; --rs: 8px; --rf: 9999px;
         }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Noto Sans KR',-apple-system,sans-serif;overflow:hidden;background:var(--bg);height:100vh;}
+        body{font-family:'Noto Sans KR',-apple-system,sans-serif;overflow:hidden;background:var(--bg);height:100vh;color:var(--text)}
 
         #map {
-            position:fixed; inset:0;
-            z-index:1;
+            position:fixed; inset:0; z-index:1;
             filter: saturate(1.08) hue-rotate(-2deg);
         }
         .leaflet-control-zoom a{
-            background:var(--card)!important; color:var(--text)!important;
-            border:1px solid var(--border)!important;
-            width:36px!important;height:36px!important;line-height:36px!important;
-            font-size:18px!important;box-shadow:var(--shadow)!important;
+            background:var(--card)!important;color:var(--text)!important;
+            border:1px solid var(--bd)!important;
+            width:34px!important;height:34px!important;line-height:34px!important;
+            font-size:16px!important;box-shadow:var(--shadow)!important;
         }
-        .leaflet-control-zoom{border:none!important}
-        .leaflet-control-attribution{background:rgba(255,255,255,0.8)!important;color:var(--text3)!important;font-size:10px!important}
-        .leaflet-control-attribution a{color:var(--text3)!important}
+        .leaflet-control-attribution{background:rgba(255,255,255,0.8)!important;color:var(--t3)!important;font-size:10px!important}
+        .leaflet-control-attribution a{color:var(--t3)!important}
 
-        /* 헤더 - 모던 미니멀 */
+        /* 헤더 */
         #header {
-            position:fixed; top:20px; left:50%; transform:translateX(-50%);
-            z-index:1000;
-            background:rgba(255,255,255,0.85);
-            backdrop-filter:blur(20px) saturate(1.4);
-            -webkit-backdrop-filter:blur(20px) saturate(1.4);
+            position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:1000;
+            background:rgba(255,255,255,0.88); backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
             border:1px solid rgba(255,255,255,0.5);
-            padding:8px 24px;
-            border-radius:var(--radius-full);
-            box-shadow:0 4px 32px rgba(0,0,0,0.06);
-            text-align:center;
-            pointer-events:none;
+            padding:8px 20px; border-radius:var(--rf);
+            box-shadow:0 4px 24px rgba(0,0,0,0.06);
+            text-align:center; pointer-events:none;
         }
-        #header h1{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
-        #header h1 span{font-weight:300;color:var(--text3)}
+        #header h1{font-size:14px;font-weight:700;letter-spacing:-0.3px}
+        #header h1 span{font-weight:300;color:var(--t3)}
 
-        /* 검색창 - 모던 */
+        /* 검색창 */
         #search-wrap {
-            position:fixed; top:78px; left:50%; transform:translateX(-50%);
-            z-index:1000;
-            width:92%; max-width:460px;
-            background:rgba(255,255,255,0.88);
-            backdrop-filter:blur(20px) saturate(1.4);
-            -webkit-backdrop-filter:blur(20px) saturate(1.4);
+            position:fixed; top:70px; left:50%; transform:translateX(-50%); z-index:1000;
+            width:92%; max-width:420px;
+            background:rgba(255,255,255,0.9); backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
             border:1px solid rgba(255,255,255,0.5);
-            border-radius:var(--radius-full);
-            box-shadow:0 4px 32px rgba(0,0,0,0.05);
+            border-radius:var(--rf);
+            box-shadow:0 4px 24px rgba(0,0,0,0.05);
             display:flex; align-items:center;
-            padding:3px 3px 3px 18px;
-            transition:box-shadow 0.3s,border-color 0.3s;
+            padding:3px 3px 3px 16px;
+            transition:box-shadow 0.3s;
         }
         #search-wrap:focus-within {
-            box-shadow:0 4px 32px rgba(231,76,60,0.12),0 0 0 3px rgba(231,76,60,0.08);
-            border-color:transparent;
+            box-shadow:0 4px 24px rgba(231,76,60,0.1),0 0 0 3px rgba(231,76,60,0.06);
         }
         #search-input{
-            flex:1; background:none; border:none; outline:none;
-            color:var(--text); font-size:14px; font-family:inherit; font-weight:400;
-            padding:8px 0;
+            flex:1;background:none;border:none;outline:none;
+            color:var(--text);font-size:14px;font-family:inherit;padding:8px 0;
         }
-        #search-input::placeholder{color:var(--text3);font-weight:300}
+        #search-input::placeholder{color:var(--t3);font-weight:300}
         #search-btn{
-            padding:8px 22px; border:none;
-            border-radius:var(--radius-full);
-            background:var(--text); color:#fff;
-            font-size:13px; font-weight:500; cursor:pointer;
-            font-family:inherit; flex-shrink:0;
-            transition:all 0.2s; letter-spacing:0.5px;
+            padding:8px 20px;border:none;border-radius:var(--rf);
+            background:var(--ac);color:#fff;
+            font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;flex-shrink:0;
+            transition:all 0.2s;
         }
-        #search-btn:hover{background:var(--accent);transform:translateY(-1px)}
-        #search-btn:active{transform:scale(0.96)}
+        #search-btn:hover{background:#c0392b;transform:translateY(-1px)}
+
+        /* 필터바 */
+        #filter-bar {
+            position:fixed; top:120px; left:50%; transform:translateX(-50%); z-index:1000;
+            display:flex; gap:5px; flex-wrap:nowrap;
+            width:92%; max-width:420px; overflow-x:auto;
+            padding:2px 0;
+            -webkit-overflow-scrolling:touch;
+        }
+        #filter-bar::-webkit-scrollbar{display:none}
+        .filter-btn {
+            padding:5px 14px; border:1px solid var(--bd); border-radius:var(--rf);
+            background:rgba(255,255,255,0.85); backdrop-filter:blur(8px);
+            color:var(--t2); font-size:11px; font-weight:500; cursor:pointer;
+            font-family:inherit; white-space:nowrap; flex-shrink:0;
+            transition:all 0.2s;
+        }
+        .filter-btn:hover{border-color:var(--ac);color:var(--text)}
+        .filter-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
 
         /* 검색 결과 */
         #results{
-            position:fixed; top:130px; left:50%; transform:translateX(-50%);
-            z-index:1000;
-            width:92%; max-width:460px;
-            max-height:calc(100vh-170px); overflow-y:auto; display:none;
+            position:fixed; top:165px; left:50%; transform:translateX(-50%); z-index:1000;
+            width:92%; max-width:420px;
+            max-height:calc(100vh-200px); overflow-y:auto; display:none;
         }
         #results::-webkit-scrollbar{width:3px}
-        #results::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
+        #results::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
         .result-item{
-            background:rgba(255,255,255,0.92);
-            backdrop-filter:blur(20px);
+            background:rgba(255,255,255,0.92); backdrop-filter:blur(20px);
             -webkit-backdrop-filter:blur(20px);
             border:1px solid rgba(255,255,255,0.5);
-            padding:14px 18px; margin-bottom:5px;
-            border-radius:var(--radius);
-            cursor:pointer;
-            transition:all 0.25s;
+            padding:12px 16px; margin-bottom:5px; border-radius:var(--rd);
+            cursor:pointer; transition:all 0.25s;
             animation:rfade 0.25s ease;
         }
         @keyframes rfade{from{opacity:0;transform:translateY(-6px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-        .result-item:hover{background:rgba(255,255,255,0.98);transform:translateX(4px);border-color:var(--accent)}
-        .result-item .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
-        .result-item h3{font-size:14px;font-weight:600;color:var(--text)}
-        .result-item .badge{
-            font-size:9px;font-weight:500;
-            padding:2px 10px;border-radius:var(--radius-full);
-            color:#fff;flex-shrink:0;letter-spacing:0.3px;
-        }
-        .result-item .r{font-size:12px;color:var(--text2);margin-top:4px;font-weight:300}
+        .result-item:hover{background:rgba(255,255,255,0.98);border-color:var(--ac);transform:translateX(3px)}
+        .result-item .t{display:flex;justify-content:space-between;align-items:center;gap:6px}
+        .result-item h3{font-size:14px;font-weight:600}
+        .result-item .badge{font-size:9px;padding:2px 8px;border-radius:var(--rf);color:#fff;flex-shrink:0}
+        .result-item .r{font-size:11px;color:var(--t2);margin-top:3px;display:flex;align-items:center;gap:6px}
+        .result-item .r .dist{color:var(--ac2);font-size:10px;font-weight:500}
 
-        /* 팝업 - 모던 카드 */
-        .custom-popup .leaflet-popup-content-wrapper{
-            background:rgba(255,255,255,0.95);
-            backdrop-filter:blur(24px);
+        /* 상세 패널 - 하단 시트 */
+        #detail-overlay{
+            position:fixed;inset:0;z-index:2000;
+            background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);
+            display:none;
+        }
+        #detail-panel{
+            position:fixed;bottom:0;left:0;right:0;z-index:2001;
+            background:rgba(255,255,255,0.96);backdrop-filter:blur(24px);
             -webkit-backdrop-filter:blur(24px);
-            border-radius:var(--radius);
-            box-shadow:0 12px 48px rgba(0,0,0,0.12);
-            border:1px solid rgba(255,255,255,0.3);
-            padding:4px;
+            border-radius:20px 20px 0 0;
+            box-shadow:0 -8px 40px rgba(0,0,0,0.1);
+            padding:20px 24px 28px;
+            max-height:75vh;overflow-y:auto;
+            transform:translateY(100%);
+            transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
         }
-        .custom-popup .leaflet-popup-tip{background:rgba(255,255,255,0.95);}
-        .custom-popup .leaflet-popup-close-button{
-            color:var(--text3)!important;font-size:14px!important;
-            top:5px!important;right:5px!important;
-            width:22px!important;height:22px!important;line-height:22px!important;
-            opacity:0.6;transition:opacity 0.2s;
+        #detail-panel.open{transform:translateY(0)}
+        #detail-panel .handle{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 14px}
+        #detail-panel h2{font-size:20px;font-weight:700;margin-bottom:2px}
+        #detail-panel .cat-tag{display:inline-block;padding:2px 10px;border-radius:var(--rf);font-size:10px;font-weight:600;color:#fff;margin-bottom:4px}
+        #detail-panel .r-line{font-size:13px;color:var(--t2);margin-bottom:8px}
+        #detail-panel .d-text{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:8px}
+        #detail-panel .t-box{
+            font-size:13px;line-height:1.5;color:var(--t2);
+            padding:10px 14px;background:#fafaf9;
+            border-left:3px solid var(--ac);
+            border-radius:0 var(--rs) var(--rs) 0;margin-bottom:12px;
         }
-        .custom-popup .leaflet-popup-close-button:hover{opacity:1}
-        .popup-c{ padding:6px 2px; min-width:200px; max-width:290px; }
-        .popup-c h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;letter-spacing:-0.3px}
-        .popup-c .tag{
-            display:inline-block;padding:2px 10px;border-radius:var(--radius-full);
-            font-size:10px;font-weight:500;color:#fff;margin-bottom:4px;
+        #detail-panel .t-box b{color:var(--ac);font-weight:600}
+        #detail-panel .actions{display:flex;gap:8px;flex-wrap:wrap}
+        #detail-panel .actions a{
+            flex:1;padding:10px 16px;border-radius:var(--rs);
+            text-decoration:none;font-size:13px;font-weight:600;
+            text-align:center;transition:all 0.2s;
         }
-        .popup-c .r{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:300}
-        .popup-c .d{font-size:12.5px;line-height:1.7;color:var(--text);margin-bottom:6px;font-weight:400}
-        .popup-c .t{
-            font-size:12px;line-height:1.5;color:var(--text2);
-            padding:8px 12px;background:#fafaf9;
-            border-left:3px solid var(--accent);
-            border-radius:0 8px 8px 0;margin-bottom:3px;
+        #detail-panel .actions .navi{background:#03c75a;color:#fff}
+        #detail-panel .actions .navi:hover{opacity:0.9}
+        #detail-panel .actions .wish{background:#fef2f2;color:var(--ac);cursor:pointer}
+        #detail-panel .actions .wish:hover{background:#fee2e2}
+        #detail-panel .coord-text{font-size:10px;color:var(--t3);margin-top:10px}
+        .close-detail{
+            position:absolute;top:12px;right:16px;
+            background:none;border:none;font-size:22px;color:var(--t3);
+            cursor:pointer;transition:color 0.2s;
         }
-        .popup-c .t b{color:var(--accent);font-weight:600}
-        .popup-c .c{font-size:10px;color:var(--text3)}
+        .close-detail:hover{color:var(--text)}
 
-        /* 하단 카운터 - 미니멀 */
-        #counter {
-            position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
-            z-index:1000;
-            background:rgba(255,255,255,0.85);
-            backdrop-filter:blur(16px) saturate(1.4);
-            -webkit-backdrop-filter:blur(16px) saturate(1.4);
+        #current-loc-btn{
+            position:fixed;bottom:24px;right:16px;z-index:1000;
+            width:40px;height:40px;border-radius:50%;
+            background:var(--card);border:1px solid var(--bd);
+            box-shadow:var(--shadow);cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;transition:all 0.2s;
+        }
+        #current-loc-btn:hover{box-shadow:var(--shadow-h);transform:scale(1.05)}
+
+        #counter{
+            position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:500;
+            background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
             border:1px solid rgba(255,255,255,0.3);
-            padding:6px 20px;
-            border-radius:var(--radius-full);
-            font-size:12px; font-weight:400; color:var(--text2);
-            box-shadow:0 4px 24px rgba(0,0,0,0.04);
-            pointer-events:none;
+            padding:5px 16px;border-radius:var(--rf);
+            font-size:11px;color:var(--t2);pointer-events:none;
         }
         #counter span{font-weight:700;color:var(--text)}
 
-        @media(max-width:600px){
-            #header{top:12px;padding:6px 16px}
-            #header h1{font-size:13px}
-            #search-wrap{top:66px;padding:3px 3px 3px 14px}
-            #search-input{font-size:13px}
-            #search-btn{padding:7px 18px;font-size:12px}
-            #results{top:114px}
-            .result-item{padding:12px 14px}
-            .popup-c{min-width:180px;max-width:240px}
+        /* 팝업 */
+        .custom-popup .leaflet-popup-content-wrapper{
+            background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);
+            border-radius:var(--rd);box-shadow:0 12px 48px rgba(0,0,0,0.1);
+            border:1px solid rgba(255,255,255,0.3);padding:2px;
         }
-        @media(min-width:1024px){
-            #header{top:24px;padding:10px 28px}
-            #header h1{font-size:16px}
-            #search-wrap{top:84px;max-width:500px}
-            #search-input{font-size:15px;padding:10px 0}
-            #results{top:140px;max-width:500px}
+        .custom-popup .leaflet-popup-tip{background:rgba(255,255,255,0.95)}
+        .custom-popup .leaflet-popup-close-button{color:var(--t3)!important;top:4px!important;right:4px!important}
+        .popup-c{padding:4px 2px;min-width:180px;max-width:260px}
+        .popup-c h3{font-size:15px;font-weight:700;margin-bottom:2px}
+        .popup-c .tag{display:inline-block;padding:1px 8px;border-radius:var(--rf);font-size:9px;color:#fff;margin-bottom:3px}
+        .popup-c .r{font-size:11px;color:var(--t2);margin-bottom:4px}
+        .popup-c .d{font-size:12px;line-height:1.5;color:var(--t2)}
+        .popup-c .t{font-size:11px;color:var(--text);padding:6px 10px;background:#fafaf9;border-left:2px solid var(--ac);border-radius:0 6px 6px 0;margin-top:4px}
+        .popup-c .t b{color:var(--ac)}
+
+        @media(max-width:600px){
+            #header{top:10px;padding:6px 14px}#header h1{font-size:12px}
+            #search-wrap{top:60px}#search-input{font-size:13px}#search-btn{padding:7px 16px;font-size:12px}
+            #filter-bar{top:106px;gap:4px}.filter-btn{padding:4px 11px;font-size:10px}
+            #results{top:148px}
+            #detail-panel{padding:16px 16px 22px}
+            #detail-panel h2{font-size:17px}
+            #current-loc-btn{bottom:70px;width:36px;height:36px;font-size:16px}
+            #counter{font-size:10px;padding:4px 12px}
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="header"><h1>🇰🇷 대한민국 <span>|</span> 관광명소 40선</h1></div>
+    <div id="header"><h1>🇰🇷 K-여행 지도 <span>|</span> 대한민국 관광명소</h1></div>
     <div id="search-wrap">
-        <span style="font-size:14px;opacity:0.3;margin-right:8px;flex-shrink:0;">🔍</span>
-        <input type="text" id="search-input" autocomplete="off" placeholder="어디로 떠날까요?">
-        <button id="search-btn">Search</button>
+        <input type="text" id="search-input" autocomplete="off" placeholder="명소나 지역을 검색...">
+        <button id="search-btn">검색</button>
+    </div>
+    <div id="filter-bar">
+        <button class="filter-btn active" data-cat="all">전체</button>
+        <button class="filter-btn" data-cat="역사">🏛️ 역사</button>
+        <button class="filter-btn" data-cat="자연">🌿 자연</button>
+        <button class="filter-btn" data-cat="문화">🎭 문화</button>
+        <button class="filter-btn" data-cat="쇼핑">🛍️ 쇼핑</button>
+        <button class="filter-btn" data-cat="맛집">🍜 맛집</button>
+        <button class="filter-btn" data-cat="랜드마크">🗼 랜드마크</button>
+        <button class="filter-btn" data-cat="기타">📌 기타</button>
     </div>
     <div id="results"></div>
-    <div id="counter"><span id="cn">40</span> places</div>    <script>
-        const attractions = [
-            {name:'경복궁',region:'서울',lat:37.5796,lng:126.9770,cat:'궁궐/역사',desc:'조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 웅장한 서울 대표 유적지.',tip:'한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요.'},
-            {name:'남산서울타워',region:'서울',lat:37.5512,lng:126.9882,cat:'랜드마크',desc:'서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 데이트 명소.',tip:'일몰 시간에 맞춰 가면 낮과 밤을 모두 즐길 수 있어요. 케이블카 추천!'},
-            {name:'북촌한옥마을',region:'서울',lat:37.5826,lng:126.9850,cat:'문화/전통',desc:'전통 한옥이 보존된 서울 도심 속 역사 마을. 골목골목 정취가 가득.',tip:'조용한 주택가이니 방문 시 주의! 북촌 8경 코스를 따라 걸어보세요.'},
-            {name:'명동',region:'서울',lat:37.5609,lng:126.9853,cat:'쇼핑/거리',desc:'서울 최대 쇼핑과 먹거리 천국. 명동성당도 인근에 위치.',tip:'저녁 시간이 더 활기참! 길거리 음식 중 떡볶이와 통닭꼬치가 인기.'},
-            {name:'인사동',region:'서울',lat:37.5736,lng:126.9855,cat:'문화/전통',desc:'전통 문화와 현대 예술이 공존하는 서울의 문화 거리.',tip:'쌈지길에서 다양한 공예품 구경! 전통 찻집에서 여유도 즐기세요.'},
-            {name:'홍대',region:'서울',lat:37.5563,lng:126.9236,cat:'문화/거리',desc:'젊음의 거리. 클럽과 카페, 길거리 공연의 메카.',tip:'주말 걷고 싶은 거리 버스킹 공연 필수! 다양한 카페 탐방도.'},
-            {name:'강남',region:'서울',lat:37.4981,lng:127.0276,cat:'쇼핑/업무',desc:'한국 경제 중심지. K-pop의 본고장, 코엑스 별마당 도서관 유명.',tip:'코엑스 별마당 도서관 인생샷 명소! 저녁엔 강남역 인근 먹거리.'},
-            {name:'여의도',region:'서울',lat:37.5219,lng:126.9244,cat:'랜드마크',desc:'63빌딩과 한강이 어우러진 업무 중심지. 봄 벚꽃 명소.',tip:'4월 윤중로 벚꽃길 최고! 63빌딩 전망대 야경도 놓치지 마세요.'},
-            {name:'제주도',region:'제주',lat:33.3803,lng:126.5350,cat:'자연/섬',desc:'한국 최대 섬이자 세계적 휴양지. 올레길과 화산 지형의 천국.',tip:'렌터카 여행 필수! 우도와 마라도 섬투어도 강력 추천합니다.'},
-            {name:'한라산',region:'제주',lat:33.3625,lng:126.5334,cat:'자연/산',desc:'해발 1,950m 웅장한 사화산. UNESCO 세계자연유산.',tip:'성판악 코스가 가장 인기! 정상 백록담은 맑은 날에만 볼 수 있어요.'},
-            {name:'성산일출봉',region:'제주',lat:33.4581,lng:126.9425,cat:'자연/명소',desc:'UNESCO 세계자연유산. 일출이 장관인 거대한 분화구.',tip:'해돋이 명소! 입구에서 우동과 성게비빔밥도 꼭 맛보세요.'},
-            {name:'해운대',region:'부산',lat:35.1587,lng:129.1603,cat:'해변/휴양',desc:'부산 대표 해수욕장. 길이 1.5km 백사장과 현대적 도시의 조화.',tip:'겨울에는 해운대 빛 축제! 동백섬 산책로도 함께 둘러보세요.'},
-            {name:'감천문화마을',region:'부산',lat:35.0978,lng:129.0107,cat:'문화/마을',desc:'알록달록 벽화와 예술 작품이 가득한 부산 문화 마을.',tip:'마을 지도(2,000원) 사서 스탬프 투어 도전! 인생샷 명소 많아요.'},
-            {name:'광안리해수욕장',region:'부산',lat:35.1538,lng:129.1183,cat:'해변/휴양',desc:'광안대교의 화려한 야경이 아름다운 부산의 해변.',tip:'광안리 카페거리에서 커피 한 잔과 함께 야경을 즐겨보세요.'},
-            {name:'자갈치시장',region:'부산',lat:35.0978,lng:129.0292,cat:'맛집/시장',desc:'한국 최대 수산시장. 활어회의 본고장.',tip:'2층에서 회를 사서 1층 식당에 가져가면 횟감값+자리값만 내요!'},
-            {name:'경주역사지구',region:'경주',lat:35.7890,lng:129.2240,cat:'역사/유적',desc:'신라 천년의 고도. 대릉원, 안압지, 첨성대 등 유적의 보고.',tip:'자전거 투어가 최고! 황리단길 한옥 카페도 꼭 방문해보세요.'},
-            {name:'불국사',region:'경주',lat:35.7902,lng:129.3321,cat:'사찰/역사',desc:'신라 대표 사찰, UNESCO 세계문화유산. 석가탑과 다보탑이 유명.',tip:'석굴암과 함께 관람! 아침 일찍 가면 한적하게 즐길 수 있어요.'},
-            {name:'석굴암',region:'경주',lat:35.7951,lng:129.3492,cat:'사찰/역사',desc:'통일신라 불교 조각 예술의 정수. UNESCO 세계문화유산.',tip:'사진 촬영이 제한되니 눈에 담아오세요.'},
-            {name:'안동하회마을',region:'경북',lat:36.5392,lng:128.5172,cat:'전통/마을',desc:'조선 양반 마을 원형 보존. UNESCO 세계문화유산.',tip:'낙동강에서 배 타고 마을 전체 조망! 탈박물관도 필수 방문.'},
-            {name:'전주한옥마을',region:'전북',lat:35.8138,lng:127.1485,cat:'전통/마을',desc:'한옥과 한식(비빔밥)의 본고장. 전통 문화 체험의 최적지.',tip:'한복 대여해서 마을 거니는 게 인기! 전동성당도 함께 방문.'},
-            {name:'대구동성로',region:'대구',lat:35.8692,lng:128.5952,cat:'쇼핑/거리',desc:'대구의 명동. 패션과 먹거리 중심지.',tip:'서문시장 야시장 구경! 납작만두와 치맥이 대구 대표 야식.'},
-            {name:'대전엑스포공원',region:'대전',lat:36.3767,lng:127.3844,cat:'공원/전시',desc:'1993 대전엑스포 개최지. 한빛탑이 상징적인 복합 문화 공간.',tip:'한빛탑 야경이 아름다움! 대전시립미술관도 함께 방문하세요.'},
-            {name:'울산대왕암공원',region:'울산',lat:35.5022,lng:129.4292,cat:'자연/공원',desc:'동해안 절경. 기암괴석과 소나무가 어우러진 해안공원.',tip:'해돋이 명소! 대왕암 해상 데크길 산책이 정말 일품입니다.'},
-            {name:'인천차이나타운',region:'인천',lat:37.4778,lng:126.6190,cat:'문화/거리',desc:'한국 최초의 차이나타운. 짜장면의 발상지.',tip:'짜장면 박물관 방문! 개항장 거리도 함께 둘러보세요.'},
-            {name:'광주국립아시아문화전당',region:'광주',lat:35.1467,lng:126.9184,cat:'문화/전시',desc:'아시아 문화 교류 중심. 현대적 건축물이 돋보이는 문화 공간.',tip:'무료 전시 많음! 광주비엔날레 전시관도 인근에 있어요.'},
-            {name:'설악산국립공원',region:'강원',lat:38.1195,lng:128.4642,cat:'자연/산',desc:'한국의 알프스. 웅장한 암봉과 단풍이 아름다운 명산.',tip:'케이블카 타고 권금성까지! 10월 단풍 시즌이 절정입니다.'},
-            {name:'남해군',region:'경남',lat:34.8140,lng:127.9289,cat:'자연/섬',desc:'다도해의 아름다운 풍경. 독일마을과 청정 바다의 조화.',tip:'독일마을에서 이국적 풍경! 가천 다랭이마을도 함께 추천.'},
-            {name:'통영케이블카',region:'경남',lat:34.8315,lng:128.4227,cat:'자연/명소',desc:'한려해상국립공원을 한눈에 내려다보는 스릴 만점 케이블카.',tip:'스카이워크도 체험! 통영 대표 먹거리 충무김밥과 굴 요리.'},
-            {name:'순천만국가정원',region:'전남',lat:34.9258,lng:127.4947,cat:'자연/공원',desc:'세계적 생태 관광지. 갈대밭과 S자 수로의 장관.',tip:'일몰 때 갈대밭 황금빛 순간이 최고! 용산전망대까지 꼭.'},
-            {name:'제부도',region:'경기',lat:37.1945,lng:126.6313,cat:'자연/섬',desc:'하루 두 번 바닷길이 열리는 신비한 섬.',tip:'물때표 꼭 확인! 해변에서 조개잡이 체험도 할 수 있어요.'},
-            {name:'용인에버랜드',region:'경기',lat:37.2935,lng:127.2070,cat:'테마파크',desc:'한국 최대 테마파크. 사계절 다양한 축제와 놀이기구.',tip:'주말에는 꼭 미리 예약! 판다월드 푸바오가 인기 만점입니다.'},
-            {name:'포항죽도시장',region:'경북',lat:36.0180,lng:129.3657,cat:'맛집/시장',desc:'과메기와 물회의 본고장. 포항 대표 전통시장.',tip:'과메기 정식과 물회가 시장의 대표 메뉴! 꼭 맛보세요.'},
-            {name:'속초관광수산시장',region:'강원',lat:38.2072,lng:128.5921,cat:'맛집/시장',desc:'강원도 대표 시장. 오징어순대와 닭강정이 유명.',tip:'닭강정과 오징어순대 필수 코스! 속초해수욕장도 함께.'},
-            {name:'철원 DMZ',region:'강원',lat:38.2220,lng:127.2140,cat:'역사/평화',desc:'한반도 분단의 현장. 평화와 생태의 상징적인 장소.',tip:'출입증 필요! 철원 주상절리와 직탕폭포도 함께 구경.'},
-            {name:'천안독립기념관',region:'충남',lat:36.7803,lng:127.2217,cat:'역사/기념관',desc:'한국 독립운동의 역사를 기리는 대표적인 기념관.',tip:'입장료 무료! 천안 삼거리도 함께 방문해보세요.'},
-            {name:'공주무령왕릉',region:'충남',lat:36.4613,lng:127.1178,cat:'역사/유적',desc:'백제 시대 왕릉. 금관과 장신구 등 귀중한 유물이 출토된 곳.',tip:'국립공주박물관에서 유물 전시 중! 공산성도 함께 방문.'},
-            {name:'부여백제문화단지',region:'충남',lat:36.2748,lng:126.9127,cat:'역사/문화',desc:'백제 역사와 문화를 재현한 대규모 테마파크.',tip:'부소산성과 낙화암도 함께! 백제문화제(9-10월)가 최고.'},
-            {name:'충주호',region:'충북',lat:36.9712,lng:128.0019,cat:'자연/호수',desc:'청풍호반과 유람선이 아름다운 충북의 대표 호수.',tip:'유람선 타고 호수 둘러보기! 충주 탄금대도 방문해보세요.'},
-            {name:'단양고수동굴',region:'충북',lat:36.9578,lng:128.3630,cat:'자연/동굴',desc:'천연동굴의 신비를 체험하는 충북 대표 명소.',tip:'도담삼봉과 만천하 스카이워크도 함께 즐기세요!'},
+    <div id="counter"><span id="cn">40</span>개 명소</div>
+    <button id="current-loc-btn" title="내 위치" onclick="locateMe()">📍</button>
+
+    <!-- 상세 패널 -->
+    <div id="detail-overlay" onclick="closeDetail()"></div>
+    <div id="detail-panel">
+        <button class="close-detail" onclick="closeDetail()">✕</button>
+        <div class="handle"></div>
+        <span class="cat-tag" id="dt-cat"></span>
+        <h2 id="dt-name"></h2>
+        <div class="r-line" id="dt-region"></div>
+        <div class="d-text" id="dt-desc"></div>
+        <div class="t-box" id="dt-tip"></div>
+        <div class="actions">
+            <a class="navi" id="dt-navi" target="_blank">📍 네이버 길찾기</a>
+            <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 찜하기</button>
+        </div>
+        <div class="coord-text" id="dt-coords"></div>
+    </div>    <script>
+        // ===== 관광명소 데이터 (40개) =====
+        var D = [
+            {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 유명한 서울 대표 유적지입니다.",t:"한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요."},
+            {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 데이트 명소.",t:"일몰 시간에 맞춰 가면 낮과 밤 풍경을 모두 즐길 수 있어요."},
+            {n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥이 보존된 서울 도심 속 역사 마을.",t:"조용한 주택가이니 방문 시 주의! 북촌 8경을 따라 걸어보세요."},
+            {n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑과 먹거리 천국. 명동성당도 인근에 위치.",t:"저녁 시간이 더 활기참! 길거리 음식이 인기 만점입니다."},
+            {n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화와 현대 예술이 공존하는 서울의 문화 거리.",t:"쌈지길에서 다양한 공예품을 구경해보세요."},
+            {n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리, 클럽과 카페, 길거리 공연의 메카.",t:"주말 걷고 싶은 거리에서 버스킹 공연을 꼭 보세요!"},
+            {n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지이자 K-pop의 본고장.",t:"코엑스 별마당 도서관은 인생샷 명소! 저녁엔 강남역 인근 먹거리."},
+            {n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"랜드마크",d:"63빌딩과 한강이 어우러진 업무 중심지, 봄 벚꽃 명소.",t:"4월 윤중로 벚꽃길이 유명! 63빌딩 전망대 야경이 아름다움."},
+            {n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬이자 세계적 휴양지. 올레길과 화산 지형이 매력.",t:"렌터카 여행 필수! 우도와 마라도 섬투어도 강력 추천합니다."},
+            {n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연",d:"해발 1,950m 웅장한 사화산. UNESCO 세계자연유산.",t:"성판악 코스가 가장 인기! 정상 백록담은 맑은 날에만 볼 수 있어요."},
+            {n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 세계자연유산. 일출이 장관인 거대한 분화구.",t:"해돋이 명소! 입구에서 우동과 성게비빔밥도 꼭 맛보세요."},
+            {n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"자연",d:"부산 대표 해수욕장. 길이 1.5km 백사장과 현대적 도시의 조화.",t:"겨울에는 해운대 빛 축제! 동백섬 산책로도 함께 둘러보세요."},
+            {n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"알록달록 벽화와 예술 작품이 가득한 부산 문화 마을.",t:"마을 지도(2,000원) 사서 스탬프 투어 도전! 인생샷 명소 많아요."},
+            {n:"광안리해수욕장",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교의 화려한 야경이 아름다운 부산의 해변.",t:"광안리 카페거리에서 커피 한 잔과 함께 야경을 즐겨보세요."},
+            {n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집",d:"한국 최대 수산시장. 활어회의 본고장.",t:"2층에서 회를 사서 1층 식당에 가져가면 횟감값+자리값만 내요!"},
+            {n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년의 고도. 대릉원, 안압지, 첨성대 등 유적의 보고.",t:"자전거 투어가 최고! 황리단길 한옥 카페도 꼭 방문해보세요."},
+            {n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰, UNESCO 세계문화유산. 석가탑과 다보탑이 유명.",t:"석굴암과 함께 관람! 아침 일찍 가면 한적하게 즐길 수 있어요."},
+            {n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각 예술의 정수. UNESCO 세계문화유산.",t:"사진 촬영이 제한되니 눈에 담아오세요."},
+            {n:"안동하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을 원형 보존. UNESCO 세계문화유산.",t:"낙동강에서 배 타고 마을 전체 조망! 탈박물관도 필수 방문."},
+            {n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"문화",d:"한옥과 한식(비빔밥)의 본고장. 전통 문화 체험의 최적지.",t:"한복 대여해서 마을 거니는 게 인기! 전동성당도 함께 방문."},
+            {n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동. 패션과 먹거리 중심지.",t:"서문시장 야시장 구경! 납작만두와 치맥이 대구 대표 야식."},
+            {n:"대전엑스포공원",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 대전엑스포 개최지. 한빛탑이 상징.",t:"한빛탑 야경이 아름다움! 대전시립미술관도 함께 방문하세요."},
+            {n:"울산대왕암공원",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경. 기암괴석과 소나무가 어우러진 해안공원.",t:"해돋이 명소! 대왕암 해상 데크길 산책이 정말 일품입니다."},
+            {n:"인천차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초의 차이나타운. 짜장면의 발상지.",t:"짜장면 박물관 방문! 개항장 거리도 함께 둘러보세요."},
+            {n:"광주국립아시아문화전당",r:"광주",a:35.1467,o:126.9184,c:"문화",d:"아시아 문화 교류 중심. 현대적 건축물.",t:"무료 전시 많음! 광주비엔날레 전시관도 인근에 있어요."},
+            {n:"설악산국립공원",r:"강원",a:38.1195,o:128.4642,c:"자연",d:"한국의 알프스. 웅장한 암봉과 단풍 아름다운 명산.",t:"케이블카 타고 권금성까지! 10월 단풍 시즌이 절정입니다."},
+            {n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연",d:"다도해의 아름다운 풍경. 독일마을과 청정 바다.",t:"독일마을에서 이국적 풍경! 가천 다랭이마을도 함께 추천."},
+            {n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연",d:"한려해상국립공원을 한눈에 케이블카.",t:"스카이워크도 체험! 통영 대표 먹거리 충무김밥과 굴 요리."},
+            {n:"순천만국가정원",r:"전남",a:34.9258,o:127.4947,c:"자연",d:"세계적 생태 관광지. 갈대밭과 S자 수로 장관.",t:"일몰 때 갈대밭 황금빛 순간이 최고! 용산전망대까지 꼭."},
+            {n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연",d:"하루 두 번 바닷길이 열리는 신비한 섬.",t:"물때표 꼭 확인! 해변에서 조개잡이 체험도 할 수 있어요."},
+            {n:"용인에버랜드",r:"경기",a:37.2935,o:127.2070,c:"랜드마크",d:"한국 최대 테마파크. 사계절 다양한 축제.",t:"주말에는 꼭 미리 예약! 판다월드 푸바오가 인기 만점입니다."},
+            {n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집",d:"과메기와 물회의 본고장. 포항 대표 전통시장.",t:"과메기 정식과 물회가 시장의 대표 메뉴! 꼭 맛보세요."},
+            {n:"속초관광수산시장",r:"강원",a:38.2072,o:128.5921,c:"맛집",d:"강원도 대표 시장. 오징어순대와 닭강정 유명.",t:"닭강정과 오징어순대 필수 코스! 속초해수욕장도 함께."},
+            {n:"철원 DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단의 현장. 평화와 생태의 상징.",t:"출입증 필요! 철원 주상절리와 직탕폭포도 함께 구경."},
+            {n:"천안독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"한국 독립운동의 역사를 기리는 대표 기념관.",t:"입장료 무료! 천안 삼거리도 함께 방문해보세요."},
+            {n:"공주무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉. 금관과 장신구 등 귀중 유물 출토.",t:"국립공주박물관에서 유물 전시 중! 공산성도 함께 방문."},
+            {n:"부여백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사와 문화를 재현한 대규모 테마파크.",t:"부소산성과 낙화암도 함께! 백제문화제(9-10월)가 최고."},
+            {n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반과 유람선이 아름다운 충북의 호수.",t:"유람선 타고 호수 둘러보기! 충주 탄금대도 방문해보세요."},
+            {n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연",d:"천연동굴의 신비를 체험하는 충북 대표 명소.",t:"도담삼봉과 만천하 스카이워크도 함께 즐기세요!"},
         ];
 
-        // 지도
-        const map = L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
+        // ===== 전역 변수 =====
+        var map, markers = [], _curLat, _curLng, _wish = [], _selIdx = -1;
+        var catFilter = "all";
+        var CC = {"역사":"#e74c3c","랜드마크":"#f97316","문화":"#8b5cf6","쇼핑":"#9b59b6","자연":"#2ecc71","맛집":"#f59e0b","기타":"#3498db"};
+
+        // 찜하기 로드
+        try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
+
+        function $(i){return document.getElementById(i)}
+
+        // ===== 지도 초기화 =====
+        map = L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
         L.control.zoom({position:'bottomright'}).addTo(map);
 
-        // 카테고리 색상
-        const cc={
-            '궁궐/역사':'#e74c3c','랜드마크':'#f97316','문화/전통':'#2ecc71','쇼핑/거리':'#9b59b6',
-            '문화/거리':'#ec4899','쇼핑/업무':'#1abc9c','자연/섬':'#3498db','자연/산':'#27ae60',
-            '자연/명소':'#1abc9c','해변/휴양':'#00bcd4','문화/마을':'#ff5722','맛집/시장':'#f59e0b',
-            '역사/유적':'#8d6e63','사찰/역사':'#fbbf24','전통/마을':'#4caf50','공원/전시':'#2196f3',
-            '자연/공원':'#009688','문화/전시':'#8b5cf6','테마파크':'#ff4081','역사/평화':'#795548',
-            '역사/기념관':'#607d8b','역사/문화':'#84cc16','자연/호수':'#06b6d4','자연/동굴':'#795548',
-        };
+        // ===== 마커 생성 =====
+        D.forEach(function(a, i){
+            var c = CC[a.c]||"#8b5cf6";
+            var icon = L.divIcon({
+                html:'<div style="position:relative;width:28px;height:40px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2))"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="'+c+'" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="6" fill="#fff"/></svg></div>',
+                iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-42],className:''
+            });
+            var m = L.marker([a.a,a.o],{icon}).addTo(map);
+            m._idx = i;
+            var pop = '<div class="popup-c"><h3>'+a.n+'</h3><span class="tag" style="background:'+c+'">'+a.c+'</span><div class="r">📍 '+a.r+'</div><div class="d">'+a.d+'</div><div class="t"><b>💡 TIP</b><br>'+a.t+'</div></div>';
+            m.bindPopup(pop,{className:'custom-popup',maxWidth:300,closeButton:true});
+            m.on('click',function(){showDetail(this._idx)});
+            markers.push(m);
+        });
+        $("cn").textContent = D.length;
 
-        const markers=[];
-
-        // SVG 핀 마커 생성 (모던 스타일)
-        function makeIcon(color,size=28){
-            const s=size,h=s*1.4;
-            return L.divIcon({
-                html:`<div style="position:relative;width:${s}px;height:${h}px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2));transition:filter 0.3s">
-                    <svg width="${s}" height="${h}" viewBox="0 0 28 40">
-                        <path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="${color}" stroke="#fff" stroke-width="1.8"/>
-                        <circle cx="14" cy="13" r="6" fill="#fff"/>
-                    </svg>
-                </div>`,
-                iconSize:[s,h],iconAnchor:[s/2,h],popupAnchor:[0,-h-2],className:''
+        // ===== 현재 위치 =====
+        function locateMe(){
+            if(!navigator.geolocation){alert("GPS를 지원하지 않는 브라우저입니다.");return}
+            $("current-loc-btn").textContent = "⏳";
+            navigator.geolocation.getCurrentPosition(function(p){
+                _curLat = p.coords.latitude;
+                _curLng = p.coords.longitude;
+                map.setView([_curLat,_curLng],12,{animate:true});
+                L.circleMarker([_curLat,_curLng],{radius:8,color:"#4f8cf7",fillColor:"#4f8cf7",fillOpacity:0.3}).addTo(map);
+                $("current-loc-btn").textContent = "📍";
+                // 주변 명소 검색
+                findNearby();
+            }, function(){
+                alert("위치를 가져올 수 없습니다.");
+                $("current-loc-btn").textContent = "📍";
             });
         }
 
-        attractions.forEach(a=>{
-            const c=cc[a.cat]||'#8b5cf6';
-            const icon=makeIcon(c);
-            const m=L.marker([a.lat,a.lng],{icon}).addTo(map);
-            const popup=`<div class="popup-c"><h3>${a.name}</h3><span class="tag" style="background:${c}">${a.cat}</span><div class="r">📍 ${a.region}</div><div class="d">${a.desc}</div><div class="t"><b>💡 TIP</b><br>${a.tip}</div><div class="c">📌 ${a.lat.toFixed(4)}, ${a.lng.toFixed(4)}</div></div>`;
-            m.bindPopup(popup,{className:'custom-popup',maxWidth:340,closeButton:true});
-            m.on('mouseover',function(){this.openPopup()});
-            m.on('mouseout',function(){this.closePopup()});
-            markers.push({marker:m,data:a});
+        function findNearby(){
+            if(!_curLat||!_curLng) return;
+            var sorted = D.map(function(a,i){return {idx:i,dist:getDistance(_curLat,_curLng,a.a,a.o)}}).sort(function(a,b){return a.dist-b.dist});
+            var html = '<div style="padding:10px 14px;margin-bottom:6px;background:rgba(255,255,255,0.92);border-radius:14px;color:var(--ac2);font-size:13px;font-weight:600">📍 내 주변 명소</div>';
+            sorted.slice(0,5).forEach(function(s){
+                var a = D[s.idx], c = CC[a.c]||"#8b5cf6";
+                var d = s.dist < 1 ? (Math.round(s.dist*1000)+"m") : (s.dist.toFixed(1)+"km");
+                html += '<div class=result-item onclick="showDetail('+s.idx+')"><div class=t><h3>'+a.n+'</h3><span class=badge style=background:'+c+'>'+a.c+'</span></div><div class=r><span>📍 '+a.r+'</span><span class=dist>'+d+'</span></div></div>';
+            });
+            $("results").innerHTML = html;
+            $("results").style.display = "block";
+        }
+
+        function getDistance(lat1,lng1,lat2,lng2){
+            var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+            var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+            return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+        }
+
+        // ===== 필터 =====
+        document.querySelectorAll(".filter-btn").forEach(function(btn){
+            btn.addEventListener("click",function(){
+                document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active")});
+                this.classList.add("active");
+                catFilter = this.getAttribute("data-cat");
+                applyFilter();
+            });
         });
 
-        document.getElementById('cn').textContent=attractions.length;
-
-        // 검색
-        const si=document.getElementById('search-input'),sb=document.getElementById('search-btn'),rd=document.getElementById('results');
-        function ds(){
-            const q=si.value.trim().toLowerCase();
-            if(!q){rd.style.display='none';return;}
-            const f=attractions.filter(a=>a.name.toLowerCase().includes(q)||a.region.toLowerCase().includes(q)||a.cat.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q));
-            rd.innerHTML='';
-            if(!f.length){rd.innerHTML='<div class="result-item" style="text-align:center;color:var(--text3);padding:20px;">😅 검색 결과가 없습니다</div>';rd.style.display='block';return;}
-            f.forEach(a=>{
-                const el=document.createElement('div');el.className='result-item';
-                const c=cc[a.cat]||'#8b5cf6';
-                el.innerHTML=`<div class="t"><h3>${a.name}</h3><span class="badge" style="background:${c}">${a.cat}</span></div><div class="r">📍 ${a.region}</div>`;
-                el.addEventListener('click',()=>{
-                    map.setView([a.lat,a.lng],12,{animate:true,duration:0.5});
-                    rd.style.display='none';si.value=a.name;
-                    const found=markers.find(m=>m.data.name===a.name);
-                    if(found) setTimeout(()=>found.marker.openPopup(),600);
-                });
-                rd.appendChild(el);
+        function applyFilter(){
+            markers.forEach(function(m){
+                var a = D[m._idx];
+                if(catFilter === "all") m.setOpacity(1);
+                else m.setOpacity(a.c === catFilter ? 1 : 0.3);
             });
-            rd.style.display='block';
         }
-        sb.addEventListener('click',ds);
-        si.addEventListener('keydown',e=>{if(e.key==='Enter')ds()});
-        let dt;
-        si.addEventListener('input',()=>{clearTimeout(dt);dt=setTimeout(ds,250)});
-        document.addEventListener('click',e=>{if(!rd.contains(e.target)&&!e.target.closest('#search-wrap'))rd.style.display='none'});
+
+        // ===== 검색 =====
+        function doSearch(){
+            var q = $("search-input").value.trim().toLowerCase();
+            if(!q){$("results").style.display="none";return}
+            var f = D.filter(function(a){return a.n.toLowerCase().indexOf(q)>=0||a.r.toLowerCase().indexOf(q)>=0||a.c.toLowerCase().indexOf(q)>=0||a.d.toLowerCase().indexOf(q)>=0});
+            var html = "";
+            if(!f.length){html='<div style="padding:14px;text-align:center;color:var(--t3)">😅 검색 결과가 없습니다</div>'}
+            else{
+                f.forEach(function(a){
+                    var c=CC[a.c]||"#8b5cf6";
+                    html+='<div class=result-item onclick="showDetail('+D.indexOf(a)+')"><div class=t><h3>'+a.n+'</h3><span class=badge style=background:'+c+'>'+a.c+'</span></div><div class=r><span>📍 '+a.r+'</span></div></div>';
+                });
+            }
+            $("results").innerHTML=html;
+            $("results").style.display="block";
+        }
+
+        $("search-btn").addEventListener("click",doSearch);
+        $("search-input").addEventListener("keydown",function(e){if(e.key==="Enter")doSearch()});
+        var dt;
+        $("search-input").addEventListener("input",function(){clearTimeout(dt);dt=setTimeout(doSearch,250)});
+        $("results").addEventListener("click",function(e){e.stopPropagation()});
+        document.addEventListener("click",function(){$("results").style.display="none"});
+
+        // ===== 상세 패널 =====
+        function showDetail(i){
+            _selIdx = i;
+            var a = D[i], c = CC[a.c]||"#8b5cf6";
+            $("dt-cat").textContent = a.c;
+            $("dt-cat").style.background = c;
+            $("dt-name").textContent = a.n;
+            $("dt-region").textContent = "📍 " + a.r;
+            $("dt-desc").textContent = a.d;
+            $("dt-tip").innerHTML = "<b>💡 여행 팁</b><br>" + a.t;
+            $("dt-navi").href = "https://map.naver.com/p/directions/"+a.a+","+a.o+","+encodeURIComponent(a.n)+"?c="+a.o+","+a.a+",15,0,0,0,dh";
+            $("dt-coords").textContent = "위도: "+a.a+", 경도: "+a.o;
+            // 찜 상태
+            var isW = _wish.indexOf(i) >= 0;
+            $("dt-wish").textContent = isW ? "❤️ 찜 완료" : "🤍 찜하기";
+            $("detail-overlay").style.display = "block";
+            $("detail-panel").classList.add("open");
+        }
+
+        function closeDetail(){
+            $("detail-overlay").style.display = "none";
+            $("detail-panel").classList.remove("open");
+        }
+
+        function toggleWish(){
+            if(_selIdx < 0) return;
+            var idx = _wish.indexOf(_selIdx);
+            if(idx >= 0){
+                _wish.splice(idx,1);
+                $("dt-wish").textContent = "🤍 찜하기";
+            } else {
+                _wish.push(_selIdx);
+                $("dt-wish").textContent = "❤️ 찜 완료";
+            }
+            localStorage.setItem("ktour_wish", JSON.stringify(_wish));
+        }
+
+        window.addEventListener("resize",function(){map.invalidateSize()});
     </script>
 </body>
 </html>
