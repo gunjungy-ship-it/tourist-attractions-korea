@@ -171,7 +171,7 @@ var CC={"역사":"#d4956b","지역명소":"#e8b44f","문화":"#b8a88e","쇼핑":
 try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
 function $(i){return document.getElementById(i)}
 map=L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
 L.control.zoom({position:'bottomright'}).addTo(map);
 D.forEach(function(a,i){var c=CC[a.c]||"#e8b44f";var icon=L.divIcon({html:'<div style="position:relative;width:28px;height:40px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15))"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="'+c+'" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="6" fill="#fff"/></svg></div>',iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-42],className:''});var m=L.marker([a.a,a.o],{icon}).addTo(map);m._idx=i;var pop='<div class="popup-c"><h3>'+a.n+'</h3><span class="tag" style="background:'+c+'">'+a.c+'</span><div class="r">📍 '+a.r+'</div><div class="d">'+a.d+'</div><div class="t"><b>💡 TIP</b><br>'+a.t+'</div></div>';m.bindPopup(pop,{className:'custom-popup',maxWidth:300,closeButton:true});m.on('click',function(){showDetail(this._idx)});markers.push(m)});
 $("cn").textContent=D.length;
