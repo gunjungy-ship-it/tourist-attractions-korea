@@ -138,7 +138,7 @@
         .result-item .r{font-size:12px;color:var(--t2);margin-top:4px;display:flex;align-items:center;gap:8px}
         .result-item .r .dist{color:#d4956b;font-size:11px;font-weight:600}
 
-        #bottom-bar {
+        #bottom-bar {gap:6px;
             position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:500;
             display:flex; align-items:center; gap:8px;
         }
@@ -293,7 +293,7 @@
 
     <div id="bottom-bar">
         <div id="counter">🇰🇷 <span id="cn">40</span>개 관광명소</div>
-        <button id="current-loc-btn" title="내 위치" onclick="locateMe()">📍</button>
+        <button id="install-btn2" onclick="installApp()" style="width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--bd);backdrop-filter:blur(16px);box-shadow:0 2px 12px rgba(0,0,0,0.03);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s;flex-shrink:0;display:none" title="앱 설치">📲</button><button id="current-loc-btn" title="내 위치" onclick="locateMe()">📍</button>
     </div>
 
     <div id="install-banner">
@@ -390,7 +390,11 @@
         });
         $("cn").textContent = D.length;
 
-        function locateMe(){
+        function installApp(){if(_installEvent){_installEvent.prompt();_installEvent.userChoice.then(function(){document.getElementById("install-btn2").style.display="none";$("install-banner").style.display="none"})}else{alert("브라우저에서 설치를 지원하지 않거나 이미 설치되었습니다.")}}
+
+function _checkInstall(){if(window.matchMedia("(display-mode:standalone)").matches||window.navigator.standalone===true){document.getElementById("install-btn2").style.display="none"}}
+
+function locateMe(){
             if(!navigator.geolocation){alert("GPS를 지원하지 않습니다");return}
             $("current-loc-btn").textContent = "⏳";
             navigator.geolocation.getCurrentPosition(function(p){
@@ -484,10 +488,12 @@
             localStorage.setItem("ktour_wish", JSON.stringify(_wish));
         }
 
-        window.addEventListener("beforeinstallprompt", function(e){
+        _checkInstall();
+window.addEventListener("beforeinstallprompt", function(e){
             e.preventDefault();
             _installEvent = e;
             $("install-banner").style.display = "flex";
+            document.getElementById("install-btn2").style.display = "flex"
         });
         $("install-btn").addEventListener("click", function(){
             if(!_installEvent) return;
