@@ -15,7 +15,7 @@
     <link rel="canonical" href="https://gunjungy-ship-it.github.io/tourist-attractions-korea/" />
     <meta name="google-site-verification" content="9fTJUTbwBOZM_licANmNi8Yr0iAUUKJQ7LyiWF7RH18" />
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root{--bg:#fff;--card:rgba(255,255,255,0.92);--text:#1a1a2e;--t2:#6b7280;--t3:#9ca3af;--bd:rgba(0,0,0,0.05);--ac:#e8b44f;--ac2:#f0c96d;--gr1:linear-gradient(135deg,#e8b44f,#f0c96d);--gr2:linear-gradient(135deg,#e8b44f,#d4956b);--shadow:0 4px 20px rgba(0,0,0,0.04);--shadow-h:0 8px 32px rgba(0,0,0,0.08);--rd:16px;--rs:10px;--rf:9999px}
@@ -30,9 +30,10 @@
         @keyframes spin{to{transform:rotate(360deg)}}
         #loading-screen p{font-size:14px;color:var(--t2)}
         #map{position:fixed;inset:0;z-index:1}
-        .leaflet-control-zoom a{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--bd)!important;backdrop-filter:blur(16px)!important;width:36px!important;height:36px!important;line-height:36px!important;font-size:16px!important;box-shadow:var(--shadow)!important}
-        .leaflet-control-attribution{background:rgba(255,255,255,0.85)!important;color:var(--t3)!important;font-size:9px!important}
-        .leaflet-control-attribution a{color:var(--t3)!important}
+        #map .custom_zoomcontrol{position:absolute;right:12px;bottom:32px;width:36px;overflow:hidden;border-radius:8px;border:1px solid var(--bd);background:var(--card);box-shadow:var(--shadow);z-index:10}
+        #map .custom_zoomcontrol button{display:block;width:36px;height:36px;border:0;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
+        #map .custom_zoomcontrol button+button{border-top:1px solid var(--bd)}
+        #map .custom_zoomcontrol button:hover{background:#fef9e7}
         #hero{position:fixed;top:0;left:0;right:0;z-index:1000;padding:24px 24px 56px;background:linear-gradient(180deg,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0));pointer-events:none}
         #hero .badge{display:inline-block;padding:4px 14px;background:var(--gr1);border-radius:var(--rf);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
         #hero h1{font-size:30px;font-weight:900;letter-spacing:-1.5px;color:var(--text);line-height:1.15;margin-bottom:3px}
@@ -87,9 +88,7 @@
         #detail-panel .coord-text{font-size:10px;color:var(--t3);margin-top:8px}
         #detail-panel .close-detail{position:absolute;top:14px;right:18px;background:rgba(0,0,0,0.03);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center}
         #detail-panel .close-detail:hover{background:rgba(0,0,0,0.06);color:var(--text)}
-        .custom-popup .leaflet-popup-content-wrapper{background:var(--card);backdrop-filter:blur(24px) saturate(1.4);border-radius:var(--rd);box-shadow:var(--shadow-h);border:1px solid var(--bd);padding:2px}
-        .custom-popup .leaflet-popup-tip{background:var(--card)}
-        .custom-popup .leaflet-popup-close-button{color:var(--t3)!important;top:4px!important;right:4px!important;opacity:0.5!important}
+        .kakao-info{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;color:var(--text);font:600 13px `"Noto Sans KR`",sans-serif;box-shadow:var(--shadow)}
         .popup-c{padding:6px 4px;min-width:180px;max-width:260px}
         .popup-c h3{font-size:15px;font-weight:700;margin-bottom:2px}
         .popup-c .tag{display:inline-block;padding:2px 10px;border-radius:var(--rf);font-size:9px;font-weight:600;color:#fff;margin-bottom:4px}
@@ -160,9 +159,10 @@
             <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 찜하기</button>
         </div>
         <div class="coord-text" id="dt-coords"></div>
-    </div>    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </div>    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f1f6a5676a7d304e349e3600a0d473d6"></script>
     <script>
         window.addEventListener('load',function(){setTimeout(function(){document.getElementById('loading-screen').classList.add('hidden')},400)});
+window.addEventListener('error',function(e){if(String(e.message||'').toLowerCase().indexOf('kakao')>=0){var p=document.querySelector('#loading-screen p');if(p)p.textContent='지도를 불러오지 못했습니다. 새로고침하거나 잠시 후 다시 시도해주세요.';document.getElementById('loading-screen').classList.remove('hidden')}});
         if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js').catch(function(e){})}
         var D=[{n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁",t:"한복 입고 무료 입장!"},{n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"지역명소",d:"서울의 상징 N서울타워",t:"일몰 시간에 맞춰 방문!"},{n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥 보존 마을",t:"8경 코스 추천"},{n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑 천국",t:"저녁이 더 활기참!"},{n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화 거리",t:"쌈지길 구경!"},{n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리",t:"버스킹 필수"},{n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지",t:"코엑스 별마당!"},{n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"지역명소",d:"63빌딩과 한강",t:"4월 벚꽃길 유명"},{n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬",t:"렌터카 필수!"},{n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연",d:"해발 1,950m",t:"성판악 코스 인기"},{n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 자연유산",t:"해돋이 명소!"},{n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"자연",d:"부산 대표 해수욕장",t:"겨울에 축제!"},{n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"벽화 가득 마을",t:"스탬프 투어!"},{n:"광안리",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교 야경",t:"카페거리 추천"},{n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집",d:"한국 최대 수산시장",t:"2층서 사서 1층에!"},{n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년 고도",t:"자전거 투어 최고"},{n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰",t:"석굴암과 함께"},{n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각",t:"사진 촬영 제한"},{n:"하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을",t:"배 타고 조망!"},{n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"문화",d:"한옥과 한식",t:"한복 대여 추천"},{n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동",t:"야시장 구경!"},{n:"대전엑스포",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 엑스포 개최지",t:"한빛탑 야경!"},{n:"울산대왕암",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경",t:"해돋이 명소!"},{n:"차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초 차이나타운",t:"짜장면 박물관"},{n:"광주ACC",r:"광주",a:35.1467,o:126.9184,c:"문화",d:"아시아 문화 교류",t:"무료 전시 많음"},{n:"설악산",r:"강원",a:38.1195,o:128.4642,c:"자연",d:"한국의 알프스",t:"케이블카 추천"},{n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연",d:"다도해 풍경",t:"독일마을!"},{n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연",d:"한려해상 케이블카",t:"스카이워크 체험"},{n:"순천만",r:"전남",a:34.9258,o:127.4947,c:"자연",d:"세계적 생태 관광지",t:"일몰 갈대밭!"},{n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연",d:"바닷길 열리는 섬",t:"물때표 확인"},{n:"에버랜드",r:"경기",a:37.2935,o:127.2070,c:"지역명소",d:"한국 최대 테마파크",t:"주말 예약 필수"},{n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집",d:"과메기와 물회",t:"과메기 정식!"},{n:"속초시장",r:"강원",a:38.2072,o:128.5921,c:"맛집",d:"강원도 대표 시장",t:"닭강정과 순대!"},{n:"철원DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단 현장",t:"출입증 필요"},{n:"독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"독립운동 역사",t:"입장료 무료"},{n:"무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉",t:"국립공주박물관"},{n:"백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사 재현",t:"부소산성도 함께"},{n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반 유람선",t:"유람선 추천"},{n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연",d:"천연동굴 체험",t:"도담삼봉도 함께"},
 ];
@@ -170,14 +170,13 @@ var map,markers=[],_curLat,_curLng,_wish=[],_selIdx=-1,_installEvent=null,catFil
 var CC={"역사":"#d4956b","지역명소":"#e8b44f","문화":"#b8a88e","쇼핑":"#c49b6e","자연":"#8fbc8f","맛집":"#d4956b"};
 try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
 function $(i){return document.getElementById(i)}
-map=L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
-L.control.zoom({position:'bottomright'}).addTo(map);
-D.forEach(function(a,i){var c=CC[a.c]||"#e8b44f";var icon=L.divIcon({html:'<div style="position:relative;width:28px;height:40px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15))"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="'+c+'" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="6" fill="#fff"/></svg></div>',iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-42],className:''});var m=L.marker([a.a,a.o],{icon}).addTo(map);m._idx=i;var pop='<div class="popup-c"><h3>'+a.n+'</h3><span class="tag" style="background:'+c+'">'+a.c+'</span><div class="r">📍 '+a.r+'</div><div class="d">'+a.d+'</div><div class="t"><b>💡 TIP</b><br>'+a.t+'</div></div>';m.bindPopup(pop,{className:'custom-popup',maxWidth:300,closeButton:true});m.on('click',function(){showDetail(this._idx)});markers.push(m)});
+map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(36.0,127.8),level:8});
+var zoomEl=document.createElement('div');zoomEl.className='custom_zoomcontrol';zoomEl.innerHTML='<button type="button" aria-label="확대">+</button><button type="button" aria-label="축소">−</button>';document.getElementById('map').appendChild(zoomEl);zoomEl.children[0].onclick=function(){map.setLevel(map.getLevel()-1)};zoomEl.children[1].onclick=function(){map.setLevel(map.getLevel()+1)};
+D.forEach(function(a,i){var color=CC[a.c]||"#e8b44f";var el=document.createElement('div');el.style.cssText='width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:'+color+';border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.22);cursor:pointer';var pos=new kakao.maps.LatLng(a.a,a.o);var overlay=new kakao.maps.CustomOverlay({position:pos,content:el,yAnchor:1});overlay.setMap(map);var iw=new kakao.maps.InfoWindow({content:'<div style="padding:8px 12px;font-size:13px;font-weight:700;white-space:nowrap">'+a.n+' · '+a.r+'</div>'});el.addEventListener('click',function(ev){ev.stopPropagation();iw.open(map,new kakao.maps.Marker({position:pos}));showDetail(i)});markers.push({overlay:overlay,el:el,idx:i,info:iw,position:pos})});
 $("cn").textContent=D.length;
 function installApp(){if(_installEvent){_installEvent.prompt();_installEvent.userChoice.then(function(){document.getElementById("install-btn2").style.display="none";$("install-banner").style.display="none"})}else{alert("브라우저에서 설치를 지원하지 않거나 이미 설치되었습니다.")}}
 function _checkInstall(){if(window.matchMedia("(display-mode:standalone)").matches||window.navigator.standalone===true){document.getElementById("install-btn2").style.display="none"}}
-function locateMe(){if(!navigator.geolocation){alert("GPS를 지원하지 않습니다");return}$("current-loc-btn").textContent="⏳";navigator.geolocation.getCurrentPosition(function(p){_curLat=p.coords.latitude;_curLng=p.coords.longitude;map.setView([_curLat,_curLng],12,{animate:true});L.circleMarker([_curLat,_curLng],{radius:8,color:"#e8b44f",fillColor:"#e8b44f",fillOpacity:0.15}).addTo(map);$("current-loc-btn").textContent="📍";findNearby()},function(){$("current-loc-btn").textContent="📍"})}
+function locateMe(){if(!navigator.geolocation){alert("GPS를 지원하지 않습니다");return}$("current-loc-btn").textContent="⏳";navigator.geolocation.getCurrentPosition(function(p){_curLat=p.coords.latitude;_curLng=p.coords.longitude;map.setCenter(new kakao.maps.LatLng(_curLat,_curLng));map.setLevel(5);var current=new kakao.maps.Marker({position:new kakao.maps.LatLng(_curLat,_curLng)});current.setMap(map);$("current-loc-btn").textContent="📍";findNearby()},function(){$("current-loc-btn").textContent="📍"})}
 function findNearby(){if(!_curLat||!_curLng)return;var sorted=D.map(function(a,i){return{idx:i,dist:getDistance(_curLat,_curLng,a.a,a.o)}}).sort(function(a,b){return a.dist-b.dist});var html='<div style="padding:12px 16px;margin-bottom:6px;background:var(--card);border:1px solid rgba(232,180,79,0.2);border-radius:var(--rd);color:#d4956b;font-size:12px;font-weight:600">📍 내 주변 명소</div>';sorted.slice(0,5).forEach(function(s){var a=D[s.idx],c=CC[a.c]||"#e8b44f",d=s.dist<1?(Math.round(s.dist*1000)+"m"):(s.dist.toFixed(1)+"km");html+='<div class=result-item onclick="showDetail('+s.idx+')"><div class=t><h3>'+a.n+'</h3><span class=badge style=background:'+c+'>'+a.c+'</span></div><div class=r><span>📍 '+a.r+'</span><span class=dist>'+d+'</span></div></div>'});showSkeleton(3);setTimeout(function(){$("results").innerHTML=html;$("results").style.display="block"},300)}
 function getDistance(lat1,lng1,lat2,lng2){var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
 function showSkeleton(c){var h="";for(var i=0;i<c;i++){h+='<div class="result-item skeleton-item"><div class="t"><div class="skeleton skeleton-text" style="margin:0"></div><div class="skeleton skeleton-badge"></div></div><div class="r" style="margin-top:8px"><div class="skeleton skeleton-text-short" style="margin:0"></div></div></div>'}$("results").innerHTML=h;$("results").style.display="block"}
@@ -188,14 +187,14 @@ $("search-input").addEventListener("keydown",function(e){if(e.key==="Enter")doSe
 var dt;$("search-input").addEventListener("input",function(){clearTimeout(dt);dt=setTimeout(doSearch,300)});
 $("results").addEventListener("click",function(e){e.stopPropagation()});
 document.addEventListener("click",function(){$("results").style.display="none"});
-document.querySelectorAll(".filter-btn").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active")});this.classList.add("active");catFilter=this.getAttribute("data-cat");markers.forEach(function(m){var a=D[m._idx];if(catFilter==="all")m.setOpacity(1);else m.setOpacity(a.c===catFilter?1:0.25)})})});
+document.querySelectorAll(".filter-btn").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active")});this.classList.add("active");catFilter=this.getAttribute("data-cat");markers.forEach(function(m){var a=D[m._idx];if(catFilter==="all")m.overlay.setMap(map);else m.overlay.setMap(a.c===catFilter?map:null)})})});
 function showDetail(i){_selIdx=i;var a=D[i],c=CC[a.c]||"#e8b44f";$("dt-cat").textContent=a.c;$("dt-cat").style.background=c;$("dt-name").textContent=a.n;$("dt-region").textContent="📍 "+a.r;$("dt-desc").textContent=a.d;$("dt-tip").innerHTML="<b>💡 여행 팁</b><br>"+a.t;$("dt-navi2").href="https://map.kakao.com/link/to/"+encodeURIComponent(a.n)+","+a.a+","+a.o;$("dt-coords").textContent="📌 "+a.a+", "+a.o;var isW=_wish.indexOf(i)>=0;$("dt-wish").textContent=isW?"❤️ 찜 완료":"🤍 찜하기";$("detail-overlay").style.display="block";$("detail-panel").classList.add("open")}
 function closeDetail(){$("detail-overlay").style.display="none";$("detail-panel").classList.remove("open")}
 function toggleWish(){if(_selIdx<0)return;var idx=_wish.indexOf(_selIdx);if(idx>=0){_wish.splice(idx,1);$("dt-wish").textContent="🤍 찜하기"}else{_wish.push(_selIdx);$("dt-wish").textContent="❤️ 찜 완료"}localStorage.setItem("ktour_wish",JSON.stringify(_wish))}
 _checkInstall();
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();_installEvent=e;$("install-banner").style.display="flex";document.getElementById("install-btn2").style.display="flex"});
 $("install-btn").addEventListener("click",function(){if(!_installEvent)return;_installEvent.prompt();_installEvent.userChoice.then(function(){$("install-banner").style.display="none"})});
-window.addEventListener("resize",function(){map.invalidateSize()});
+window.addEventListener("resize",function(){if(map)map.relayout()});
     </script>
 </body>
 </html>
