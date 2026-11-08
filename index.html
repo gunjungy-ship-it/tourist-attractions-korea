@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>K-TRAVEL | 대한민국 관광명소 검색</title>
     <meta name="description" content="대한민국 전국 40개 관광명소를 지도에서 검색하고 찾아보세요. 경복궁, 제주도, 부산 해운대 등 인기 여행지 정보와 길찾기, 여행 팁을 제공합니다.">
-    <meta name="keywords" content="대한민국 관광명소, 한국 여행, 경복궁, 제주도, 부산, 서울 관광, 여행 지도, K-TRAVEL">
     <meta property="og:type" content="website" />
     <meta property="og:title" content="K-TRAVEL | 대한민국 관광명소 검색" />
     <meta property="og:description" content="대한민국 40개 관광명소를 지도로 찾아보세요!" />
@@ -16,13 +15,8 @@
     <link rel="canonical" href="https://gunjungy-ship-it.github.io/tourist-attractions-korea/" />
     <meta name="google-site-verification" content="9fTJUTbwBOZM_licANmNi8Yr0iAUUKJQ7LyiWF7RH18" />
     <link rel="manifest" href="manifest.json">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></noscript>
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root{--bg:#fff;--card:rgba(255,255,255,0.92);--text:#1a1a2e;--t2:#6b7280;--t3:#9ca3af;--bd:rgba(0,0,0,0.05);--ac:#e8b44f;--ac2:#f0c96d;--gr1:linear-gradient(135deg,#e8b44f,#f0c96d);--gr2:linear-gradient(135deg,#e8b44f,#d4956b);--shadow:0 4px 20px rgba(0,0,0,0.04);--shadow-h:0 8px 32px rgba(0,0,0,0.08);--rd:16px;--rs:10px;--rf:9999px}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -166,7 +160,8 @@
             <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 찜하기</button>
         </div>
         <div class="coord-text" id="dt-coords"></div>
-    </div>    <script>
+    </div>    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
         window.addEventListener('load',function(){setTimeout(function(){document.getElementById('loading-screen').classList.add('hidden')},400)});
         if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js').catch(function(e){})}
         var D=[{n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁",t:"한복 입고 무료 입장!"},{n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"지역명소",d:"서울의 상징 N서울타워",t:"일몰 시간에 맞춰 방문!"},{n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥 보존 마을",t:"8경 코스 추천"},{n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑 천국",t:"저녁이 더 활기참!"},{n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화 거리",t:"쌈지길 구경!"},{n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리",t:"버스킹 필수"},{n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지",t:"코엑스 별마당!"},{n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"지역명소",d:"63빌딩과 한강",t:"4월 벚꽃길 유명"},{n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬",t:"렌터카 필수!"},{n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연",d:"해발 1,950m",t:"성판악 코스 인기"},{n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 자연유산",t:"해돋이 명소!"},{n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"자연",d:"부산 대표 해수욕장",t:"겨울에 축제!"},{n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"벽화 가득 마을",t:"스탬프 투어!"},{n:"광안리",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교 야경",t:"카페거리 추천"},{n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집",d:"한국 최대 수산시장",t:"2층서 사서 1층에!"},{n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년 고도",t:"자전거 투어 최고"},{n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰",t:"석굴암과 함께"},{n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각",t:"사진 촬영 제한"},{n:"하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을",t:"배 타고 조망!"},{n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"문화",d:"한옥과 한식",t:"한복 대여 추천"},{n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동",t:"야시장 구경!"},{n:"대전엑스포",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 엑스포 개최지",t:"한빛탑 야경!"},{n:"울산대왕암",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경",t:"해돋이 명소!"},{n:"차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초 차이나타운",t:"짜장면 박물관"},{n:"광주ACC",r:"광주",a:35.1467,o:126.9184,c:"문화",d:"아시아 문화 교류",t:"무료 전시 많음"},{n:"설악산",r:"강원",a:38.1195,o:128.4642,c:"자연",d:"한국의 알프스",t:"케이블카 추천"},{n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연",d:"다도해 풍경",t:"독일마을!"},{n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연",d:"한려해상 케이블카",t:"스카이워크 체험"},{n:"순천만",r:"전남",a:34.9258,o:127.4947,c:"자연",d:"세계적 생태 관광지",t:"일몰 갈대밭!"},{n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연",d:"바닷길 열리는 섬",t:"물때표 확인"},{n:"에버랜드",r:"경기",a:37.2935,o:127.2070,c:"지역명소",d:"한국 최대 테마파크",t:"주말 예약 필수"},{n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집",d:"과메기와 물회",t:"과메기 정식!"},{n:"속초시장",r:"강원",a:38.2072,o:128.5921,c:"맛집",d:"강원도 대표 시장",t:"닭강정과 순대!"},{n:"철원DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단 현장",t:"출입증 필요"},{n:"독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"독립운동 역사",t:"입장료 무료"},{n:"무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉",t:"국립공주박물관"},{n:"백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사 재현",t:"부소산성도 함께"},{n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반 유람선",t:"유람선 추천"},{n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연",d:"천연동굴 체험",t:"도담삼봉도 함께"},
