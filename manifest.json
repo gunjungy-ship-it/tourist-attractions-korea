@@ -1,10 +1,10 @@
-{
+﻿{
     "name": "K-TRAVEL",
     "short_name": "K-TRAVEL",
-    "description": "대한민국 관광명소 40선을 지도로 탐색하세요",
+    "description": "??쒕?援?愿愿묐챸??40?좎쓣 吏?꾨줈 ?먯깋?섏꽭??,
     "start_url": "/tourist-attractions-korea/",
     "display": "standalone",
-    "background_color": "#fef9e7",
+    "background_color": "#ffffff",
     "theme_color": "#e8b44f",
     "orientation": "portrait-primary",
     "categories": ["travel", "navigation", "lifestyle"],

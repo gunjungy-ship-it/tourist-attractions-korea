@@ -10,18 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #fef9e7;
-            --card: rgba(255,255,255,0.9);
-            --text: #5d4e37;
-            --t2: #8b7a62;
-            --t3: #b8a88e;
-            --bd: rgba(0,0,0,0.04);
+            --bg: #ffffff;
+            --card: rgba(255,255,255,0.92);
+            --text: #1a1a2e;
+            --t2: #6b7280;
+            --t3: #9ca3af;
+            --bd: rgba(0,0,0,0.05);
             --ac: #e8b44f;
             --ac2: #f0c96d;
             --gr1: linear-gradient(135deg, #e8b44f, #f0c96d);
             --gr2: linear-gradient(135deg, #e8b44f, #d4956b);
-            --shadow: 0 4px 20px rgba(200,170,120,0.1);
-            --shadow-h: 0 8px 32px rgba(200,170,120,0.15);
+            --shadow: 0 4px 20px rgba(0,0,0,0.04);
+            --shadow-h: 0 8px 32px rgba(0,0,0,0.08);
             --rd: 16px;
             --rs: 10px;
             --rf: 9999px;
@@ -39,13 +39,13 @@
             width:36px!important;height:36px!important;line-height:36px!important;
             font-size:16px!important;box-shadow:var(--shadow)!important;
         }
-        .leaflet-control-attribution{background:rgba(255,255,255,0.7)!important;color:var(--t3)!important;font-size:9px!important}
+        .leaflet-control-attribution{background:rgba(255,255,255,0.85)!important;color:var(--t3)!important;font-size:9px!important}
         .leaflet-control-attribution a{color:var(--t3)!important}
 
         #hero {
             position:fixed; top:0; left:0; right:0; z-index:1000;
             padding:24px 24px 56px;
-            background:linear-gradient(180deg,rgba(254,249,231,0.95) 40%,rgba(254,249,231,0));
+            background:linear-gradient(180deg,rgba(255,255,255,0.95) 40%,rgba(255,255,255,0));
             pointer-events:none;
         }
         #hero .badge {
@@ -77,7 +77,7 @@
             border-color:rgba(232,180,79,0.3);
             box-shadow:0 8px 40px rgba(232,180,79,0.1),0 0 0 3px rgba(232,180,79,0.08);
         }
-        #search-icon{font-size:18px;opacity:0.35;margin-right:12px;flex-shrink:0}
+        #search-icon{font-size:18px;opacity:0.3;margin-right:12px;flex-shrink:0}
         #search-input{
             flex:1;background:none;border:none;outline:none;
             color:var(--text);font-size:15px;font-weight:400;
@@ -162,7 +162,7 @@
 
         #detail-overlay{
             position:fixed;inset:0;z-index:2000;
-            background:rgba(0,0,0,0.2);
+            background:rgba(0,0,0,0.15);
             display:none;
         }
         #detail-panel{
@@ -171,7 +171,7 @@
             -webkit-backdrop-filter:blur(32px) saturate(1.5);
             border-radius:20px 20px 0 0;
             border-top:1px solid var(--bd);
-            box-shadow:0 -12px 60px rgba(200,170,120,0.12);
+            box-shadow:0 -12px 60px rgba(0,0,0,0.06);
             padding:16px 24px 20px;
             max-height:92vh;overflow-y:auto;
             transform:translateY(100%);
