@@ -51,6 +51,19 @@
         .filter-btn{padding:6px 16px;border:1px solid var(--bd);border-radius:var(--rf);background:var(--card);color:var(--t2);font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:all 0.2s}
         .filter-btn:hover{border-color:rgba(232,180,79,0.3);color:var(--text)}
         .filter-btn.active{background:var(--gr1);color:#fff;border-color:transparent}
+        .view-switch{position:fixed;top:218px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:4px;padding:4px;background:rgba(255,255,255,.92);border:1px solid var(--bd);border-radius:var(--rf);box-shadow:var(--shadow)}
+        .view-switch button{border:0;border-radius:var(--rf);padding:7px 18px;background:transparent;color:var(--t2);font:600 12px inherit;cursor:pointer;white-space:nowrap}
+        .view-switch button.active{background:var(--gr1);color:white}
+        #festival-tools{display:none;position:fixed;top:264px;left:50%;transform:translateX(-50%);z-index:1000;width:92%;max-width:520px;gap:7px}
+        #festival-search,#festival-region{height:38px;background:var(--card);border:1px solid var(--bd);border-radius:var(--rs);padding:0 12px;color:var(--text);font:13px inherit;box-shadow:var(--shadow);outline:none}
+        #festival-search{flex:1;min-width:0}#festival-region{max-width:120px}
+        #festival-results{display:none;position:fixed;z-index:1001;top:310px;left:50%;transform:translateX(-50%);width:92%;max-width:520px;max-height:calc(100vh - 350px);overflow:auto}
+        .festival-item{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:13px 15px;margin-bottom:7px;box-shadow:var(--shadow);cursor:pointer}
+        .festival-item:hover{border-color:rgba(232,180,79,.4);box-shadow:var(--shadow-h)}
+        .festival-item h3{font-size:14px;margin-bottom:4px}.festival-item .meta{font-size:11px;color:var(--t2);line-height:1.6}.festival-item .dates{color:#b7791f;font-weight:600}
+        .festival-note{background:rgba(232,180,79,.12);color:#806523;border-radius:var(--rs);padding:9px 12px;font-size:11px;line-height:1.5;margin-bottom:8px}
+        .festival-map-marker{width:30px;height:30px;border:2px solid #fff;border-radius:50%;background:#d4956b;color:#fff;font:700 12px 'Noto Sans KR',sans-serif;box-shadow:0 2px 9px rgba(93,78,55,.3);cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .festival-map-marker:hover{transform:scale(1.12);background:#bd7950}
         #results{position:fixed;top:222px;left:50%;transform:translateX(-50%);z-index:1000;width:92%;max-width:520px;max-height:calc(100vh-255px);overflow-y:auto;display:none}
         #results::-webkit-scrollbar{width:3px}#results::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border-radius:2px}
         @keyframes rfade{from{opacity:0;transform:translateY(-8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -133,6 +146,9 @@
         <button class="filter-btn" data-cat="맛집">맛집</button>
         <button class="filter-btn" data-cat="지역명소">지역명소</button>
     </div>
+    <div class="view-switch" id="view-switch"><button class="active" data-view="places">관광명소</button><button data-view="festivals">지역 축제</button></div>
+    <div id="festival-tools"><input id="festival-search" type="search" placeholder="축제명·지역 검색"><select id="festival-region"><option value="all">전국</option></select></div>
+    <div id="festival-results"></div>
     <div id="results"></div>
     <div id="bottom-bar">
         <div id="counter">🇰🇷 <span id="cn">40</span>개 관광명소</div>
@@ -166,14 +182,83 @@ window.addEventListener('error',function(e){if(String(e.message||'').toLowerCase
         if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js').catch(function(e){})}
         var D=[{n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁",t:"한복 입고 무료 입장!"},{n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"지역명소",d:"서울의 상징 N서울타워",t:"일몰 시간에 맞춰 방문!"},{n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥 보존 마을",t:"8경 코스 추천"},{n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑 천국",t:"저녁이 더 활기참!"},{n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화 거리",t:"쌈지길 구경!"},{n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리",t:"버스킹 필수"},{n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지",t:"코엑스 별마당!"},{n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"지역명소",d:"63빌딩과 한강",t:"4월 벚꽃길 유명"},{n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬",t:"렌터카 필수!"},{n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연",d:"해발 1,950m",t:"성판악 코스 인기"},{n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 자연유산",t:"해돋이 명소!"},{n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"자연",d:"부산 대표 해수욕장",t:"겨울에 축제!"},{n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"벽화 가득 마을",t:"스탬프 투어!"},{n:"광안리",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교 야경",t:"카페거리 추천"},{n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집",d:"한국 최대 수산시장",t:"2층서 사서 1층에!"},{n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년 고도",t:"자전거 투어 최고"},{n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰",t:"석굴암과 함께"},{n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각",t:"사진 촬영 제한"},{n:"하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을",t:"배 타고 조망!"},{n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"문화",d:"한옥과 한식",t:"한복 대여 추천"},{n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동",t:"야시장 구경!"},{n:"대전엑스포",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 엑스포 개최지",t:"한빛탑 야경!"},{n:"울산대왕암",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경",t:"해돋이 명소!"},{n:"차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초 차이나타운",t:"짜장면 박물관"},{n:"광주ACC",r:"광주",a:35.1467,o:126.9184,c:"문화",d:"아시아 문화 교류",t:"무료 전시 많음"},{n:"설악산",r:"강원",a:38.1195,o:128.4642,c:"자연",d:"한국의 알프스",t:"케이블카 추천"},{n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연",d:"다도해 풍경",t:"독일마을!"},{n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연",d:"한려해상 케이블카",t:"스카이워크 체험"},{n:"순천만",r:"전남",a:34.9258,o:127.4947,c:"자연",d:"세계적 생태 관광지",t:"일몰 갈대밭!"},{n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연",d:"바닷길 열리는 섬",t:"물때표 확인"},{n:"에버랜드",r:"경기",a:37.2935,o:127.2070,c:"지역명소",d:"한국 최대 테마파크",t:"주말 예약 필수"},{n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집",d:"과메기와 물회",t:"과메기 정식!"},{n:"속초시장",r:"강원",a:38.2072,o:128.5921,c:"맛집",d:"강원도 대표 시장",t:"닭강정과 순대!"},{n:"철원DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단 현장",t:"출입증 필요"},{n:"독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"독립운동 역사",t:"입장료 무료"},{n:"무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉",t:"국립공주박물관"},{n:"백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사 재현",t:"부소산성도 함께"},{n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반 유람선",t:"유람선 추천"},{n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연",d:"천연동굴 체험",t:"도담삼봉도 함께"},
 ];
-var map,markers=[],_curLat,_curLng,_wish=[],_selIdx=-1,_installEvent=null,catFilter="all";
+        var map,markers=[],festivalMarkers=[],_curLat,_curLng,_wish=[],_selIdx=-1,_installEvent=null,catFilter="all";
+        var activeView="places",festivalFilterRegion="all";
 var CC={"역사":"#d4956b","지역명소":"#e8b44f","문화":"#b8a88e","쇼핑":"#c49b6e","자연":"#8fbc8f","맛집":"#d4956b"};
+        // 지역 축제 예시 일정. 공식 일정은 매년 변동되므로 방문 전 주최 측 안내를 확인하세요.
+        var FESTIVALS=[
+            {name:"진해군항제",region:"경남 창원",lat:35.1552,lng:128.6597,start:"매년 3~4월",place:"창원시 진해구 일원",desc:"벚꽃길과 군악·의장 행사를 함께 즐기는 봄 대표 축제.",tip:"개최 일정과 교통 통제 정보를 창원시 공식 안내에서 확인하세요."},
+            {name:"태안 세계튤립꽃박람회",region:"충남 태안",lat:36.6444,lng:126.3019,start:"매년 4~5월",place:"코리아플라워파크",desc:"다양한 튤립과 봄꽃을 감상하는 꽃 축제.",tip:"운영 기간과 개장 시간은 공식 홈페이지에서 확인하세요."},
+            {name:"보성다향대축제",region:"전남 보성",lat:34.7217,lng:127.0801,start:"매년 5월",place:"한국차문화공원",desc:"차밭 풍경과 차 시음·다례 체험을 즐기는 녹차 축제.",tip:"체험 프로그램 사전 예약 여부를 확인하세요."},
+            {name:"춘천마임축제",region:"강원 춘천",lat:37.8813,lng:127.7298,start:"매년 5~6월",place:"춘천시 일원",desc:"거리와 공연장에서 펼쳐지는 국내 대표 마임·공연 예술 축제.",tip:"공연별 장소와 시간표를 공식 안내에서 확인하세요."},
+            {name:"부산국제록페스티벌",region:"부산",lat:35.1006,lng:128.8558,start:"매년 여름",place:"삼락생태공원",desc:"국내외 뮤지션 공연을 즐기는 야외 음악 축제.",tip:"출연진과 날짜는 매년 달라지므로 공식 공지를 확인하세요."},
+            {name:"보령머드축제",region:"충남 보령",lat:36.3069,lng:126.5120,start:"매년 7월",place:"대천해수욕장",desc:"머드 체험과 공연을 함께 즐기는 여름 해변 축제.",tip:"프로그램별 운영일과 입장 정보를 공식 사이트에서 확인하세요."},
+            {name:"인천펜타포트 락 페스티벌",region:"인천",lat:37.4563,lng:126.7052,start:"매년 여름",place:"송도달빛축제공원",desc:"국내외 밴드 공연이 이어지는 대형 음악 페스티벌.",tip:"티켓·출연진·교통 정보를 공식 채널에서 확인하세요."},
+            {name:"대구치맥페스티벌",region:"대구",lat:35.8714,lng:128.6014,start:"매년 여름",place:"두류공원 일원",desc:"치킨과 맥주, 공연을 함께 즐기는 도심 축제.",tip:"행사장 운영 및 대중교통 정보를 미리 확인하세요."},
+            {name:"무주반딧불축제",region:"전북 무주",lat:36.0071,lng:127.6608,start:"매년 8~9월",place:"무주군 일원",desc:"반딧불이 관찰과 생태 체험을 중심으로 한 환경 축제.",tip:"반딧불이 관찰은 사전 예약이 필요할 수 있습니다."},
+            {name:"안동국제탈춤페스티벌",region:"경북 안동",lat:36.5684,lng:128.7294,start:"매년 9~10월",place:"안동 탈춤공원 및 하회마을",desc:"국내외 탈춤 공연과 전통문화를 만나는 축제.",tip:"공연 일정과 장소를 축제 공식 안내에서 확인하세요."},
+            {name:"진주남강유등축제",region:"경남 진주",lat:35.1800,lng:128.1076,start:"매년 10월",place:"진주성·남강 일원",desc:"남강과 진주성 일대를 수놓는 유등 축제.",tip:"야간 관람이 중심이므로 교통·입장 안내를 확인하세요."},
+            {name:"김장문화축제",region:"서울",lat:37.5665,lng:126.9780,start:"매년 11월",place:"서울광장 일원",desc:"김장 나눔과 김치 문화를 체험하는 도심 행사.",tip:"참여 프로그램 신청 기간을 확인하세요."},
+            {name:"화천산천어축제",region:"강원 화천",lat:38.1062,lng:127.7082,start:"매년 1월",place:"화천천 일원",desc:"얼음낚시와 겨울 체험을 즐기는 대표 겨울 축제.",tip:"기상에 따라 일정이 조정될 수 있어 공식 공지를 확인하세요."},
+            {name:"평창송어축제",region:"강원 평창",lat:37.3708,lng:128.3903,start:"매년 겨울",place:"진부면 오대천 일원",desc:"얼음낚시와 송어 체험을 즐기는 겨울 축제.",tip:"운영 일정과 체험권 정보를 방문 전에 확인하세요."}
+        ];
 try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
 function $(i){return document.getElementById(i)}
 map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(36.0,127.8),level:8});
 var zoomEl=document.createElement('div');zoomEl.className='custom_zoomcontrol';zoomEl.innerHTML='<button type="button" aria-label="확대">+</button><button type="button" aria-label="축소">−</button>';document.getElementById('map').appendChild(zoomEl);zoomEl.children[0].onclick=function(){map.setLevel(map.getLevel()-1)};zoomEl.children[1].onclick=function(){map.setLevel(map.getLevel()+1)};
 D.forEach(function(a,i){var color=CC[a.c]||"#e8b44f";var el=document.createElement('div');el.style.cssText='width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:'+color+';border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.22);cursor:pointer';var pos=new kakao.maps.LatLng(a.a,a.o);var overlay=new kakao.maps.CustomOverlay({position:pos,content:el,yAnchor:1});overlay.setMap(map);var iw=new kakao.maps.InfoWindow({content:'<div style="padding:8px 12px;font-size:13px;font-weight:700;white-space:nowrap">'+a.n+' · '+a.r+'</div>'});el.addEventListener('click',function(ev){ev.stopPropagation();iw.open(map,new kakao.maps.Marker({position:pos}));showDetail(i)});markers.push({overlay:overlay,el:el,idx:i,info:iw,position:pos})});
 $("cn").textContent=D.length;
+
+        function setView(view){
+            activeView=view;
+            document.querySelectorAll(".view-switch button").forEach(function(b){b.classList.toggle("active",b.dataset.view===view)});
+            var places=view==="places";
+            $("search-wrap").style.display=places?"flex":"none";
+            $("filter-bar").style.display=places?"flex":"none";
+            $("festival-tools").style.display=places?"none":"flex";
+            $("results").style.display="none";
+            markers.forEach(function(m){m.overlay.setMap(places?map:null)});
+            festivalMarkers.forEach(function(m){m.setMap(places?null:map)});
+            if(!places){initFestivalMarkers();festivalMarkers.forEach(function(m){m.setMap(map)});renderFestivals()}
+            setTimeout(function(){if(map)map.relayout()},80);
+        }
+
+        function renderFestivals(){
+            var q=$("festival-search").value.trim().toLowerCase(),region=$("festival-region").value;
+            var rows=FESTIVALS.filter(function(f){return (region==="all"||f.region.indexOf(region)>=0)&&(!q||(f.name+f.region+f.place+f.desc).toLowerCase().indexOf(q)>=0)});
+            var list=$("festival-results"),html='<div class="festival-note">축제 일정은 매년 변경될 수 있습니다. 방문 전 주최 측 공식 안내에서 최신 일정을 확인하세요.</div>';
+            if(!rows.length)html+='<div class="festival-item" style="text-align:center;color:var(--t2)">조건에 맞는 축제가 없습니다.</div>';
+            rows.forEach(function(f){var i=FESTIVALS.indexOf(f);html+='<article class="festival-item" tabindex="0" data-festival="'+i+'"><h3>'+f.name+'</h3><div class="meta"><span class="dates">'+f.start+'</span> · '+f.region+'<br>📍 '+f.place+'<br>'+f.desc+'</div></article>'});
+            list.innerHTML=html;list.style.display="block";
+            list.querySelectorAll("[data-festival]").forEach(function(card){card.addEventListener("click",function(){focusFestival(Number(this.dataset.festival))});card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();focusFestival(Number(this.dataset.festival))}})});
+        }
+
+        function focusFestival(i){
+            var f=FESTIVALS[i];if(!f)return;
+            map.setCenter(new kakao.maps.LatLng(f.lat,f.lng));map.setLevel(5);
+            $("dt-cat").textContent="축제";$("dt-cat").style.background="#d4956b";
+            $("dt-name").textContent=f.name;$("dt-region").textContent="📍 "+f.region+" · "+f.place;
+            $("dt-desc").textContent=f.desc;$("dt-tip").innerHTML="<b>📅 일정</b><br>"+f.start+"<br><small>"+f.tip+"</small>";
+            $("dt-navi2").href="https://map.kakao.com/link/to/"+encodeURIComponent(f.name)+","+f.lat+","+f.lng;
+            $("dt-coords").textContent="📌 "+f.lat+", "+f.lng;
+            $("detail-overlay").style.display="block";$("detail-panel").classList.add("open");
+        }
+
+        function initFestivalMarkers(){
+            if(festivalMarkers.length)return;
+            FESTIVALS.forEach(function(f){
+                var el=document.createElement('button');
+                el.type='button';el.className='festival-map-marker';el.setAttribute('aria-label',f.name+' 축제 위치');el.textContent='축';
+                var o=new kakao.maps.CustomOverlay({position:new kakao.maps.LatLng(f.lat,f.lng),content:el,yAnchor:0.5,zIndex:20});
+                el.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();focusFestival(FESTIVALS.indexOf(f))});
+                festivalMarkers.push(o);
+            });
+        }
+
+        document.querySelectorAll(".view-switch button").forEach(function(b){b.addEventListener("click",function(){if(this.dataset.view==="festivals")initFestivalMarkers();setView(this.dataset.view)})});
+        $("festival-search").addEventListener("input",renderFestivals);
+        $("festival-region").addEventListener("change",function(){festivalFilterRegion=this.value;renderFestivals()});
+        Array.from(new Set(FESTIVALS.map(function(f){return f.region.split(" ")[0]}))).sort().forEach(function(r){var o=document.createElement("option");o.value=r;o.textContent=r;$("festival-region").appendChild(o)});
 function installApp(){if(_installEvent){_installEvent.prompt();_installEvent.userChoice.then(function(){document.getElementById("install-btn2").style.display="none";$("install-banner").style.display="none"})}else{alert("브라우저에서 설치를 지원하지 않거나 이미 설치되었습니다.")}}
 function _checkInstall(){if(window.matchMedia("(display-mode:standalone)").matches||window.navigator.standalone===true){document.getElementById("install-btn2").style.display="none"}}
 function locateMe(){if(!navigator.geolocation){alert("GPS를 지원하지 않습니다");return}$("current-loc-btn").textContent="⏳";navigator.geolocation.getCurrentPosition(function(p){_curLat=p.coords.latitude;_curLng=p.coords.longitude;map.setCenter(new kakao.maps.LatLng(_curLat,_curLng));map.setLevel(5);var current=new kakao.maps.Marker({position:new kakao.maps.LatLng(_curLat,_curLng)});current.setMap(map);$("current-loc-btn").textContent="📍";findNearby()},function(){$("current-loc-btn").textContent="📍"})}
