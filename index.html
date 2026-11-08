@@ -57,7 +57,7 @@
         #festival-tools{display:none;position:fixed;top:264px;left:50%;transform:translateX(-50%);z-index:1000;width:92%;max-width:520px;gap:7px}
         #festival-search,#festival-region{height:38px;background:var(--card);border:1px solid var(--bd);border-radius:var(--rs);padding:0 12px;color:var(--text);font:13px inherit;box-shadow:var(--shadow);outline:none}
         #festival-search{flex:1;min-width:0}#festival-region{max-width:120px}
-        #festival-results{display:none;position:fixed;z-index:1001;top:310px;left:50%;transform:translateX(-50%);width:92%;max-width:520px;max-height:calc(100vh - 350px);overflow:auto}
+        #festival-results{display:none;position:fixed;z-index:1001;top:310px;left:50%;transform:translateX(-50%);width:92%;max-width:520px;max-height:calc(100vh - 350px);overflow:auto;overscroll-behavior:contain}
         .festival-item{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:13px 15px;margin-bottom:7px;box-shadow:var(--shadow);cursor:pointer}
         .festival-item:hover{border-color:rgba(232,180,79,.4);box-shadow:var(--shadow-h)}
         .festival-item h3{font-size:14px;margin-bottom:4px}.festival-item .meta{font-size:11px;color:var(--t2);line-height:1.6}.festival-item .dates{color:#b7791f;font-weight:600}
@@ -216,6 +216,7 @@ $("cn").textContent=D.length;
             $("search-wrap").style.display=places?"flex":"none";
             $("filter-bar").style.display=places?"flex":"none";
             $("festival-tools").style.display=places?"none":"flex";
+            $("festival-results").style.display=places?"none":"block";
             $("results").style.display="none";
             markers.forEach(function(m){m.overlay.setMap(places?map:null)});
             festivalMarkers.forEach(function(m){m.setMap(places?null:map)});
@@ -229,7 +230,7 @@ $("cn").textContent=D.length;
             var list=$("festival-results"),html='<div class="festival-note">축제 일정은 매년 변경될 수 있습니다. 방문 전 주최 측 공식 안내에서 최신 일정을 확인하세요.</div>';
             if(!rows.length)html+='<div class="festival-item" style="text-align:center;color:var(--t2)">조건에 맞는 축제가 없습니다.</div>';
             rows.forEach(function(f){var i=FESTIVALS.indexOf(f);html+='<article class="festival-item" tabindex="0" data-festival="'+i+'"><h3>'+f.name+'</h3><div class="meta"><span class="dates">'+f.start+'</span> · '+f.region+'<br>📍 '+f.place+'<br>'+f.desc+'</div></article>'});
-            list.innerHTML=html;list.style.display="block";
+            list.innerHTML=html;list.style.display=activeView==="festivals"?"block":"none";
             list.querySelectorAll("[data-festival]").forEach(function(card){card.addEventListener("click",function(){focusFestival(Number(this.dataset.festival))});card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();focusFestival(Number(this.dataset.festival))}})});
         }
 
