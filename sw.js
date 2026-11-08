@@ -3,22 +3,17 @@ self.addEventListener('install', function(e) {
 });
 
 self.addEventListener('activate', function(e) {
-    e.waitUntil(clients.claim());
+    e.waitUntil(
+        caches.keys().then(function(names) {
+            return Promise.all(names.map(function(name) {
+                return caches.delete(name);
+            }));
+        }).then(function() {
+            return clients.claim();
+        })
+    );
 });
 
 self.addEventListener('fetch', function(e) {
-    e.respondWith(
-        caches.match(e.request).then(function(cached) {
-            return cached || fetch(e.request).then(function(response) {
-                return caches.open('ktour-v1').then(function(cache) {
-                    if (e.request.method === 'GET') {
-                        cache.put(e.request, response.clone());
-                    }
-                    return response;
-                });
-            });
-        }).catch(function() {
-            return caches.match('/tourist-attractions-korea/');
-        })
-    );
+    e.respondWith(fetch(e.request));
 });
