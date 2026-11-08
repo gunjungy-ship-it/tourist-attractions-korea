@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>K-TRAVEL - 대한민국 관광명소</title>
+    <title>K-TRAVEL | 대한민국 관광명소 검색</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f0f13;
-            --bg2: #18181d;
-            --card: rgba(24,24,29,0.92);
-            --text: #ffffff;
-            --t2: rgba(255,255,255,0.6);
-            --t3: rgba(255,255,255,0.35);
-            --bd: rgba(255,255,255,0.06);
-            --ac: #6C5CE7;
-            --ac2: #a29bfe;
-            --ac3: #fd79a8;
-            --gr1: linear-gradient(135deg, #6C5CE7, #a29bfe);
-            --gr2: linear-gradient(135deg, #6C5CE7, #fd79a8);
-            --shadow: 0 8px 40px rgba(0,0,0,0.3);
+            --bg: #f5f5f0;
+            --card: rgba(255,255,255,0.92);
+            --text: #1a1a2e;
+            --t2: #6b7280;
+            --t3: #9ca3af;
+            --bd: rgba(0,0,0,0.06);
+            --ac: #e74c3c;
+            --ac2: #f97316;
+            --gr1: linear-gradient(135deg, #e74c3c, #f97316);
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --shadow-h: 0 8px 32px rgba(0,0,0,0.1);
             --rd: 16px;
             --rs: 10px;
             --rf: 9999px;
@@ -32,235 +30,309 @@
 
         #map {
             position:fixed; inset:0; z-index:1;
+            filter: saturate(1.05) contrast(1.02);
         }
-        .leaflet-container{background:var(--bg)!important}
         .leaflet-control-zoom a{
             background:var(--card)!important;color:var(--text)!important;
             border:1px solid var(--bd)!important;
             backdrop-filter:blur(16px)!important;
-            width:38px!important;height:38px!important;line-height:38px!important;
-            font-size:18px!important;box-shadow:var(--shadow)!important;
+            width:36px!important;height:36px!important;line-height:36px!important;
+            font-size:16px!important;box-shadow:var(--shadow)!important;
         }
-        .leaflet-control-attribution{background:rgba(0,0,0,0.3)!important;color:var(--t3)!important;font-size:10px!important}
+        .leaflet-control-attribution{background:rgba(255,255,255,0.7)!important;color:var(--t3)!important;font-size:9px!important}
         .leaflet-control-attribution a{color:var(--t3)!important}
-        .leaflet-tile-pane{filter:saturate(0.6) brightness(0.7) contrast(1.2)}
 
-        /* ===== 히어로 헤더 ===== */
+        /* ===== 히어로 영역 ===== */
         #hero {
             position:fixed; top:0; left:0; right:0; z-index:1000;
-            padding:18px 24px 16px;
-            background:linear-gradient(180deg,rgba(15,15,19,0.92) 60%,transparent);
+            padding:24px 24px 60px;
+            background:linear-gradient(180deg,rgba(245,245,240,0.95) 40%,rgba(245,245,240,0));
+            pointer-events:none;
+        }
+        #hero .badge {
+            display:inline-block;
+            padding:4px 14px;
+            background:var(--gr1);
+            border-radius:var(--rf);
+            color:#fff;
+            font-size:10px;
+            font-weight:700;
+            letter-spacing:1px;
+            margin-bottom:8px;
             pointer-events:none;
         }
         #hero h1 {
-            font-size:28px;font-weight:800;letter-spacing:-1px;
-            background:var(--gr2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-            line-height:1.1;margin-bottom:2px;
+            font-size:32px;
+            font-weight:900;
+            letter-spacing:-1.5px;
+            color:var(--text);
+            line-height:1.15;
+            margin-bottom:4px;
         }
-        #hero h1 small {
-            font-size:14px;font-weight:400;letter-spacing:2px;
-            color:var(--t2);-webkit-text-fill-color:var(--t2);
-            display:block;margin-top:2px;
+        #hero h1 span {
+            background:var(--gr1);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        #hero .sub {
+            font-size:14px;
+            color:var(--t2);
+            font-weight:400;
+            letter-spacing:-0.3px;
+        }
+        #hero .sub b {
+            color:var(--ac);
+            font-weight:600;
         }
 
         /* ===== 검색 ===== */
         #search-wrap {
-            position:fixed; top:88px; left:50%; transform:translateX(-50%); z-index:1000;
-            width:92%; max-width:480px;
+            position:fixed; top:118px; left:50%; transform:translateX(-50%); z-index:1000;
+            width:92%; max-width:520px;
             background:var(--card);
             backdrop-filter:blur(24px) saturate(1.4);
             -webkit-backdrop-filter:blur(24px) saturate(1.4);
             border:1px solid var(--bd);
             border-radius:var(--rd);
-            box-shadow:var(--shadow);
+            box-shadow:var(--shadow-h);
             display:flex; align-items:center;
-            padding:4px 4px 4px 18px;
+            padding:4px 4px 4px 20px;
             transition:all 0.3s;
         }
         #search-wrap:focus-within {
-            border-color:rgba(108,92,231,0.3);
-            box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(108,92,231,0.2);
+            border-color:rgba(231,76,60,0.2);
+            box-shadow:0 8px 40px rgba(231,76,60,0.08),0 0 0 3px rgba(231,76,60,0.06);
+        }
+        #search-icon {
+            font-size:18px;
+            opacity:0.35;
+            margin-right:12px;
+            flex-shrink:0;
         }
         #search-input{
             flex:1;background:none;border:none;outline:none;
-            color:var(--text);font-size:14px;font-weight:400;
-            font-family:inherit;padding:10px 0;
+            color:var(--text);font-size:15px;font-weight:400;
+            font-family:inherit;padding:11px 0;
         }
         #search-input::placeholder{color:var(--t3);font-weight:300}
         #search-btn{
-            padding:9px 22px;border:none;border-radius:var(--rs);
+            padding:10px 24px;border:none;border-radius:var(--rs);
             background:var(--gr1);color:#fff;
             font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;
             transition:all 0.25s;letter-spacing:0.3px;
+            box-shadow:0 4px 16px rgba(231,76,60,0.25);
         }
-        #search-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(108,92,231,0.4)}
+        #search-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(231,76,60,0.35)}
         #search-btn:active{transform:scale(0.96)}
 
         /* ===== 필터 ===== */
         #filter-bar {
-            position:fixed; top:143px; left:50%; transform:translateX(-50%); z-index:1000;
+            position:fixed; top:178px; left:50%; transform:translateX(-50%); z-index:1000;
             display:flex; gap:5px; flex-wrap:nowrap;
-            width:92%; max-width:480px; overflow-x:auto;
+            width:92%; max-width:520px; overflow-x:auto;
             padding:2px 0;
             -webkit-overflow-scrolling:touch;
         }
         #filter-bar::-webkit-scrollbar{display:none}
         .filter-btn {
-            padding:6px 16px;border:1px solid var(--bd);border-radius:var(--rf);
-            background:var(--card);backdrop-filter:blur(12px);
-            color:var(--t2);font-size:11px;font-weight:500;cursor:pointer;
-            font-family:inherit;white-space:nowrap;flex-shrink:0;
-            transition:all 0.25s;letter-spacing:0.3px;
+            padding:6px 16px;
+            border:1px solid var(--bd);
+            border-radius:var(--rf);
+            background:var(--card);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            color:var(--t2);
+            font-size:11px;
+            font-weight:500;
+            cursor:pointer;
+            font-family:inherit;
+            white-space:nowrap;
+            flex-shrink:0;
+            transition:all 0.2s;
+            box-shadow:0 2px 8px rgba(0,0,0,0.03);
         }
-        .filter-btn:hover{border-color:rgba(108,92,231,0.3);color:var(--text)}
-        .filter-btn.active{background:var(--gr1);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(108,92,231,0.3)}
+        .filter-btn:hover{border-color:rgba(231,76,60,0.2);color:var(--text)}
+        .filter-btn.active{
+            background:var(--gr1);
+            color:#fff;
+            border-color:transparent;
+            box-shadow:0 4px 16px rgba(231,76,60,0.2);
+        }
 
         /* ===== 검색 결과 ===== */
         #results{
-            position:fixed; top:195px; left:50%; transform:translateX(-50%); z-index:1000;
-            width:92%; max-width:480px;
-            max-height:calc(100vh-230px); overflow-y:auto; display:none;
+            position:fixed; top:228px; left:50%; transform:translateX(-50%); z-index:1000;
+            width:92%; max-width:520px;
+            max-height:calc(100vh-260px); overflow-y:auto; display:none;
         }
         #results::-webkit-scrollbar{width:3px}
-        #results::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+        #results::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:2px}
         .result-item{
-            background:var(--card);backdrop-filter:blur(24px)saturate(1.4);
-            -webkit-backdrop-filter:blur(24px)saturate(1.4);
+            background:var(--card);
+            backdrop-filter:blur(24px) saturate(1.4);
+            -webkit-backdrop-filter:blur(24px) saturate(1.4);
             border:1px solid var(--bd);
-            padding:14px 18px;margin-bottom:6px;border-radius:var(--rd);
-            cursor:pointer;transition:all 0.25s;
+            padding:14px 18px;
+            margin-bottom:6px;
+            border-radius:var(--rd);
+            cursor:pointer;
+            transition:all 0.25s;
             animation:rfade 0.25s ease;
+            box-shadow:0 2px 8px rgba(0,0,0,0.03);
         }
         @keyframes rfade{from{opacity:0;transform:translateY(-8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-        .result-item:hover{border-color:rgba(108,92,231,0.2);background:rgba(24,24,29,0.96);transform:translateX(4px)}
+        .result-item:hover{
+            border-color:rgba(231,76,60,0.15);
+            box-shadow:var(--shadow-h);
+            transform:translateX(4px);
+        }
         .result-item .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
-        .result-item h3{font-size:15px;font-weight:600}
+        .result-item h3{font-size:15px;font-weight:700}
         .result-item .badge{font-size:9px;padding:3px 10px;border-radius:var(--rf);color:#fff;flex-shrink:0;font-weight:600}
         .result-item .r{font-size:12px;color:var(--t2);margin-top:4px;display:flex;align-items:center;gap:8px}
-        .result-item .r .dist{color:var(--ac2);font-size:11px;font-weight:500}
+        .result-item .r .dist{color:var(--ac2);font-size:11px;font-weight:600}
 
-        /* ===== 하단 패널 (명소 카운터 + 내위치) ===== */
+        /* ===== 하단 ===== */
         #bottom-bar {
             position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:500;
             display:flex; align-items:center; gap:8px;
         }
         #counter{
-            background:var(--card);backdrop-filter:blur(16px)saturate(1.4);
-            -webkit-backdrop-filter:blur(16px)saturate(1.4);
+            background:var(--card);
+            backdrop-filter:blur(16px) saturate(1.4);
+            -webkit-backdrop-filter:blur(16px) saturate(1.4);
             border:1px solid var(--bd);
-            padding:7px 20px;border-radius:var(--rf);
-            font-size:12px;color:var(--t2);pointer-events:none;
+            padding:7px 18px;
+            border-radius:var(--rf);
+            font-size:12px;
+            color:var(--t2);
+            pointer-events:none;
+            box-shadow:0 2px 12px rgba(0,0,0,0.04);
         }
         #counter span{color:var(--text);font-weight:700}
         #current-loc-btn{
             width:40px;height:40px;border-radius:50%;
-            background:var(--card);border:1px solid var(--bd);
+            background:var(--card);
+            border:1px solid var(--bd);
             backdrop-filter:blur(16px);
-            box-shadow:var(--shadow);cursor:pointer;
+            -webkit-backdrop-filter:blur(16px);
+            box-shadow:0 2px 12px rgba(0,0,0,0.04);
+            cursor:pointer;
             display:flex;align-items:center;justify-content:center;
-            font-size:16px;transition:all 0.2s;flex-shrink:0;
+            font-size:16px;
+            transition:all 0.2s;
+            flex-shrink:0;
         }
-        #current-loc-btn:hover{background:var(--ac);border-color:var(--ac);transform:scale(1.05)}
+        #current-loc-btn:hover{background:var(--ac);border-color:var(--ac);color:#fff;transform:scale(1.05)}
 
         /* ===== 상세 패널 ===== */
         #detail-overlay{
             position:fixed;inset:0;z-index:2000;
-            background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);
-            -webkit-backdrop-filter:blur(8px);
+            background:rgba(0,0,0,0.3);
+            backdrop-filter:blur(4px);
+            -webkit-backdrop-filter:blur(4px);
             display:none;
         }
         #detail-panel{
             position:fixed;bottom:0;left:0;right:0;z-index:2001;
-            background:var(--bg2);
-            border-radius:24px 24px 0 0;
+            background:var(--card);
+            backdrop-filter:blur(32px) saturate(1.5);
+            -webkit-backdrop-filter:blur(32px) saturate(1.5);
+            border-radius:20px 20px 0 0;
             border-top:1px solid var(--bd);
-            box-shadow:0 -12px 60px rgba(0,0,0,0.5);
-            padding:16px 24px 32px;
+            box-shadow:0 -12px 60px rgba(0,0,0,0.08);
+            padding:16px 24px 28px;
             max-height:80vh;overflow-y:auto;
             transform:translateY(100%);
             transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);
         }
         #detail-panel.open{transform:translateY(0)}
-        #detail-panel .handle{width:32px;height:3px;background:var(--t3);border-radius:2px;margin:0 auto 16px}
+        #detail-panel .handle{width:32px;height:4px;background:var(--t3);border-radius:2px;margin:0 auto 14px;opacity:0.3}
         #detail-panel .top-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
         #detail-panel .cat-tag{display:inline-block;padding:3px 12px;border-radius:var(--rf);font-size:10px;font-weight:700;color:#fff;letter-spacing:0.5px}
         #detail-panel h2{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:2px}
-        #detail-panel .r-line{font-size:13px;color:var(--t2);margin-bottom:12px}
-        #detail-panel .d-text{font-size:14px;line-height:1.8;color:var(--t2);margin-bottom:12px}
+        #detail-panel .r-line{font-size:13px;color:var(--t2);margin-bottom:10px}
+        #detail-panel .d-text{font-size:14px;line-height:1.8;color:var(--text);margin-bottom:10px}
         #detail-panel .t-box{
             font-size:13px;line-height:1.6;color:var(--t2);
-            padding:12px 16px;background:rgba(108,92,231,0.08);
+            padding:12px 16px;background:rgba(231,76,60,0.04);
             border-left:3px solid var(--ac);
-            border-radius:0 var(--rs) var(--rs) 0;margin-bottom:16px;
+            border-radius:0 var(--rs) var(--rs) 0;margin-bottom:14px;
         }
-        #detail-panel .t-box b{color:var(--ac2);font-weight:600}
+        #detail-panel .t-box b{color:var(--ac);font-weight:600}
         #detail-panel .actions{display:flex;gap:8px;flex-wrap:wrap}
         #detail-panel .actions a,#detail-panel .actions button{
             flex:1;padding:11px 16px;border-radius:var(--rs);
             text-decoration:none;font-size:13px;font-weight:600;
             text-align:center;transition:all 0.2s;border:none;
-            font-family:inherit;cursor:pointer;
-            min-width:120px;
+            font-family:inherit;cursor:pointer;min-width:120px;
         }
-        #detail-panel .actions .navi{background:var(--gr1);color:#fff}
+        #detail-panel .actions .navi{background:var(--gr1);color:#fff;box-shadow:0 4px 16px rgba(231,76,60,0.2)}
         #detail-panel .actions .navi:hover{opacity:0.9;transform:translateY(-1px)}
-        #detail-panel .actions .wish{background:rgba(253,121,168,0.12);color:var(--ac3)}
-        #detail-panel .actions .wish:hover{background:rgba(253,121,168,0.2)}
-        #detail-panel .coord-text{font-size:10px;color:var(--t3);margin-top:12px}
-        .close-detail{
+        #detail-panel .actions .wish{background:rgba(231,76,60,0.06);color:var(--ac)}
+        #detail-panel .actions .wish:hover{background:rgba(231,76,60,0.12)}
+        #detail-panel .coord-text{font-size:10px;color:var(--t3);margin-top:10px}
+        #detail-panel .close-detail{
             position:absolute;top:14px;right:18px;
-            background:rgba(255,255,255,0.06);border:1px solid var(--bd);
-            border-radius:50%;width:32px;height:32px;
-            font-size:14px;color:var(--t2);
+            background:rgba(0,0,0,0.04);
+            border:none;border-radius:50%;
+            width:32px;height:32px;
+            font-size:16px;color:var(--t2);
             cursor:pointer;transition:all 0.2s;
             display:flex;align-items:center;justify-content:center;
         }
-        .close-detail:hover{background:rgba(255,255,255,0.1);color:var(--text)}
+        #detail-panel .close-detail:hover{background:rgba(0,0,0,0.08);color:var(--text)}
 
         /* ===== 팝업 ===== */
         .custom-popup .leaflet-popup-content-wrapper{
-            background:var(--card);backdrop-filter:blur(24px)saturate(1.4);
-            -webkit-backdrop-filter:blur(24px)saturate(1.4);
-            border-radius:var(--rd);box-shadow:var(--shadow);
-            border:1px solid var(--bd);padding:2px;
+            background:var(--card);
+            backdrop-filter:blur(24px) saturate(1.4);
+            -webkit-backdrop-filter:blur(24px) saturate(1.4);
+            border-radius:var(--rd);
+            box-shadow:var(--shadow-h);
+            border:1px solid var(--bd);
+            padding:2px;
         }
         .custom-popup .leaflet-popup-tip{background:var(--card)}
-        .custom-popup .leaflet-popup-close-button{color:var(--t3)!important;top:4px!important;right:4px!important;opacity:0.6!important}
+        .custom-popup .leaflet-popup-close-button{color:var(--t3)!important;top:4px!important;right:4px!important;opacity:0.5!important}
         .popup-c{padding:6px 4px;min-width:180px;max-width:260px}
         .popup-c h3{font-size:15px;font-weight:700;margin-bottom:2px}
         .popup-c .tag{display:inline-block;padding:2px 10px;border-radius:var(--rf);font-size:9px;font-weight:600;color:#fff;margin-bottom:4px}
         .popup-c .r{font-size:11px;color:var(--t2);margin-bottom:4px}
         .popup-c .d{font-size:12px;line-height:1.5;color:var(--t2)}
-        .popup-c .t{font-size:11px;color:var(--text);padding:6px 10px;background:rgba(108,92,231,0.08);border-left:2px solid var(--ac);border-radius:0 6px 6px 0;margin-top:4px}
-        .popup-c .t b{color:var(--ac2)}
+        .popup-c .t{font-size:11px;color:var(--text);padding:6px 10px;background:rgba(231,76,60,0.04);border-left:2px solid var(--ac);border-radius:0 6px 6px 0;margin-top:4px}
+        .popup-c .t b{color:var(--ac)}
 
         /* ===== PWA 설치 배너 ===== */
         #install-banner{
             position:fixed;bottom:76px;left:50%;transform:translateX(-50%);z-index:999;
-            background:var(--card);backdrop-filter:blur(24px)saturate(1.4);
-            -webkit-backdrop-filter:blur(24px)saturate(1.4);
+            background:var(--card);
+            backdrop-filter:blur(24px) saturate(1.4);
+            -webkit-backdrop-filter:blur(24px) saturate(1.4);
             border:1px solid var(--bd);border-radius:var(--rd);
-            box-shadow:var(--shadow);padding:12px 18px;
+            box-shadow:var(--shadow-h);
+            padding:12px 18px;
             display:none;align-items:center;gap:12px;
             width:92%;max-width:400px;
         }
         #install-banner .ib-icon{font-size:28px}
-        #install-banner .ib-text{flex:1;font-size:13px;font-weight:500;line-height:1.4}
-        #install-banner .ib-text small{font-size:11px;color:var(--t2);font-weight:400}
+        #install-banner .ib-text{flex:1;font-size:12px;font-weight:600;line-height:1.4}
+        #install-banner .ib-text small{font-size:11px;color:var(--t2);font-weight:400;display:block}
         #install-banner .ib-btn{padding:8px 18px;border:none;border-radius:var(--rs);background:var(--gr1);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0}
-        #install-banner .ib-btn:hover{opacity:0.9}
         #install-banner .ib-close{background:none;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:4px}
 
         @media(max-width:600px){
-            #hero{padding:14px 16px 12px}
-            #hero h1{font-size:22px}
-            #hero h1 small{font-size:12px}
-            #search-wrap{top:76px;padding:3px 3px 3px 14px}
-            #search-input{font-size:13px;padding:8px 0}
-            #search-btn{padding:8px 18px;font-size:12px}
-            #filter-bar{top:128px}.filter-btn{padding:5px 12px;font-size:10px}
-            #results{top:175px}
-            #detail-panel{padding:14px 16px 24px;border-radius:20px 20px 0 0}
+            #hero{padding:16px 16px 48px}
+            #hero h1{font-size:24px}
+            #hero .sub{font-size:12px}
+            #hero .badge{font-size:9px;padding:3px 10px}
+            #search-wrap{top:96px;padding:3px 3px 3px 14px}
+            #search-icon{font-size:15px;margin-right:8px}
+            #search-input{font-size:13px;padding:9px 0}
+            #search-btn{padding:9px 18px;font-size:12px}
+            #filter-bar{top:152px}.filter-btn{padding:5px 12px;font-size:10px}
+            #results{top:198px}
+            #detail-panel{padding:14px 16px 24px;border-radius:18px 18px 0 0}
             #detail-panel h2{font-size:18px}
             #bottom-bar{bottom:16px}
             #counter{font-size:11px;padding:6px 14px}
@@ -268,39 +340,41 @@
             #install-banner{bottom:64px}
         }
         @media(min-width:768px){
-            #hero h1{font-size:36px}
-            #hero{padding:24px 32px 18px}
-            #search-wrap{top:102px;padding:6px 6px 6px 22px}
-            #search-input{font-size:15px;padding:12px 0}
-            #filter-bar{top:162px}
-            #results{top:215px}
+            #hero{padding:32px 32px 70px}
+            #hero h1{font-size:40px}
+            #search-wrap{top:132px;max-width:560px}
+            #search-input{font-size:16px;padding:13px 0}
+            #filter-bar{top:198px;max-width:560px}
+            #results{top:248px;max-width:560px}
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
 
-    <!-- 히어로 헤더 -->
+    <!-- 히어로 영역 -->
     <div id="hero">
-        <h1>K-TRAVEL<small>대한민국 관광명소 40선</small></h1>
+        <div class="badge">K-TRAVEL</div>
+        <h1>대한민국<br><span>관광명소</span> 검색</h1>
+        <div class="sub"><b>40</b>개의 명소를 지도에서 찾아보세요</div>
     </div>
 
     <!-- 검색 -->
     <div id="search-wrap">
-        <span style="font-size:16px;opacity:0.3;margin-right:10px;flex-shrink:0">🔍</span>
-        <input type="text" id="search-input" autocomplete="off" placeholder="명소나 지역을 검색...">
-        <button id="search-btn">Search</button>
+        <span id="search-icon">🔍</span>
+        <input type="text" id="search-input" autocomplete="off" placeholder="명소 이름이나 지역을 입력하세요">
+        <button id="search-btn">검색</button>
     </div>
 
     <!-- 필터 -->
     <div id="filter-bar">
-        <button class="filter-btn active" data-cat="all">All</button>
-        <button class="filter-btn" data-cat="역사">History</button>
-        <button class="filter-btn" data-cat="자연">Nature</button>
-        <button class="filter-btn" data-cat="문화">Culture</button>
-        <button class="filter-btn" data-cat="쇼핑">Shop</button>
-        <button class="filter-btn" data-cat="맛집">Food</button>
-        <button class="filter-btn" data-cat="랜드마크">Landmark</button>
+        <button class="filter-btn active" data-cat="all">전체</button>
+        <button class="filter-btn" data-cat="역사">역사</button>
+        <button class="filter-btn" data-cat="자연">자연</button>
+        <button class="filter-btn" data-cat="문화">문화</button>
+        <button class="filter-btn" data-cat="쇼핑">쇼핑</button>
+        <button class="filter-btn" data-cat="맛집">맛집</button>
+        <button class="filter-btn" data-cat="랜드마크">랜드마크</button>
     </div>
 
     <!-- 결과 -->
@@ -308,16 +382,16 @@
 
     <!-- 하단 -->
     <div id="bottom-bar">
-        <div id="counter"><span id="cn">40</span> destinations</div>
+        <div id="counter">🇰🇷 <span id="cn">40</span>개 관광명소</div>
         <button id="current-loc-btn" title="내 위치" onclick="locateMe()">📍</button>
     </div>
 
     <!-- PWA 설치 배너 -->
     <div id="install-banner">
         <div class="ib-icon">📱</div>
-        <div class="ib-text">K-TRAVEL<small>홈 화면에 추가하여 앱처럼 이용하세요</small></div>
+        <div class="ib-text">K-TRAVEL 설치<small>홈 화면에 추가하여 앱처럼 이용</small></div>
         <button class="ib-btn" id="install-btn">설치</button>
-        <button class="ib-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+        <button class="ib-close" onclick="this.parentElement.style.display='none'">✕</button>
     </div>
 
     <!-- 상세 패널 -->
@@ -331,8 +405,8 @@
         <div class="d-text" id="dt-desc"></div>
         <div class="t-box" id="dt-tip"></div>
         <div class="actions">
-            <a class="navi" id="dt-navi" target="_blank">📍 Navigate</a>
-            <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 Save</button>
+            <a class="navi" id="dt-navi" target="_blank">📍 길찾기</a>
+            <button class="wish" id="dt-wish" onclick="toggleWish()">🤍 찜하기</button>
         </div>
         <div class="coord-text" id="dt-coords"></div>
     </div>    <script>
@@ -341,32 +415,32 @@
             navigator.serviceWorker.register("sw.js").catch(function(e){console.log("SW error",e)});
         }
 
-        // ===== 관광명소 데이터 =====
+        // ===== 관광명소 데이터 (40개) =====
         var D = [
-            {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 유명한 서울 대표 유적지입니다.",t:"한복 입고 방문 시 무료 입장! 국립민속박물관도 함께 들러보세요."},
-            {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 데이트 명소.",t:"일몰 시간에 맞춰 가면 낮과 밤 풍경을 모두 즐길 수 있어요."},
-            {n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥이 보존된 서울 도심 속 역사 마을.",t:"조용한 주택가이니 방문 시 주의! 북촌 8경을 따라 걸어보세요."},
-            {n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑과 먹거리 천국.",t:"저녁 시간이 더 활기참! 길거리 음식이 인기 만점입니다."},
-            {n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화와 현대 예술이 공존하는 서울의 문화 거리.",t:"쌈지길에서 다양한 공예품을 구경해보세요."},
-            {n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리, 클럽과 카페, 길거리 공연의 메카.",t:"주말 걷고 싶은 거리에서 버스킹 공연을 꼭 보세요!"},
-            {n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지이자 K-pop의 본고장.",t:"코엑스 별마당 도서관은 인생샷 명소!"},
+            {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"역사",d:"조선 왕조의 법궁, 1395년 창건. 근정전과 경회루가 유명한 서울 대표 유적지입니다.",t:"한복 입고 방문 시 무료 입장!"},
+            {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워. 해발 236m, 야경이 아름다운 명소.",t:"일몰 시간에 맞춰 가면 낮과 밤 풍경을 모두 즐길 수 있어요."},
+            {n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화",d:"전통 한옥이 보존된 서울 도심 속 역사 마을.",t:"조용한 주택가이니 방문 시 주의!"},
+            {n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑",d:"서울 최대 쇼핑과 먹거리 천국.",t:"저녁 시간이 더 활기참!"},
+            {n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화",d:"전통 문화와 현대 예술이 공존하는 거리.",t:"쌈지길에서 다양한 공예품을 구경해보세요."},
+            {n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화",d:"젊음의 거리, 클럽과 카페, 길거리 공연의 메카.",t:"주말 걷고 싶은 거리에서 버스킹 공연을!"},
+            {n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑",d:"한국 경제 중심지이자 K-pop 본고장.",t:"코엑스 별마당 도서관은 인생샷 명소!"},
             {n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"랜드마크",d:"63빌딩과 한강이 어우러진 업무 중심지.",t:"4월 윤중로 벚꽃길이 유명!"},
-            {n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬이자 세계적 휴양지. 올레길과 화산 지형이 매력.",t:"렌터카 여행 필수! 우도와 마라도 섬투어 추천."},
+            {n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연",d:"한국 최대 섬이자 세계적 휴양지. 올레길과 화산 지형.",t:"렌터카 여행 필수!"},
             {n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연",d:"해발 1,950m 웅장한 사화산. UNESCO 세계자연유산.",t:"성판악 코스가 가장 인기!"},
-            {n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 세계자연유산. 일출이 장관인 거대한 분화구.",t:"해돋이 명소! 성게비빔밥도 꼭 맛보세요."},
+            {n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연",d:"UNESCO 세계자연유산. 일출이 장관인 분화구.",t:"해돋이 명소! 성게비빔밥도 꼭 맛보세요."},
             {n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"자연",d:"부산 대표 해수욕장. 길이 1.5km 백사장.",t:"겨울에는 해운대 빛 축제!"},
-            {n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"알록달록 벽화와 예술 작품이 가득한 문화 마을.",t:"마을 지도 사서 스탬프 투어 도전!"},
-            {n:"광안리해수욕장",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교의 화려한 야경이 아름다운 부산의 해변.",t:"카페거리에서 커피 한 잔과 함께 야경을!"},
+            {n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화",d:"알록달록 벽화와 예술 작품이 가득한 마을.",t:"스탬프 투어 도전!"},
+            {n:"광안리",r:"부산",a:35.1538,o:129.1183,c:"자연",d:"광안대교 야경이 아름다운 부산의 해변.",t:"카페거리에서 커피와 함께 야경을!"},
             {n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집",d:"한국 최대 수산시장. 활어회의 본고장.",t:"2층에서 회 사서 1층에 가져가면 저렴!"},
-            {n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년의 고도. 대릉원, 안압지, 첨성대 등 유적.",t:"자전거 투어가 최고!"},
-            {n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰, UNESCO 세계문화유산.",t:"석굴암과 함께 관람! 아침 일찍 가세요."},
-            {n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각 예술의 정수.",t:"사진 촬영이 제한되니 눈에 담아오세요."},
-            {n:"안동하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을 원형 보존. UNESCO.",t:"낙동강에서 배 타고 마을 전체 조망!"},
+            {n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사",d:"신라 천년의 고도. 대릉원, 안압지, 첨성대.",t:"자전거 투어가 최고!"},
+            {n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"역사",d:"신라 대표 사찰, UNESCO 세계문화유산.",t:"석굴암과 함께 관람!"},
+            {n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"역사",d:"통일신라 불교 조각 예술의 정수.",t:"사진 촬영 제한"},
+            {n:"하회마을",r:"경북",a:36.5392,o:128.5172,c:"문화",d:"조선 양반 마을 원형 보존. UNESCO.",t:"낙동강 배 타고 마을 전체 조망!"},
             {n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"문화",d:"한옥과 한식의 본고장.",t:"한복 대여해서 마을 거니는 게 인기!"},
-            {n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동. 패션과 먹거리 중심지.",t:"서문시장 야시장 구경!"},
-            {n:"대전엑스포공원",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 대전엑스포 개최지. 한빛탑이 상징.",t:"한빛탑 야경이 아름다움!"},
-            {n:"울산대왕암공원",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경 해안공원.",t:"해돋이 명소!"},
-            {n:"인천차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초의 차이나타운.",t:"짜장면 박물관 방문!"},
+            {n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑",d:"대구의 명동.",t:"서문시장 야시장 구경!"},
+            {n:"대전엑스포",r:"대전",a:36.3767,o:127.3844,c:"문화",d:"1993 대전엑스포 개최지.",t:"한빛탑 야경이 아름다움!"},
+            {n:"울산대왕암",r:"울산",a:35.5022,o:129.4292,c:"자연",d:"동해안 절경 해안공원.",t:"해돋이 명소!"},
+            {n:"차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화",d:"한국 최초의 차이나타운.",t:"짜장면 박물관 방문!"},
             {n:"광주ACC",r:"광주",a:35.1467,o:126.9184,c:"문화",d:"아시아 문화 교류 중심.",t:"무료 전시 많음!"},
             {n:"설악산",r:"강원",a:38.1195,o:128.4642,c:"자연",d:"한국의 알프스. 웅장한 암봉.",t:"케이블카 타고 권금성까지!"},
             {n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연",d:"다도해의 아름다운 풍경.",t:"독일마을에서 이국적 풍경!"},
@@ -376,18 +450,18 @@
             {n:"에버랜드",r:"경기",a:37.2935,o:127.2070,c:"랜드마크",d:"한국 최대 테마파크.",t:"주말 예약 필수!"},
             {n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집",d:"과메기와 물회 본고장.",t:"과메기 정식 필수!"},
             {n:"속초시장",r:"강원",a:38.2072,o:128.5921,c:"맛집",d:"강원도 대표 시장.",t:"닭강정과 오징어순대!"},
-            {n:"철원DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단의 현장.",t:"출입증 필요!"},
-            {n:"독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"한국 독립운동 역사 기념관.",t:"입장료 무료!"},
-            {n:"무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉.",t:"국립공주박물관 유물 전시"},
-            {n:"백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사 재현 테마파크.",t:"부소산성도 함께!"},
-            {n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반 유람선 호수.",t:"유람선 타고 둘러보기!"},
+            {n:"철원DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사",d:"한반도 분단 현장.",t:"출입증 필요!"},
+            {n:"독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사",d:"한국 독립운동 역사.",t:"입장료 무료!"},
+            {n:"무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사",d:"백제 시대 왕릉.",t:"국립공주박물관"},
+            {n:"백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사",d:"백제 역사 재현.",t:"부소산성도 함께!"},
+            {n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연",d:"청풍호반 유람선.",t:"유람선 타고 둘러보기!"},
             {n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연",d:"천연동굴 체험.",t:"도담삼봉도 함께!"},
         ];
 
         // ===== 전역 변수 =====
         var map, markers = [], _curLat, _curLng, _wish = [], _selIdx = -1, _installEvent = null;
         var catFilter = "all";
-        var CC = {"역사":"#e74c3c","랜드마크":"#f97316","문화":"#8b5cf6","쇼핑":"#9b59b6","자연":"#2ecc71","맛집":"#f59e0b","기타":"#3498db"};
+        var CC = {"역사":"#e74c3c","랜드마크":"#f97316","문화":"#8b5cf6","쇼핑":"#9b59b6","자연":"#2ecc71","맛집":"#f59e0b"};
 
         try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
 
@@ -395,14 +469,14 @@
 
         // ===== 지도 =====
         map = L.map('map',{center:[36.0,127.8],zoom:7,minZoom:6,maxZoom:14,zoomControl:false});
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
         L.control.zoom({position:'bottomright'}).addTo(map);
 
-        // ===== 마커 =====
+        // ===== 마커 생성 =====
         D.forEach(function(a, i){
             var c = CC[a.c]||"#8b5cf6";
             var icon = L.divIcon({
-                html:'<div style="position:relative;width:28px;height:40px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="'+c+'" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="6" fill="#fff"/></svg></div>',
+                html:'<div style="position:relative;width:28px;height:40px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2))"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="'+c+'" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="6" fill="#fff"/></svg></div>',
                 iconSize:[28,40],iconAnchor:[14,40],popupAnchor:[0,-42],className:''
             });
             var m = L.marker([a.a,a.o],{icon}).addTo(map);
@@ -421,7 +495,7 @@
             navigator.geolocation.getCurrentPosition(function(p){
                 _curLat = p.coords.latitude; _curLng = p.coords.longitude;
                 map.setView([_curLat,_curLng],12,{animate:true});
-                L.circleMarker([_curLat,_curLng],{radius:8,color:"#6C5CE7",fillColor:"#6C5CE7",fillOpacity:0.2}).addTo(map);
+                L.circleMarker([_curLat,_curLng],{radius:8,color:"#e74c3c",fillColor:"#e74c3c",fillOpacity:0.15}).addTo(map);
                 $("current-loc-btn").textContent = "📍";
                 findNearby();
             }, function(){$("current-loc-btn").textContent = "📍"});
@@ -430,7 +504,7 @@
         function findNearby(){
             if(!_curLat||!_curLng) return;
             var sorted = D.map(function(a,i){return {idx:i,dist:getDistance(_curLat,_curLng,a.a,a.o)}}).sort(function(a,b){return a.dist-b.dist});
-            var html = '<div style="padding:12px 16px;margin-bottom:6px;background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);color:var(--ac2);font-size:13px;font-weight:600">📍 Nearby Places</div>';
+            var html = '<div style="padding:12px 16px;margin-bottom:6px;background:var(--card);border:1px solid rgba(231,76,60,0.15);border-radius:var(--rd);color:var(--ac);font-size:12px;font-weight:600">📍 내 주변 명소</div>';
             sorted.slice(0,5).forEach(function(s){
                 var a = D[s.idx], c = CC[a.c]||"#8b5cf6";
                 var d = s.dist < 1 ? (Math.round(s.dist*1000)+"m") : (s.dist.toFixed(1)+"km");
@@ -465,7 +539,7 @@
             if(!q){$("results").style.display="none";return}
             var f = D.filter(function(a){return a.n.toLowerCase().indexOf(q)>=0||a.r.toLowerCase().indexOf(q)>=0||a.c.toLowerCase().indexOf(q)>=0});
             var html = "";
-            if(!f.length){html='<div style="padding:16px;text-align:center;color:var(--t3)">😅 No results</div>'}
+            if(!f.length){html='<div style="padding:16px;text-align:center;color:var(--t3)">😅 검색 결과가 없습니다</div>'}
             else{
                 f.forEach(function(a){
                     var c=CC[a.c]||"#8b5cf6";
@@ -490,11 +564,11 @@
             $("dt-name").textContent = a.n;
             $("dt-region").textContent = "📍 " + a.r;
             $("dt-desc").textContent = a.d;
-            $("dt-tip").innerHTML = "<b>💡 Tip</b><br>" + a.t;
+            $("dt-tip").innerHTML = "<b>💡 여행 팁</b><br>" + a.t;
             $("dt-navi").href = "https://map.naver.com/p/directions/"+a.a+","+a.o+","+encodeURIComponent(a.n)+"?c="+a.o+","+a.a+",15,0,0,0,dh";
-            $("dt-coords").textContent = "📍 "+a.a+", "+a.o;
+            $("dt-coords").textContent = "📌 "+a.a+", "+a.o;
             var isW = _wish.indexOf(i) >= 0;
-            $("dt-wish").textContent = isW ? "❤️ Saved" : "🤍 Save";
+            $("dt-wish").textContent = isW ? "❤️ 찜 완료" : "🤍 찜하기";
             $("detail-overlay").style.display = "block";
             $("detail-panel").classList.add("open");
         }
@@ -507,8 +581,8 @@
         function toggleWish(){
             if(_selIdx < 0) return;
             var idx = _wish.indexOf(_selIdx);
-            if(idx >= 0){_wish.splice(idx,1);$("dt-wish").textContent = "🤍 Save";}
-            else {_wish.push(_selIdx);$("dt-wish").textContent = "❤️ Saved";}
+            if(idx >= 0){_wish.splice(idx,1);$("dt-wish").textContent = "🤍 찜하기";}
+            else {_wish.push(_selIdx);$("dt-wish").textContent = "❤️ 찜 완료";}
             localStorage.setItem("ktour_wish", JSON.stringify(_wish));
         }
 
