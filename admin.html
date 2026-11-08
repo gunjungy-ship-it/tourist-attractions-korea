@@ -9,82 +9,99 @@
         :root{--bg:#f0efec;--card:#fff;--text:#1a1a2e;--t2:#6b7280;--t3:#9ca3af;--bd:#e5e3dd;--ac:#e74c3c;--rd:14px;--rs:8px}
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
-        #sb{width:240px;background:var(--card);border-right:1px solid var(--bd);padding:24px 16px;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100}
-        #sb .logo{font-size:18px;font-weight:900;margin-bottom:28px;padding:0 8px}#sb .logo span{color:var(--ac)}
-        #sb nav{display:flex;flex-direction:column;gap:4px}
-        #sb nav a{padding:10px 12px;border-radius:var(--rs);text-decoration:none;color:var(--t2);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.2s}
+        #sb{width:200px;background:var(--card);border-right:1px solid var(--bd);padding:20px 14px;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100}
+        #sb .logo{font-size:16px;font-weight:900;margin-bottom:24px;letter-spacing:-0.5px}
+        #sb .logo span{color:var(--ac)}
+        #sb nav{display:flex;flex-direction:column;gap:2px}
+        #sb nav a{padding:9px 12px;border-radius:var(--rs);text-decoration:none;color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s}
         #sb nav a:hover{background:var(--bg);color:var(--text)}
         #sb nav a.active{background:var(--ac);color:#fff}
-        #sb .ft{margin-top:auto;padding:12px 8px 0;border-top:1px solid var(--bd);font-size:12px;color:var(--t3)}
-        #sb .ft a{color:var(--ac);text-decoration:none}
-        #main{margin-left:240px;flex:1;padding:28px 32px;max-width:calc(100vw-240px)}
-        #main h2{font-size:22px;font-weight:700;margin-bottom:4px}
-        #main .sub{font-size:14px;color:var(--t2);margin-bottom:24px}
-        .st{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
-        .sc{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:18px 20px}
-        .sc .n{font-size:28px;font-weight:900;margin-bottom:2px}
-        .sc .l{font-size:13px;color:var(--t2)}
+        #sb .ft{margin-top:auto;padding:10px 8px 0;border-top:1px solid var(--bd);font-size:11px;color:var(--t3)}
+        #main{margin-left:200px;flex:1;padding:24px 28px;max-width:calc(100vw-200px)}
+        #main h2{font-size:20px;font-weight:700;margin-bottom:2px}
+        #main .sub{font-size:13px;color:var(--t2);margin-bottom:20px}
+        .st{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+        .sc{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:16px 18px}
+        .sc .n{font-size:26px;font-weight:900;margin-bottom:2px}
+        .sc .l{font-size:12px;color:var(--t2)}
         .h{color:#e74c3c}.n{color:#2ecc71}.c{color:#9b59b6}.f{color:#f59e0b}.e{color:#3498db}
-        .ch{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
-        .cb{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:18px 20px}
-        .cb h4{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--t2)}
-        .cb canvas{max-height:220px}
+        .ch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+        .cb{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:16px 18px}
+        .cb h4{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--t2)}
+        .cb canvas{max-height:200px}
         .tw{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);overflow:hidden}
-        .th{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--bd)}
-        .th h4{font-size:15px;font-weight:600}
-        .th button{padding:7px 18px;border:none;border-radius:var(--rs);background:var(--ac);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+        .th{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--bd)}
+        .th h4{font-size:14px;font-weight:600}
+        .th button{padding:6px 16px;border:none;border-radius:var(--rs);background:var(--ac);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
         .th button:hover{background:#c0392b}
         .ts{overflow-x:auto}
-        table{width:100%;border-collapse:collapse;font-size:13px}
-        th{text-align:left;padding:10px 16px;font-weight:600;color:var(--t2);font-size:12px;border-bottom:1px solid var(--bd);white-space:nowrap}
-        td{padding:10px 16px;border-bottom:1px solid var(--bd);vertical-align:middle}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        th{text-align:left;padding:9px 14px;font-weight:600;color:var(--t2);font-size:11px;border-bottom:1px solid var(--bd);white-space:nowrap}
+        td{padding:9px 14px;border-bottom:1px solid var(--bd);vertical-align:middle}
         tr:last-child td{border-bottom:none}
         tr:hover td{background:#fafaf9}
         td .bg{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600;color:#fff}
-        td .ab{padding:4px 10px;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;margin-right:3px}
+        td .ab{padding:3px 9px;border:none;border-radius:6px;font-size:10px;cursor:pointer;font-family:inherit;margin-right:2px}
         td .eb{background:#f0efec;color:var(--text)}td .eb:hover{background:#e5e3dd}
         td .db{background:#fef2f2;color:#e74c3c}td .db:hover{background:#fee2e2}
         .nc{font-weight:600}
         #md{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);align-items:center;justify-content:center}
         #md.show{display:flex}
-        #md .mb{background:var(--card);border-radius:var(--rd);box-shadow:0 20px 60px rgba(0,0,0,0.15);width:92%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px 24px 24px}
-        #md .mb h3{font-size:18px;font-weight:700;margin-bottom:16px}
-        .fg{margin-bottom:14px}
-        .fg label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px}
-        .fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1px solid var(--bd);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);outline:none}
+        #md .mb{background:var(--card);border-radius:var(--rd);box-shadow:0 20px 60px rgba(0,0,0,0.15);width:92%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px 22px}
+        #md .mb h3{font-size:17px;font-weight:700;margin-bottom:14px}
+        .fg{margin-bottom:12px}
+        .fg label{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:3px}
+        .fg input,.fg select,.fg textarea{width:100%;padding:8px 11px;border:1px solid var(--bd);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);outline:none}
         .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--ac)}
-        .fg textarea{resize:vertical;min-height:60px}
-        .fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .ma{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-        .ma button{padding:9px 22px;border:none;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+        .fg textarea{resize:vertical;min-height:50px}
+        .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .ma{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+        .ma button{padding:8px 20px;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
         .ma .cl{background:var(--bg);color:var(--t2)}.ma .cl:hover{background:#e5e3dd}
         .ma .sv{background:var(--ac);color:#fff}.ma .sv:hover{background:#c0392b}
-        #tt{position:fixed;top:20px;right:20px;z-index:9999;background:#1a1a2e;color:#fff;padding:12px 20px;border-radius:var(--rs);font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,0.2);transform:translateX(120%);transition:transform 0.3s;max-width:360px}
+
+        /* 카카오맵 탭 */
+        #map-area{display:grid;grid-template-columns:1fr 300px;gap:16px;height:calc(100vh-160px)}
+        #map-container{width:100%;height:100%;border-radius:var(--rd);overflow:hidden;border:1px solid var(--bd)}
+        #map-list{overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:12px}
+        #map-list .mi{padding:8px 10px;border-radius:var(--rs);cursor:pointer;transition:all 0.2s;border:1px solid transparent;margin-bottom:4px}
+        #map-list .mi:hover{background:#f5f4f0;border-color:var(--bd)}
+        #map-list .mi.active{background:#fef2f2;border-color:var(--ac)}
+        #map-list .mi .mn{font-size:13px;font-weight:600}
+        #map-list .mi .mr{font-size:11px;color:var(--t2);margin-top:1px}
+        #map-list .mi .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+        #tt{position:fixed;top:20px;right:20px;z-index:9999;background:#1a1a2e;color:#fff;padding:10px 18px;border-radius:var(--rs);font-size:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2);transform:translateX(120%);transition:transform 0.3s;max-width:320px}
         #tt.show{transform:translateX(0)}
+
         @media(max-width:768px){
-            #sb{width:100%;position:relative;padding:16px 12px;border-right:none;border-bottom:1px solid var(--bd)}
+            #sb{width:100%;position:relative;padding:14px 12px;border-right:none;border-bottom:1px solid var(--bd)}
             #sb nav{flex-direction:row;flex-wrap:wrap}
             #sb .ft{display:none}
-            #main{margin-left:0;padding:16px 14px;max-width:100%}
+            #main{margin-left:0;padding:14px;max-width:100%}
             .ch{grid-template-columns:1fr}
             .st{grid-template-columns:repeat(2,1fr)}
-            #md .mb{padding:20px 16px}.fr{grid-template-columns:1fr}
+            #md .mb{padding:18px 14px}.fr{grid-template-columns:1fr}
+            #map-area{grid-template-columns:1fr;height:auto}
+            #map-container{height:400px}
+            #map-list{max-height:300px}
         }
-        @media(max-width:480px){.st{grid-template-columns:1fr}th,td{padding:8px 10px}}
+        @media(max-width:480px){.st{grid-template-columns:1fr}th,td{padding:7px 10px}}
     </style>
 </head>
 <body>
     <div id="sb">
         <div class="logo">K-<span>travel</span></div>
         <nav id="sn">
-            <a class="active" data-tab="dash">대시보드</a>
-            <a data-tab="manage">명소 관리</a>
-            <a onclick="window.open('/','_blank')">지도 보기</a>
+            <a class="active" data-tab="dash">&#x1F4CA; 대시보드</a>
+            <a data-tab="manage">&#x1F4DD; 명소 관리</a>
+            <a data-tab="map">&#x1F5FA; 카카오맵</a>
         </nav>
-        <div class="ft">v1.0 &middot; <a href="/" target="_blank">tourist-attractions-korea</a></div>
+        <div class="ft">v1.0</div>
     </div>
 
     <div id="main">
+        <!-- 대시보드 탭 -->
         <div id="tab-dash">
             <h2>대시보드</h2>
             <div class="sub">관광명소 데이터 현황 및 통계</div>
@@ -100,9 +117,10 @@
                 <div class="cb"><h4>카테고리별 분포</h4><canvas id="cc"></canvas></div>
                 <div class="cb"><h4>지역별 분포</h4><canvas id="cr"></canvas></div>
             </div>
-            <div class="cb"><h4>최근 활동</h4><div id="log" style="font-size:13px;color:var(--t2);line-height:2">로딩 중...</div></div>
+            <div class="cb"><h4>최근 활동</h4><div id="log" style="font-size:12px;color:var(--t2);line-height:2">로딩 중...</div></div>
         </div>
 
+        <!-- 명소 관리 탭 -->
         <div id="tab-manage" style="display:none">
             <h2>명소 관리</h2>
             <div class="sub">관광명소 데이터를 추가/수정/삭제할 수 있습니다</div>
@@ -113,8 +131,19 @@
                 </div>
             </div>
         </div>
+
+        <!-- 카카오맵 탭 -->
+        <div id="tab-map" style="display:none">
+            <h2>카카오맵</h2>
+            <div class="sub">지도에서 명소 위치를 확인하세요</div>
+            <div id="map-area">
+                <div id="map-container"></div>
+                <div id="map-list"></div>
+            </div>
+        </div>
     </div>
 
+    <!-- 모달 -->
     <div id="md">
         <div class="mb">
             <h3 id="mt">새 명소 추가</h3>
@@ -147,55 +176,58 @@
             </div>
         </div>
     </div>
-    <div id="tt"></div>    <script>
-        // 데이터
+    <div id="tt"></div>
+
+    <!-- 카카오맵 SDK -->
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1c48b199b72202a9501a8555a0176a1a&libraries=services"></script>    <script>
+        // 데이터 (단축 속성명)
         var D = [
             {n:"경복궁",r:"서울",a:37.5796,o:126.9770,c:"궁궐/역사",d:"조선 왕조의 법궁, 1395년 창건",t:"한복 입고 무료 입장!"},
-            {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워, 해발 236m",t:"일몰 시간에 맞춰 방문!"},
-            {n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화/전통",d:"전통 한옥이 보존된 서울 도심 역사 마을",t:"북촌 8경 코스 추천"},
-            {n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑/거리",d:"서울 최대 쇼핑과 먹거리 천국",t:"저녁이 더 활기참!"},
-            {n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화/전통",d:"전통 문화와 현대 예술이 공존하는 거리",t:"쌈지길에서 공예품 구경!"},
-            {n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화/거리",d:"젊음의 거리, 길거리 공연 메카",t:"주말 버스킹 공연 필수"},
+            {n:"남산서울타워",r:"서울",a:37.5512,o:126.9882,c:"랜드마크",d:"서울의 상징 N서울타워",t:"일몰 시간에 맞춰 방문!"},
+            {n:"북촌한옥마을",r:"서울",a:37.5826,o:126.9850,c:"문화/전통",d:"전통 한옥 보존 마을",t:"북촌 8경 코스 추천"},
+            {n:"명동",r:"서울",a:37.5609,o:126.9853,c:"쇼핑/거리",d:"서울 최대 쇼핑 천국",t:"저녁이 더 활기참!"},
+            {n:"인사동",r:"서울",a:37.5736,o:126.9855,c:"문화/전통",d:"전통 문화 거리",t:"쌈지길 공예품 구경!"},
+            {n:"홍대",r:"서울",a:37.5563,o:126.9236,c:"문화/거리",d:"젊음의 거리",t:"주말 버스킹 공연 필수"},
             {n:"강남",r:"서울",a:37.4981,o:127.0276,c:"쇼핑/업무",d:"한국 경제 중심지",t:"코엑스 별마당 도서관!"},
-            {n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"랜드마크",d:"63빌딩과 한강, 봄 벚꽃 명소",t:"4월 윤중로 벚꽃길 유명"},
-            {n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연/섬",d:"한국 최대 섬, 세계적 휴양지",t:"렌터카 여행 필수!"},
-            {n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연/산",d:"해발 1,950m 사화산, UNESCO",t:"성판악 코스 인기"},
-            {n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연/명소",d:"UNESCO 자연유산, 일출 장관",t:"해돋이 명소!"},
-            {n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"해변/휴양",d:"부산 대표 해수욕장, 1.5km 백사장",t:"겨울에 빛 축제!"},
-            {n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화/마을",d:"알록달록 벽화 가득한 문화 마을",t:"스탬프 투어 도전!"},
-            {n:"광안리해수욕장",r:"부산",a:35.1538,o:129.1183,c:"해변/휴양",d:"광안대교 야경 아름다운 해변",t:"카페거리에서 야경을!"},
-            {n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집/시장",d:"한국 최대 수산시장",t:"2층 회를 1층에 가져가면 저렴!"},
-            {n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사/유적",d:"신라 천년 고도, 유적의 보고",t:"자전거 투어 최고!"},
-            {n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"사찰/역사",d:"신라 대표 사찰, UNESCO",t:"석굴암과 함께 관람!"},
-            {n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"사찰/역사",d:"통일신라 불교 조각 예술의 정수",t:"사진 촬영 제한"},
-            {n:"안동하회마을",r:"경북",a:36.5392,o:128.5172,c:"전통/마을",d:"조선 양반 마을 원형 보존",t:"낙동강 배 타고 조망!"},
+            {n:"여의도",r:"서울",a:37.5219,o:126.9244,c:"랜드마크",d:"63빌딩과 한강",t:"4월 윤중로 벚꽃길 유명"},
+            {n:"제주도",r:"제주",a:33.3803,o:126.5350,c:"자연/섬",d:"한국 최대 섬 휴양지",t:"렌터카 여행 필수!"},
+            {n:"한라산",r:"제주",a:33.3625,o:126.5334,c:"자연/산",d:"해발 1,950m 사화산",t:"성판악 코스 인기"},
+            {n:"성산일출봉",r:"제주",a:33.4581,o:126.9425,c:"자연/명소",d:"UNESCO 자연유산",t:"해돋이 명소!"},
+            {n:"해운대",r:"부산",a:35.1587,o:129.1603,c:"해변/휴양",d:"부산 대표 해수욕장",t:"겨울에 빛 축제!"},
+            {n:"감천문화마을",r:"부산",a:35.0978,o:129.0107,c:"문화/마을",d:"벽화 가득 문화 마을",t:"스탬프 투어 도전!"},
+            {n:"광안리해수욕장",r:"부산",a:35.1538,o:129.1183,c:"해변/휴양",d:"광안대교 야경 해변",t:"카페거리에서 야경을!"},
+            {n:"자갈치시장",r:"부산",a:35.0978,o:129.0292,c:"맛집/시장",d:"한국 최대 수산시장",t:"2층 회를 1층에!"},
+            {n:"경주역사지구",r:"경주",a:35.7890,o:129.2240,c:"역사/유적",d:"신라 천년 고도",t:"자전거 투어 최고!"},
+            {n:"불국사",r:"경주",a:35.7902,o:129.3321,c:"사찰/역사",d:"신라 대표 사찰",t:"석굴암과 함께 관람!"},
+            {n:"석굴암",r:"경주",a:35.7951,o:129.3492,c:"사찰/역사",d:"통일신라 불교 조각",t:"사진 촬영 제한"},
+            {n:"안동하회마을",r:"경북",a:36.5392,o:128.5172,c:"전통/마을",d:"조선 양반 마을 원형",t:"낙동강 배 타고 조망!"},
             {n:"전주한옥마을",r:"전북",a:35.8138,o:127.1485,c:"전통/마을",d:"한옥과 한식의 본고장",t:"한복 대여해서 거닐기!"},
-            {n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑/거리",d:"대구의 명동, 패션과 먹거리",t:"서문시장 야시장!"},
-            {n:"대전엑스포공원",r:"대전",a:36.3767,o:127.3844,c:"공원/전시",d:"1993 대전엑스포 개최지",t:"한빛탑 야경이 아름다움"},
-            {n:"울산대왕암공원",r:"울산",a:35.5022,o:129.4292,c:"자연/공원",d:"동해안 절경 해안공원",t:"해돋이 명소!"},
-            {n:"인천차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화/거리",d:"한국 최초 차이나타운",t:"짜장면 박물관 방문!"},
-            {n:"광주국립아시아문화전당",r:"광주",a:35.1467,o:126.9184,c:"문화/전시",d:"아시아 문화 교류 중심",t:"무료 전시 많음"},
-            {n:"설악산국립공원",r:"강원",a:38.1195,o:128.4642,c:"자연/산",d:"한국의 알프스, 웅장한 암봉",t:"케이블카 타고 권금성까지!"},
-            {n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연/섬",d:"다도해 아름다운 풍경",t:"독일마을에서 이국적 풍경!"},
-            {n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연/명소",d:"한려해상국립공원 케이블카",t:"스카이워크도 체험!"},
-            {n:"순천만국가정원",r:"전남",a:34.9258,o:127.4947,c:"자연/공원",d:"세계적 생태 관광지",t:"일몰 갈대밭 황금빛!"},
-            {n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연/섬",d:"하루 두 번 바닷길 열리는 섬",t:"물때표 확인 필수!"},
+            {n:"대구동성로",r:"대구",a:35.8692,o:128.5952,c:"쇼핑/거리",d:"대구의 명동",t:"서문시장 야시장!"},
+            {n:"대전엑스포공원",r:"대전",a:36.3767,o:127.3844,c:"공원/전시",d:"1993 엑스포 개최지",t:"한빛탑 야경!"},
+            {n:"울산대왕암공원",r:"울산",a:35.5022,o:129.4292,c:"자연/공원",d:"동해안 절경",t:"해돋이 명소!"},
+            {n:"인천차이나타운",r:"인천",a:37.4778,o:126.6190,c:"문화/거리",d:"한국 최초 차이나타운",t:"짜장면 박물관!"},
+            {n:"광주국립아시아문화전당",r:"광주",a:35.1467,o:126.9184,c:"문화/전시",d:"아시아 문화 교류",t:"무료 전시 많음"},
+            {n:"설악산국립공원",r:"강원",a:38.1195,o:128.4642,c:"자연/산",d:"한국의 알프스",t:"케이블카 타고!"},
+            {n:"남해군",r:"경남",a:34.8140,o:127.9289,c:"자연/섬",d:"다도해 풍경",t:"독일마을 이국적 풍경!"},
+            {n:"통영케이블카",r:"경남",a:34.8315,o:128.4227,c:"자연/명소",d:"한려해상 케이블카",t:"스카이워크 체험!"},
+            {n:"순천만국가정원",r:"전남",a:34.9258,o:127.4947,c:"자연/공원",d:"세계적 생태 관광지",t:"일몰 갈대밭!"},
+            {n:"제부도",r:"경기",a:37.1945,o:126.6313,c:"자연/섬",d:"바닷길 열리는 섬",t:"물때표 확인 필수!"},
             {n:"용인에버랜드",r:"경기",a:37.2935,o:127.2070,c:"테마파크",d:"한국 최대 테마파크",t:"주말 예약 필수!"},
             {n:"포항죽도시장",r:"경북",a:36.0180,o:129.3657,c:"맛집/시장",d:"과메기와 물회 본고장",t:"과메기 정식 필수!"},
             {n:"속초관광수산시장",r:"강원",a:38.2072,o:128.5921,c:"맛집/시장",d:"강원도 대표 시장",t:"닭강정과 오징어순대!"},
             {n:"철원 DMZ",r:"강원",a:38.2220,o:127.2140,c:"역사/평화",d:"한반도 분단 현장",t:"출입증 필요!"},
-            {n:"천안독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사/기념관",d:"한국 독립운동 역사 기념관",t:"입장료 무료!"},
-            {n:"공주무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사/유적",d:"백제 시대 왕릉, 귀중 유물 출토",t:"국립공주박물관 유물 전시"},
-            {n:"부여백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사/문화",d:"백제 역사 재현 테마파크",t:"부소산성도 함께!"},
-            {n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연/호수",d:"청풍호반과 유람선 호수",t:"유람선 타고 호수 둘러보기!"},
-            {n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연/동굴",d:"천연동굴 신비 체험",t:"도담삼봉도 함께!"},
+            {n:"천안독립기념관",r:"충남",a:36.7803,o:127.2217,c:"역사/기념관",d:"독립운동 역사 기념관",t:"입장료 무료!"},
+            {n:"공주무령왕릉",r:"충남",a:36.4613,o:127.1178,c:"역사/유적",d:"백제 왕릉",t:"국립공주박물관 유물 전시"},
+            {n:"부여백제문화단지",r:"충남",a:36.2748,o:126.9127,c:"역사/문화",d:"백제 역사 재현",t:"부소산성도 함께!"},
+            {n:"충주호",r:"충북",a:36.9712,o:128.0019,c:"자연/호수",d:"청풍호반 유람선",t:"유람선 타고 둘러보기!"},
+            {n:"단양고수동굴",r:"충북",a:36.9578,o:128.3630,c:"자연/동굴",d:"천연동굴 체험",t:"도담삼봉도 함께!"},
         ];
 
         var _data = [];
         var _editIdx = -1;
         var _cc = null, _cr = null;
+        var _map = null, _kakaoMarkers = [];
 
-        // 색상
         var CL = {
             "궁궐/역사":"#e74c3c","랜드마크":"#f97316","문화/전통":"#2ecc71","쇼핑/거리":"#9b59b6",
             "문화/거리":"#ec4899","쇼핑/업무":"#1abc9c","자연/섬":"#3498db","자연/산":"#27ae60",
@@ -212,7 +244,8 @@
             if(saved) _data = JSON.parse(saved);
             else { _data = JSON.parse(JSON.stringify(D)); save(); }
             refresh();
-            // 탭
+
+            // 탭 이벤트
             document.querySelectorAll("#sn a").forEach(function(a){
                 a.addEventListener("click", function(){
                     document.querySelectorAll("#sn a").forEach(function(x){x.classList.remove("active")});
@@ -220,11 +253,13 @@
                     var tab = this.getAttribute("data-tab");
                     $("tab-dash").style.display = tab === "dash" ? "block" : "none";
                     $("tab-manage").style.display = tab === "manage" ? "block" : "none";
+                    $("tab-map").style.display = tab === "map" ? "block" : "none";
                     if(tab === "dash"){ updateCharts(); updateLog(); }
                     if(tab === "manage") updateTable();
+                    if(tab === "map") initMap();
                 });
             });
-            // 모달 외부 클릭 닫기
+
             $("md").addEventListener("click", function(e){if(e.target===this) closeModal()});
         }
 
@@ -258,7 +293,6 @@
         }
 
         function refresh(){
-            // stat
             var total = _data.length;
             var h=0,n=0,c=0,f=0,e=0;
             _data.forEach(function(a){
@@ -328,13 +362,8 @@
                 $("f6").value = a.d;
                 $("f7").value = a.t || "";
             } else {
-                $("f1").value = "";
-                $("f2").value = "";
-                $("f3").value = "";
-                $("f4").value = "";
-                $("f5").value = "궁궐/역사";
-                $("f6").value = "";
-                $("f7").value = "";
+                $("f1").value = "";$("f2").value = "";$("f3").value = "";$("f4").value = "";
+                $("f5").value = "궁궐/역사";$("f6").value = "";$("f7").value = "";
             }
             $("md").classList.add("show");
         }
@@ -349,33 +378,131 @@
             var cat = $("f5").value;
             var desc = $("f6").value.trim();
             var tip = $("f7").value.trim();
-
             if(!name || !region || isNaN(lat) || isNaN(lng) || !desc){
                 toast("필수 항목을 입력해주세요."); return;
             }
-
             if(_editIdx >= 0){
                 _data[_editIdx] = {n:name, r:region, a:lat, o:lng, c:cat, d:desc, t:tip};
-                addLog("수정: " + name);
-                toast("수정 완료!");
+                addLog("수정: " + name); toast("수정 완료!");
             } else {
                 _data.push({n:name, r:region, a:lat, o:lng, c:cat, d:desc, t:tip});
-                addLog("추가: " + name);
-                toast("추가 완료!");
+                addLog("추가: " + name); toast("추가 완료!");
             }
-            save();
-            refresh();
-            closeModal();
+            save(); refresh(); closeModal();
         }
 
         function deleteItem(idx){
             var name = _data[idx].n;
             if(!confirm("'" + name + "'을(를) 삭제하시겠습니까?")) return;
             _data.splice(idx, 1);
-            save();
-            addLog("삭제: " + name);
-            toast("삭제 완료!");
-            refresh();
+            save(); addLog("삭제: " + name); toast("삭제 완료!"); refresh();
+        }
+
+        // 카카오맵
+        var _mapInitDone = false;
+
+        function initMap(){
+            if(_mapInitDone && _map){ 
+                // 이미 init된 경우 마커만 갱신
+                updateKakaoMarkers();
+                return; 
+            }
+            _mapInitDone = true;
+
+            var container = $("map-container");
+            if(!container) return;
+
+            // 이미 지도가 있으면 재사용
+            if(!_map){
+                _map = new kakao.maps.Map(container, {
+                    center: new kakao.maps.LatLng(36.0, 127.8),
+                    level: 8
+                });
+            }
+
+            updateKakaoMarkers();
+            updateMapList();
+        }
+
+        function updateKakaoMarkers(){
+            // 기존 마커 제거
+            for(var i=0; i<_kakaoMarkers.length; i++){
+                _kakaoMarkers[i].setMap(null);
+            }
+            _kakaoMarkers = [];
+
+            _data.forEach(function(a, idx){
+                var color = CL[a.c] || "#e74c3c";
+                var position = new kakao.maps.LatLng(a.a, a.o);
+                
+                // 커스텀 오버레이 (동그란 마커)
+                var content = "<div style=\"width:12px;height:12px;background:" + color + ";border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);\"></div>";
+                var marker = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content,
+                    yAnchor: 0.5,
+                    xAnchor: 0.5
+                });
+                marker.setMap(_map);
+                
+                // 인포윈도우
+                var infoContent = "<div style=\"padding:8px 10px;font-size:12px;font-weight:600;\">" + a.n + "</div>";
+                var infoWin = new kakao.maps.InfoWindow({
+                    content: infoContent
+                });
+                
+                // 마커에 데이터 저장
+                marker._data = a;
+                marker._infoWin = infoWin;
+                marker._idx = idx;
+
+                // 클릭 이벤트
+                kakao.maps.event.addListener(marker, "click", function(){
+                    // 모든 인포윈도우 닫기
+                    for(var j=0; j<_kakaoMarkers.length; j++){
+                        _kakaoMarkers[j]._infoWin.close();
+                    }
+                    this._infoWin.open(_map, this);
+                    // 리스트 하이라이트
+                    document.querySelectorAll("#map-list .mi").forEach(function(el){el.classList.remove("active")});
+                    var target = document.getElementById("mi-" + this._idx);
+                    if(target) target.classList.add("active");
+                });
+
+                _kakaoMarkers.push(marker);
+            });
+        }
+
+        function updateMapList(){
+            var list = $("map-list");
+            var html = "";
+            _data.forEach(function(a, i){
+                var color = CL[a.c] || "#e74c3c";
+                html += "<div class=\"mi\" id=\"mi-" + i + "\" onclick=\"moveToPlace(" + i + ")\"><div class=\"mn\"><span class=\"dot\" style=\"background:" + color + ";\"></span>" + a.n + "</div><div class=\"mr\">" + a.r + " · " + (a.c||"") + "</div></div>";
+            });
+            list.innerHTML = html;
+        }
+
+        function moveToPlace(idx){
+            var a = _data[idx];
+            if(!a || !_map) return;
+            
+            // 이동
+            _map.setCenter(new kakao.maps.LatLng(a.a, a.o));
+            _map.setLevel(5);
+
+            // 해당 마커 찾아서 클릭
+            document.querySelectorAll("#map-list .mi").forEach(function(el){el.classList.remove("active")});
+            var target = document.getElementById("mi-" + idx);
+            if(target) target.classList.add("active");
+
+            // 인포윈도우
+            for(var j=0; j<_kakaoMarkers.length; j++){
+                _kakaoMarkers[j]._infoWin.close();
+            }
+            if(_kakaoMarkers[idx]){
+                _kakaoMarkers[idx]._infoWin.open(_map, _kakaoMarkers[idx]);
+            }
         }
 
         init();
