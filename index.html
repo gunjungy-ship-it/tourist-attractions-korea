@@ -15,7 +15,7 @@
     <link rel="canonical" href="https://gunjungy-ship-it.github.io/tourist-attractions-korea/" />
     <meta name="google-site-verification" content="9fTJUTbwBOZM_licANmNi8Yr0iAUUKJQ7LyiWF7RH18" />
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%23e8b44f'/%3E%3Ctext x='96' y='125' font-size='120' text-anchor='middle' fill='white' font-weight='bold' font-family='sans-serif'%3EKT%3C/text%3E%3C/svg%3E" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root{--bg:#fff;--card:rgba(255,255,255,0.92);--text:#1a1a2e;--t2:#6b7280;--t3:#9ca3af;--bd:rgba(0,0,0,0.05);--ac:#e8b44f;--ac2:#f0c96d;--gr1:linear-gradient(135deg,#e8b44f,#f0c96d);--gr2:linear-gradient(135deg,#e8b44f,#d4956b);--shadow:0 4px 20px rgba(0,0,0,0.04);--shadow-h:0 8px 32px rgba(0,0,0,0.08);--rd:16px;--rs:10px;--rf:9999px}
@@ -206,7 +206,7 @@ try{var w=localStorage.getItem("ktour_wish");if(w)_wish=JSON.parse(w)}catch(e){}
 function $(i){return document.getElementById(i)}
 map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(36.0,127.8),level:8});
 var zoomEl=document.createElement('div');zoomEl.className='custom_zoomcontrol';zoomEl.innerHTML='<button type="button" aria-label="확대">+</button><button type="button" aria-label="축소">−</button>';document.getElementById('map').appendChild(zoomEl);zoomEl.children[0].onclick=function(){map.setLevel(map.getLevel()-1)};zoomEl.children[1].onclick=function(){map.setLevel(map.getLevel()+1)};
-D.forEach(function(a,i){var color=CC[a.c]||"#e8b44f";var el=document.createElement('div');el.style.cssText='width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:'+color+';border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.22);cursor:pointer';var pos=new kakao.maps.LatLng(a.a,a.o);var overlay=new kakao.maps.CustomOverlay({position:pos,content:el,yAnchor:1});overlay.setMap(map);var iw=new kakao.maps.InfoWindow({content:'<div style="padding:8px 12px;font-size:13px;font-weight:700;white-space:nowrap">'+a.n+' · '+a.r+'</div>'});el.addEventListener('click',function(ev){ev.stopPropagation();iw.open(map,new kakao.maps.Marker({position:pos}));showDetail(i)});markers.push({overlay:overlay,el:el,idx:i,info:iw,position:pos})});
+D.forEach(function(a,i){var color=CC[a.c]||"#e8b44f";var el=document.createElement('div');el.style.cssText='width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:'+color+';border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.22);cursor:pointer';var pos=new kakao.maps.LatLng(a.a,a.o);var overlay=new kakao.maps.CustomOverlay({position:pos,content:el,yAnchor:1});overlay.setMap(map);var iw=new kakao.maps.InfoWindow({content:'<div style="padding:8px 12px;font-size:13px;font-weight:700;white-space:nowrap">'+a.n+' · '+a.r+'</div>'});(function(fi,fw){el.addEventListener('click',function(ev){ev.stopPropagation();if(window._prevInfoWindow)window._prevInfoWindow.close();fw.open(map,new kakao.maps.Marker({position:pos}));window._prevInfoWindow=fw;if(_selIdx!==fi)showDetail(fi)})})(i,iw);markers.push({overlay:overlay,el:el,idx:i,info:iw,position:pos})});
 $("cn").textContent=D.length;
 
         function setView(view){
